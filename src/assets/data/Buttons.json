@@ -1,0 +1,600 @@
+{
+  "rows": [
+    {
+      "row": {
+        "cols": [
+          {
+            "id": "Module_tree1",
+            "title": "模块",
+            "bodyStyle": {
+              "height": "500px",
+              "padding": "8px"
+            },
+            "span": 5,
+            "size": {
+              "nzXs": 5,
+              "nzSm": 5,
+              "nzMd": 5,
+              "nzLg": 5,
+              "ngXl": 5
+            },
+            "viewCfg": [
+              {
+                "config": {
+                  "viewId": "moudle_tree10",
+                  "component": "bsnTree",
+                  "asyncData": true,
+                  "expandAll": true,
+                  "height": "492px",
+                  "checkable": false,
+                  "showLine": false,
+                  "columns": [
+                    {
+                      "title": "主键",
+                      "field": "key",
+                      "valueName": "Id"
+                    },
+                    {
+                      "title": "父节点",
+                      "field": "parentId",
+                      "valueName": "parentId"
+                    },
+                    {
+                      "title": "标题",
+                      "field": "title",
+                      "valueName": "name"
+                    }
+                  ],
+                  "componentType": {
+                    "parent": true,
+                    "child": false,
+                    "own": true
+                  },
+                  "parent": [
+                    {
+                      "name": "parentId",
+                      "type": "value",
+                      "valueName": "取值参数名称",
+                      "value": "null"
+                    }
+                  ],
+                  "ajaxConfig": {
+                    "url": "common/CfgProjectModule",
+                    "ajaxType": "get",
+                    "params": []
+                  },
+                  "relations": []
+                },
+                "dataList": []
+              }
+            ]
+          },
+          {
+            "id": "block_component_tree",
+            "title": "区域",
+            "bodyStyle": {
+              "height": "500px",
+              "padding": "8px"
+            },
+            "span": 5,
+            "size": {
+              "nzXs": 5,
+              "nzSm": 5,
+              "nzMd": 5,
+              "nzLg": 5,
+              "ngXl": 5
+            },
+            "viewCfg": [
+              {
+                "config": {
+                  "viewId": "block_component_tree_10",
+                  "component": "bsnTree",
+                  "asyncData": true,
+                  "expandAll": true,
+                  "height": "492px",
+                  "checkable": false,
+                  "showLine": false,
+                  "columns": [
+                    {
+                      "title": "主键",
+                      "field": "key",
+                      "valueName": "Id"
+                    },
+                    {
+                      "title": "父节点",
+                      "field": "parentId",
+                      "valueName": "parentId"
+                    },
+                    {
+                      "title": "标题",
+                      "field": "title",
+                      "valueName": "name"
+                    }
+                  ],
+                  "componentType": {
+                    "parent": true,
+                    "child": true,
+                    "own": false
+                  },
+                  "parent": [
+                    {
+                      "name": "parentId",
+                      "type": "value",
+                      "valueName": "取值参数名称",
+                      "value": "null"
+                    }
+                  ],
+                  "ajaxConfig": {
+                    "url": "common/getbuttontree",
+                    "ajaxType": "get",
+                    "params": [
+                      {
+                        "name": "parentId",
+                        "type": "tempValue",
+                        "valueName": "_parentId"
+                      },
+                      {
+                        "name": "_sort",
+                        "type": "value",
+                        "value": "orderBy ASC"
+                      }
+                    ]
+                  },
+                  "relations": [
+                    {
+                      "relationViewId": "moudle_tree10",
+                      "cascadeMode": "REFRESH_AS_CHILD",
+                      "params": [
+                        {
+                          "pid": "key",
+                          "cid": "_parentId"
+                        }
+                      ],
+                      "relationReceiveContent": []
+                    },
+                    {
+                      "relationViewId": "grid_congfig_from_info10",
+                      "cascadeMode": "REFRESH",
+                      "params": []
+                    }
+                  ]
+                },
+                "dataList": []
+              }
+            ]
+          },
+          {
+            "id": "area2",
+            "title": "按钮",
+            "bodyStyle": {
+              "height": "500px",
+              "padding": "8px"
+            },
+            "span": 14,
+            "size": {
+              "nzXs": 14,
+              "nzSm": 14,
+              "nzMd": 14,
+              "nzLg": 14,
+              "ngXl": 14
+            },
+            "viewCfg": [
+              {
+                "config": {
+                  "viewId": "grid_congfig_from_info10",
+                  "component": "form_view",
+                  "editable":"text",
+                  "keyId": "Id",
+                  "ajaxConfig": {
+                    "url": "common/ButtonsType",
+                    "ajaxType": "getById",
+                    "params": [
+                      {
+                        "name": "Id",
+                        "type": "tempValue",
+                        "valueName": "_ids"
+                      }
+                    ]
+                  },
+                  "componentType": {
+                    "parent": true,
+                    "child": true,
+                    "own": true
+                  },
+                  "forms": [
+                    {
+                      "controls": [
+                        
+                        {
+                          "type": "selectTree",
+                          "labelSize": "3",
+                          "controlSize": "16",
+                          "name": "parentId",
+                          "label": "父节点",
+                          "disabled": false,
+                          "textName": "parentname",
+                          "notFoundContent": "",
+                          "selectModel": false,
+                          "showSearch": true,
+                          "placeholder": "--请选择--",
+                          "size": "default",
+                          "columns": [
+                            {
+                              "title": "主键",
+                              "field": "key",
+                              "valueName": "Id"
+                            },
+                            {
+                              "title": "父节点",
+                              "field": "parentId",
+                              "valueName": "parentId"
+                            },
+                            {
+                              "title": "标题",
+                              "field": "title",
+                              "valueName": "name"
+                            }
+                          ],
+                          "ajaxConfig": {
+                            "url": "common/AddFilferTree",
+                            "ajaxType": "get",
+                            "params": [
+                              {
+                                "name": "moudleId",
+                                "type": "tempValue",
+                                "valueName": "_idss"
+                              }
+                            ]
+                          },
+                          "layout": "column",
+                          "span": "24"
+                        },
+                        {
+                          "type": "select",
+                          "labelSize": "3",
+                          "controlSize": "16",
+                          "name": "type",
+                          "label": "类别",
+                          "notFoundContent": "",
+                          "textName": "btnType",
+                          "selectModel": false,
+                          "showSearch": true,
+                          "placeholder": "--请选择--",
+                          "disabled": false,
+                          "size": "default",
+                          "options": [
+                            {
+                              "label": "区域",
+                              "value": "area",
+                              "disabled": false
+                            },
+                            {
+                              "label": "分组",
+                              "value": "group",
+                              "disabled": false
+                            },
+                            {
+                              "label": "按钮",
+                              "value": "button",
+                              "disabled": false
+                            },
+                            {
+                              "label": "标签页",
+                              "value": "tabs",
+                              "disabled": false
+                            },
+                            {
+                              "label": "页签",
+                              "value": "tab",
+                              "disabled": false
+                            }
+                          ],
+                          "layout": "column",
+                          "span": "24"
+                        },
+                        {
+                          "type": "input",
+                          "labelSize": "3",
+                          "controlSize": "16",
+                          "inputType": "text",
+                          "hidden": false,
+                          "name": "name",
+                          "label": "名称",
+                          "placeholder": "",
+                          "disabled": false,
+                          "readonly": false,
+                          "size": "default",
+                          "layout": "column",
+                          "span": "24"
+                        },
+                        {
+                          "type": "input",
+                          "labelSize": "3",
+                          "controlSize": "16",
+                          "inputType": "text",
+                          "name": "code",
+                          "label": "编码",
+                          "placeholder": "--必须填写--",
+                          "disabled": false,
+                          "readonly": false,
+                          "size": "default",
+                          "layout": "column",
+                          "span": "24",
+                          "validations": [
+                            {
+                              "validator": "required",
+                              "errorMessage": "请输入编码"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "input",
+                          "labelSize": "3",
+                          "controlSize": "16",
+                          "inputType": "text",
+                          "hidden": false,
+                          "name": "orderBy",
+                          "label": "排序",
+                          "placeholder": "",
+                          "disabled": false,
+                          "readonly": false,
+                          "size": "default",
+                          "layout": "column",
+                          "span": "24"
+                        },
+                        {
+                          "type": "input",
+                          "labelSize": "3",
+                          "controlSize": "16",
+                          "inputType": "text",
+                          "hidden": false,
+                          "name": "remark",
+                          "label": "备注",
+                          "placeholder": "",
+                          "disabled": false,
+                          "readonly": false,
+                          "size": "default",
+                          "layout": "column",
+                          "span": "24"
+                        }
+                      ]
+                    },
+                    {
+                      "controls": [
+                        {
+                          "type": "hidden",
+                          "inputType": "hidden",
+                          "name": "btnType"
+                        },
+                        {
+                          "type": "hidden",
+                          "inputType": "hidden",
+                          "name": "parentname"
+                        },
+                        {
+                          "type": "hidden",
+                          "inputType": "hidden",
+                          "name": "moudlename"
+                        }
+                      ]
+                    }
+                  ],
+                  "relations": [
+                    {
+                      "relationViewId": "block_component_tree_10",
+                      "cascadeMode": "REFRESH_AS_CHILD",
+                      "params": [
+                        {
+                          "pid": "key",
+                          "cid": "_ids"
+                        }
+                      ],
+                      "relationReceiveContent": []
+                    },
+                    {
+                      "relationViewId": "moudle_tree10",
+                      "cascadeMode": "REFRESH_AS_CHILD",
+                      "params": [
+                        {
+                          "pid": "key",
+                          "cid": "_idss"
+                        }
+                      ],
+                      "relationReceiveContent": []
+                    }
+                  ],
+                  "toolbar": [
+                    {
+                      "group": [
+                        {
+                          "name": "addRow",
+                          "class": "editable-add-btn",
+                          "text": "新增",
+                          "action": "CREATE",
+                          "cancelPermission": true,
+                          "icon": "plus",
+                          "color": "text-primary"
+                        },
+                        {
+                          "name": "updateRow",
+                          "class": "editable-add-btn",
+                          "text": "修改",
+                          "action": "EDIT",
+                          "cancelPermission": true,
+                          "icon": "edit",
+                          "color": "text-success"
+                        },
+                        {
+                          "name": "saveForm",
+                          "text": "保存",
+                        
+                          "icon": "save",
+                          "cancelPermission": true,
+                          "color": "text-primary",
+                          "ajaxConfig": [
+                            {
+                              "url": "common/AddButton",
+                              "ajaxType": "post",
+                              "params": [
+                                {
+                                  "name": "Id",
+                                  "type": "GUID"
+                                },
+                                {
+                                  "name": "parentId",
+                                  "type":"componentValue",
+                                  "valueName":"parentId",
+                                  "value":null
+                                },
+                                {
+                                  "name": "type",
+                                  "type": "componentValue",
+                                  "valueName": "type"
+                                },
+                                {
+                                  "name": "name",
+                                  "type": "componentValue",
+                                  "valueName": "name"
+                                },
+                                {
+                                  "name": "code",
+                                  "type": "componentValue",
+                                  "valueName": "code"
+                                },
+                                {
+                                  "name": "moudleId",
+                                  "type": "tempValue",
+                                  "valueName": "_idss"
+                                },
+                                {
+                                  "name": "remark",
+                                  "type": "componentValue",
+                                  "valueName": "remark",
+                                  "value": null
+                                },
+                                {
+                                  "name": "orderBy",
+                                  "type": "componentValue",
+                                  "valueName": "orderBy"
+                                },
+                                {
+                                  "name": "Message",
+                                  "type": "value",
+                                  "value": "output"
+                                }
+                              ],
+                              "outputParams": [
+                                {
+                                  "name": "Message",
+                                  "dataType": "message"
+                                }
+                              ]
+                            },
+                            {
+                              "url": "common/AddButton",
+                              "ajaxType": "put",
+                              "params": [
+                                {
+                                  "name": "Id",
+                                  "type": "tempValue",
+                                  "valueName": "_ids"
+                                },
+                          
+                                {
+                                  "name": "parentId",
+                                  "type":"componentValue",
+                                  "valueName":"parentId",
+                                  "value":null
+                                },
+
+
+                                {
+                                  "name": "type",
+                                  "type": "componentValue",
+                                  "valueName": "type"
+                                },
+                                {
+                                  "name": "name",
+                                  "type": "componentValue",
+                                  "valueName": "name"
+                                },
+                                {
+                                  "name": "code",
+                                  "type": "componentValue",
+                                  "valueName": "code"
+                                },
+                                {
+                                  "name": "moudleId",
+                                  "type": "tempValue",
+                                  "valueName": "_idss"
+                                },
+                                 {
+                                  "name": "orderBy",
+                                  "type": "componentValue",
+                                  "valueName": "orderBy"
+                                },
+                                {
+                                  "name": "remark",
+                                  "type": "componentValue",
+                                  "valueName": "remark"
+                                },
+                                 {
+                                  "name": "Message",
+                                  "type": "value",
+                                  "value": "output"
+                                }
+                              ],
+                              "outputParams": [
+                                {
+                                  "name": "Message",
+                                  "dataType": "message"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "name": "executeSelectedRow",
+                          "class": "editable-add-btn",
+                          "text": "删除",
+                          "cancelPermission": true,
+                          "icon": "delete",
+                          "ajaxConfig": [
+                            {
+                              "action": "EXECUTE_SELECTED",
+                              "url": "common/Deletebuttons",
+                              "ajaxType": "post",
+                              "title": "提示",
+                              "message": "是否将选中的数据执行当前操作？",
+                              "params": [
+                                {
+                                  "name": "_idss",
+                                  "valueName": "_ids",
+                                  "type": "tempValue"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "name": "cancelRow",
+                          "class": "editable-add-btn",
+                          "text": "取消",
+                          "cancelPermission": true,
+                          "action": "CANCEL",
+                          "icon": "edit",
+                          "color": "text-success"
+                        }
+                      ]
+                    }
+                  ],
+                  "dataList": []
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

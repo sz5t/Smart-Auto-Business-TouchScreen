@@ -1,0 +1,47 @@
+<page-header [title]="'生产管理导航页'">
+  <ng-template #extra>
+      <div style="margin-top: -40px; text-align: center; width: 180px;">
+          <img class="img-fluid" src="../../../../assets/img/pga.png">
+      </div>
+  </ng-template>
+  管理导航页面：具有班组长权限的用户可登录一次页面,该页面将会引导您进行<strong class="text-blue">[派工处理]</strong>或者<strong class="text-blue">[工序作业]</strong>等功能进行操作.
+  <div class="d-flex pt-md">
+      <a class="d-flex pr-lg">
+          <img class="pr-sm" src="../../../../assets/img/begin.svg" />快速开始
+      </a>
+      <a class="d-flex pr-lg">
+          <img class="pr-sm" src="../../../../assets/img/intro.svg" />功能简介
+      </a>
+      <a class="d-flex">
+          <img class="pr-sm" src="../../../../assets/img/doc.svg" />使用说明
+      </a>
+  </div>
+</page-header>
+<div nz-row nzGutter="8">
+  <div nz-col nzSpan="12">
+    <nz-card [nzCover]="coverTemplate" [nzActions]="[actionSetting,actionEdit,actionEllipsis]">
+      <nz-card-meta nzTitle="Card title" nzDescription="This is the description" [nzAvatar]="avatarTemplate"></nz-card-meta>
+    </nz-card>
+    <ng-template #avatarTemplate>
+      <nz-avatar nzSrc="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"></nz-avatar>
+    </ng-template>
+    <ng-template #coverTemplate>
+          <i nz-icon style="font-size:200px" [iconfont]="'icon-constructionworker'"></i>
+    </ng-template>
+    <ng-template #actionSetting>
+      <i nz-icon type="setting"></i>
+    </ng-template>
+    <ng-template #actionEdit>
+      <i nz-icon type="edit"></i>
+    </ng-template>
+    <ng-template #actionEllipsis>
+      <i nz-icon type="ellipsis"></i>
+    </ng-template>    
+  </div>
+</div>
+
+
+
+
+
+

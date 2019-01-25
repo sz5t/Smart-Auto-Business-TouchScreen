@@ -1,0 +1,15 @@
+<nz-card [nzBordered]="false">
+  <form nz-form [nzLayout]="'inline'">
+      <standard-form-row [title]="config.title" block>
+          <nz-form-item>
+              <nz-form-control>
+                  <tag-select [expandable]="false">
+                      <nz-tag [ngClass]="{tag: true}" *ngFor="let item of itemList; let idx = index" nzMode="checkable" [(nzChecked)]="item.checked" (nzCheckedChange)="changeCategory($event, idx)">
+                          {{item.text}}
+                      </nz-tag>
+                  </tag-select>
+              </nz-form-control>
+          </nz-form-item>
+      </standard-form-row> 
+  </form> 
+</nz-card>

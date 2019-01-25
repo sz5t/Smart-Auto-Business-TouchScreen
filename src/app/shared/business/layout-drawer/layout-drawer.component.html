@@ -1,0 +1,15 @@
+<nz-drawer [nzVisible]="visible" nzPlacement="config.placement" nzTitle="header"
+           (nzOnClose)="close()" [nzClosable]="false" [nzWidth]="config.width" [nzHeight]="config.height"> 
+           <ng-container *ngIf="config.rows;else tabView">
+                <cn-layout-resolver [config]="config" [initData] = "initData" [tempValue] = "tempValue" [permissions] = "permissions ? permissions : []" ></cn-layout-resolver>
+            </ng-container>
+            <ng-template #tabView>
+                    <cn-component-resolver [config]="cfg" *ngFor="let cfg of tab.viewCfg" [initData]="initValue" [tempValue] = "tempValue"  [permissions] = "permissions ? permissions : []" ></cn-component-resolver>
+            </ng-template>
+            <ng-template #header>
+                <span><i nz-icon type="tag" theme="outline"></i> {{config.title}}</span>
+            </ng-template>
+</nz-drawer>
+
+
+

@@ -1,0 +1,40 @@
+<div class="table-operations-ts">
+    <span *ngFor="let toolbar of toolbarConfig">
+        <span class="toolbarSingle" *ngIf="!toolbar.group && !toolbar.dropdown">
+            <button [nzSize]="toolbar.size ? toolbar.size : 'default'" [nzType]="toolbar.style ? toolbar.style : 'default'" nz-button
+                (click)="toolbarAction(toolbar)" [attr.disabled]="toolbar.disabled" [nzBlock]="toolbar.isBlock"
+                style="margin-left: 0px">
+               <span> 
+                   <i nz-icon [type]="toolbar.icon" class="btn-fontSize-ts" [theme]="toolbar.theme ? toolbar.theme : 'outline'"></i> 
+                   {{toolbar.text}}
+                </span>
+            </button>
+        </span>
+        <div class="toolbarGroup" *ngIf="toolbar.group">
+            <nz-button-group>
+                <button nzGhost [nzSize]="btn.size ? btn.size : 'default'" [nzType]="btn.style ? btn.style : 'default'"
+                    nz-button *ngFor="let btn of toolbar.group" (click)="toolbarAction(btn)" [attr.disabled]="btn.disabled"
+                    [nzBlock]="btn.isBlock" style="margin-left: 0px; padding-right:20px;padding-right:20px;margin-bottom: 0px">
+                    <i nz-icon [type]="btn.icon" class="btn-fontSize-ts" [theme]="btn.theme ? btn.theme : 'outline'"></i><span
+                        class="btn-fontSize-ts">{{btn.text}}</span>
+                </button>
+            </nz-button-group>
+        </div>
+        <div class="toolbarGroup" *ngIf="toolbar.dropdown">
+            <nz-dropdown *ngFor="let btn of toolbar.dropdown">
+                <button nzGhost nz-button nz-dropdown>
+                    <strong>
+                        <i class="anticon anticon-down"></i> {{btn.text}}
+                    </strong>
+                </button>
+                <ul nz-menu>
+                    <li nz-menu-item (click)="toolbarAction(b)" *ngFor="let b of btn.buttons">
+                        <strong>
+                            <a [attr.disabled]="b.disabled"> <i nz-icon type="btn.icon" [theme]="btn.theme ? btn.theme : 'outline'"></i>{{b.text}}</a>
+                        </strong>
+                    </li>
+                </ul>
+            </nz-dropdown>
+        </div>
+    </span>
+</div>

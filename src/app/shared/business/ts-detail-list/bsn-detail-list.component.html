@@ -1,0 +1,44 @@
+<nz-spin [nzSpinning]="isLoading" nzTip='加载中...'>
+    <nz-card [nzTitle]="config.title ? config.title : false" [nzBodyStyle]="{padding: '0px'}" [nzBordered]="false">
+            <nz-list
+            [nzDataSource]="data"
+            [nzItemLayout]="'vertical'"
+            [nzRenderItem]="itemDetail"
+            [nzFooter]="footer">
+            <ng-template #itemDetail let-item >
+              <nz-list-item [nzContent]="item.content ? item.content : false" 
+              [nzActions]="[starAction,likeAction,msgAction]" 
+              [nzExtra]="extra" 
+              (click)="selectItem(item)"
+              [ngClass]="{selectedItem: item.selected}"
+              >
+                  <nz-skeleton [nzAvatar]="true" [nzActive]="true" [nzTitle]="true" [nzLoading]="isLoading">
+                <ng-template #starAction><i nz-icon type="star-o" style="padding-left: 8px;margin-right: 8px;"></i> 156</ng-template>
+                <ng-template #likeAction><i nz-icon type="like-o" style="margin-right: 8px;"></i> 156</ng-template>
+                <ng-template #msgAction><i nz-icon type="message" style="margin-right: 8px;"></i> 2</ng-template>
+                <nz-list-item-meta
+                  [nzTitle]="nzTitle"
+                  [nzDescription]="item.description ? nzDescription : false">
+                  <ng-template #nzTitle>
+                    <div><i nz-icon class="title-icon" [iconfont]="item.icon"></i><div class="title-text">{{item.title}}</div></div>
+                  </ng-template>
+                  <ng-template #nzDescription>
+                      {{item.description}}
+                  </ng-template>
+                </nz-list-item-meta>
+                <ng-template #extra>
+                  <!-- <i nz-icon [iconfont]="'icon-constructionworker'"></i> -->
+                </ng-template>
+               </nz-skeleton>
+              </nz-list-item>
+              
+            </ng-template>
+           
+            <ng-template #loadMore>
+                <div class="loadmore">
+                  <button nz-button *ngIf="!loadingMore" (click)="onLoadMore()">loading more</button>
+                </div>
+              </ng-template>
+          </nz-list>
+    </nz-card>
+</nz-spin>

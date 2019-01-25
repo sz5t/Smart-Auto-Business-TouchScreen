@@ -1,0 +1,724 @@
+{
+  "rows": [
+    {
+      "row": {
+        "cols": [
+          {
+              "id": "APS_BATCHSPLIT",
+              "title": "定义分组编号",
+              "span": 6,
+              "bodyStyle": {
+                "height": "200px"
+              },
+              "size": {
+                "nzXs": 24,
+                "nzSm": 24,
+                "nzMd": 24,
+                "nzLg": 24,
+                "ngXl": 24
+              },
+              "viewCfg": [
+                {
+                  "config": {
+                    "viewId": "APS_BATCHSPLIT_01",
+                    "component": "bsnTable",
+                    "keyId": "Id",
+                    "showCheckBox": true,
+                    "size": "small",
+                    "pagination": true,
+                    "showTotal": true,
+                    "pageSize": 5,
+                    "pageSizeOptions": [
+                      10,
+                      20,
+                      30,
+                      40,
+                      50
+                    ],
+                    "componentType": {
+                      "parent": true,
+                      "child": false,
+                      "own": true
+                    },
+                    "ajaxConfig": {
+                      "url": "common/APS_BATCHSPLIT",
+                      "ajaxType": "get",
+                      "params": [
+                      
+                        {
+                          "name":"PID",
+                          "type":"initValue",
+                          "valueName":"Id"
+                      }
+                     ]
+                    },
+                    "columns": [
+                      {
+                        "title": "分组编号",
+                        "field": "taskplanname",
+                        "width": "100px",
+                        "hidden": false,
+                        "editor": {
+                          "type": "input",
+                          "field": "taskplanname",
+                          "options": {
+                            "type": "input",
+                            "labelSize": "6",
+                            "controlSize": "10",
+                            "inputType": "text"
+                          }
+                        }
+                      },
+                      {
+                        "title": "分组数量",
+                        "field": "taskplannumble",
+                        "width": "60px",
+                        "editor": {
+                          "type": "input",
+                          "field": "taskplannumble",
+                          "options": {
+                            "type": "input",
+                            "labelSize": "6",
+                            "controlSize": "10",
+                            "inputType": "text"
+                          }
+                        }
+                      },
+                      {
+                        "title": "计划开工日期",
+                        "field": "planbegindate",
+                        "width": "100px",
+                        "dataType": "date",
+                        "editor": {
+                          "type": "input",
+                          "pipe": "datetime",
+                          "field": "planbegindate",
+                          "options": {
+                            "type": "datePicker",
+                            "inputType": "datetime",
+                            "name": "planbegindate",
+                            "showTime": false,
+                            "formart": "yyyy-MM-dd"
+                          }
+                        }
+                      },
+                      {
+                        "title": "计划完工日期",
+                        "field": "planenddate",
+                        "width": "100px",
+                        "dataType": "date",
+                        "editor": {
+                          "type": "input",
+                          "pipe": "datetime",
+                          "field": "planenddate",
+                          "options": {
+                            "type": "datePicker",
+                            "inputType": "datetime",
+                            "name": "planenddate",
+                            "showTime": false,
+                            "formart": "yyyy-MM-dd"
+                          }
+                       }
+                      },
+                      {
+                        "title": "工期",
+                        "field": "periodday",
+                        "width": "80px",
+                     
+                        "editor": {
+                          "type": "input",
+                          "field": "periodday",
+                          "options": {
+                            "type": "input",
+                            "labelSize": "6",
+                            "controlSize": "10",
+                            "inputType": "text"
+                          }
+                        }
+                      },
+                      {
+                        "title": "生产状态",
+                        "field": "taskstatustext",
+                        "width": "60px",
+                        "hidden": false,
+                     
+                        "formatter": [
+                          {
+                            "value": "起草",
+                            "bgcolor": "",
+                            "fontcolor": "text-blue",
+                            "valueas": "起草"
+                          },
+                          {
+                            "value": "已提交",
+                            "bgcolor": "",
+                            "fontcolor": "text-blue",
+                            "valueas": "已提交"
+                          },
+                          {
+                            "value": "已打回",
+                            "bgcolor": "",
+                            "fontcolor": "text-blue",
+                            "valueas": "已打回"
+                          },
+                          {
+                            "value": "已审核",
+                            "bgcolor": "",
+                            "fontcolor": "text-blue",
+                            "valueas": "已审核"
+                          },
+                          {
+                            "value": "已发布",
+                            "bgcolor": "",
+                            "fontcolor": "text-red",
+                            "valueas": "已发布"
+                          },
+                          {
+                            "value": "执行中",
+                            "bgcolor": "",
+                            "fontcolor": "text-red",
+                            "valueas": "执行中"
+                          },
+                          {
+                            "value": "已完成",
+                            "bgcolor": "",
+                            "fontcolor": "text-red",
+                            "valueas": "已完成"
+                          },
+                          {
+                            "value": "已暂停",
+                            "bgcolor": "",
+                            "fontcolor": "text-red",
+                            "valueas": "已暂停"
+                          },
+                          {
+                            "value": "已终止",
+                            "bgcolor": "",
+                            "fontcolor": "text-red",
+                            "valueas": "已终止"
+                          },
+                          {
+                            "value": "已挂起",
+                            "bgcolor": "",
+                            "fontcolor": "text-red",
+                            "valueas": "已挂起"
+                          }
+                        ],
+                        "editor": {
+                          "type": "select",
+                          "field": "taskstatus",
+                          "options": {
+                            "type": "select",
+                            "labelSize": "6",
+                            "controlSize": "10",
+                            "inputType": "submit",
+                            "name": "taskstatus",
+                            "notFoundContent": "",
+                            "selectModel": false,
+                            "showSearch": true,
+                            "placeholder": "-请选择-",
+                            "disabled": false,
+                            "size": "default",
+                            "clear": true,
+                            "width": "80px",
+                            "options": [
+                              {
+                                "label": "起草",
+                                "value": 1,
+                                "disabled": false
+                              },
+                              {
+                                "label": "已提交",
+                                "value": 2,
+                                "disabled": false
+                              },
+                              {
+                                "label": "已打回",
+                                "value": 3,
+                                "disabled": false
+                              },
+                              {
+                                "label": "已审核",
+                                "value": 4,
+                                "disabled": false
+                              },
+                              {
+                                "label": "已发布",
+                                "value": 5,
+                                "disabled": false
+                              },
+                              {
+                                "label": "执行中",
+                                "value": 6,
+                                "disabled": false
+                              },
+                              {
+                                "label": "已完成",
+                                "value": 7,
+                                "disabled": false
+                              },
+                              {
+                                "label": "已暂停",
+                                "value": 8,
+                                "disabled": false
+                              },
+                              {
+                                "label": "已终止",
+                                "value": 9,
+                                "disabled": false
+                              },
+                              {
+                                "label": "已挂起",
+                                "value": 10,
+                                "disabled": false
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "title": "备注",
+                        "field": "remark",
+                        "width": "160px",
+                        "editor": {
+                          "type": "input",
+                          "field": "remark",
+                          "options": {
+                            "type": "input",
+                            "labelSize": "6",
+                            "controlSize": "10",
+                            "inputType": "text"
+                          }
+                        }
+                      }
+                    ],
+                    "cascade":[
+                      {
+                        "name":"partsid",
+                        "CascadeObjects":[
+                          {
+                            "cascadeName":"figurenumber",
+                            "cascadeValueItems":[
+                            ],
+                            "cascadeDataItems":[
+                              {
+                                "data":{
+                                  "type":"setValue",
+                                  "setValue_data":{
+                                    "option":{                                     
+                                        "name":"figurenumber",
+                                        "type":"selectObjectValue",
+                                        "value":"", 
+                                        "valueName":"figurenumber"
+                                     }
+                                   }
+  
+                                 }
+                               }
+                             ]
+                           }
+                         ]
+                       }
+                    ],
+                    "toolbar": [
+                      {
+                        "group": [
+                          {
+                            "name": "refreshRow",
+                            "text": "刷新",
+                            "icon": "reload",
+                            "color": "text-primary",
+                            "action": "REFRESH"
+                          },
+                          {   
+                            "name": "addRow",
+                            "class": "editable-add-btn",
+                            "text": "批次生成",
+                            "type": "default",
+                            "icon": "qq",  
+                            "color": "text-primary",
+                            "ajaxConfig": [
+                              {
+                                "action": "EXECUTE_ADD_DATA",
+                                "url": "common/APS_TASKPLANGROUP_AUTO",
+                                "ajaxType": "post",
+                                "params": [
+                                  {
+                                    "name":"PID",
+                                    "type":"initValue",
+                                    "valueName":"Id"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "name": "updateRow",
+                            "text": "修改",
+                            "icon": "wechat",
+                            "color": "text-success",
+                            "action": "EDIT"
+                          },
+                          {
+                            "name": "executeCheckedRow",
+                            "class": "editable-add-btn",
+                            "text": "删除",
+                            "icon": "delete",
+                            "color": "text-red-light",
+                            "ajaxConfig": [
+                              {
+                                "action": "EXECUTE_CHECKED_ID",
+                                "url": "common/DEL_APS_TASK",
+                                "ajaxType": "post",
+                                "title": "提示",
+                                "message": "是否将选中的数据执行删除操作？",
+                                "params": [
+                                  {
+                                    "name": "Ids",
+                                    "valueName": "Id",
+                                    "type": "checkedId"
+                                  },
+                                  {
+                                    "name": "Message",
+                                    "type": "value",
+                                    "value": "output",
+                                    "valueName": ""
+                                  }
+                                ],
+                                "outputParams": [
+                                  {
+                                    "name": "Message",
+                                    "dataType": "message"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {   
+                            "name": "saveRow",
+                            "class": "editable-add-btn",
+                            "text": "保存",
+                            "type": "default",
+                            "icon": "alipay",  
+                            "color": "text-primary",
+                            "ajaxConfig": [
+                              {
+                                "action": "EXECUTE_SAVE_ROW",
+                                "url": "common/APS_TASK_INSERT",
+                                "ajaxType": "post",
+                                "params": [
+                                  {
+                                    "name": "Id",
+                                    "type": "GUID"
+                                  },
+                                  {
+                                    "name": "ordernumber",
+                                    "type": "componentValue",
+                                    "valueName": "ordernumber"
+                                  },
+                                  {
+                                    "name": "partsid",
+                                    "type": "componentValue",
+                                    "valueName": "partsid"
+                                  },
+                                  {
+                                    "name": "figurenumber",
+                                    "type": "componentValue",
+                                    "valueName": "figurenumber",
+                                    "value":""
+                                  },
+                                  {
+                                    "name": "productcodeid",
+                                    "type": "componentValue",
+                                    "valueName": "productcodeid"
+                                  },
+                                  {
+                                    "name": "stageid",
+                                    "type": "componentValue",
+                                    "valueName": "stageid"
+                                  },
+                                  {
+                                    "name": "serialnumber",
+                                    "type": "componentValue",
+                                    "valueName": "serialnumber"
+                                  },
+                                  {
+                                    "name": "tasknumber",
+                                    "type": "componentValue",
+                                    "valueName": "tasknumber"
+                                  },
+                                  {
+                                    "name": "plannumber",
+                                    "type": "componentValue",
+                                    "valueName": "plannumber"
+                                  },
+                                  {
+                                    "name": "unplannumber",
+                                    "type": "componentValue",
+                                    "valueName": "unplannumber"
+                                  },
+                                  {
+                                    "name": "finishnumber",
+                                    "type": "componentValue",
+                                    "valueName": "finishnumber"
+                                  },
+                                  {
+                                    "name": "unfinishnumber",
+                                    "type": "componentValue",
+                                    "valueName": "unfinishnumber"
+                                  },
+                                  {
+                                    "name": "planbegindate",
+                                    "type": "componentValue",
+                                    "valueName": "planbegindate"
+                                  },
+                                  {
+                                    "name": "planenddate",
+                                    "type": "componentValue",
+                                    "valueName": "planenddate"
+                                  },
+                                  {
+                                    "name": "taskfrom",
+                                    "type": "componentValue",
+                                    "valueName": "taskfrom"
+                                  },
+                                  {
+                                    "name": "recordstatus",
+                                    "type": "componentValue",
+                                    "valueName": "recordstatus"
+                                  },
+                                  {
+                                    "name": "remark",
+                                    "type": "componentValue",
+                                    "valueName": "remark",
+                                    "value":""
+                                  }
+                                ]
+                              },
+                              {
+                                "action": "EXECUTE_EDIT_ROW",
+                                "url": "common/APS_TASK_UPDATE",
+                                "ajaxType": "post",
+                                "params": [
+                                  {
+                                    "name": "Id",
+                                    "type": "componentValue",
+                                    "valueName": "Id"
+                                  },
+                                  {
+                                    "name": "ordernumber",
+                                    "type": "componentValue",
+                                    "valueName": "ordernumber"
+                                  },
+                                  {
+                                    "name": "partsid",
+                                    "type": "componentValue",
+                                    "valueName": "partsid"
+                                  },
+                                  {
+                                    "name": "figurenumber",
+                                    "type": "componentValue",
+                                    "valueName": "figurenumber"
+                                  },
+                                  {
+                                    "name": "productcodeid",
+                                    "type": "componentValue",
+                                    "valueName": "productcodeid"
+                                  },
+                                  {
+                                    "name": "stageid",
+                                    "type": "componentValue",
+                                    "valueName": "stageid"
+                                  },
+                                  {
+                                    "name": "serialnumber",
+                                    "type": "componentValue",
+                                    "valueName": "serialnumber"
+                                  },
+                                  {
+                                    "name": "tasknumber",
+                                    "type": "componentValue",
+                                    "valueName": "tasknumber"
+                                  },
+                                  {
+                                    "name": "unplannumber",
+                                    "type": "componentValue",
+                                    "valueName": "unplannumber"
+                                  },
+                                  {
+                                    "name": "unfinishnumber",
+                                    "type": "componentValue",
+                                    "valueName": "unfinishnumber"
+                                  },
+                                  {
+                                    "name": "planbegindate",
+                                    "type": "componentValue",
+                                    "valueName": "planbegindate"
+                                  },
+                                  {
+                                    "name": "planenddate",
+                                    "type": "componentValue",
+                                    "valueName": "planenddate"
+                                  },
+                                  {
+                                    "name": "taskfrom",
+                                    "type": "componentValue",
+                                    "valueName": "taskfrom"
+                                  },
+                                  {
+                                    "name": "recordstatus",
+                                    "type": "componentValue",
+                                    "valueName": "recordstatus"
+                                  },
+                                  {
+                                    "name": "remark",
+                                    "type": "componentValue",
+                                    "valueName": "remark"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "name": "cancelRow",
+                            "class": "editable-add-btn",
+                            "text": "取消",   
+                            "action": "CANCEL",
+                            "icon": "taobao",
+                            "color": "text-grey-darker"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "dataList": []
+                }
+              ]
+          },
+          {
+            "id": "APS_TASKSINGLECODE",
+            "title": "选取台份编号",
+            "span": 6,
+            "bodyStyle": {
+              "height": "300px"
+            },
+            "size": {                                                                   
+              "nzXs": 24,
+              "nzSm": 24,
+              "nzMd": 24,
+              "nzLg": 24,
+              "ngXl": 24
+            },
+            "viewCfg": [
+              {
+                "config": {
+                
+                  "viewId": "APS_TASKSINGLECODE_01",
+                  "component": "bsnTransfer",
+                  "keyId": "Id",
+                  "bodyStyle": {
+                    "width.px": 420,
+                    "height.%": 100
+                  },
+                  "transformButtons": [
+                    "选入",
+                    "取消"
+                  ],
+                  "ajaxConfig": {
+                    "url": "common/APS_TASKPLANBATCHSINGLECODE",
+                    "ajaxType": "get",
+                    "params": []
+                  },
+                  "componentType": {
+                    "parent": true,
+                    "child": true,
+                    "own": false
+                  },
+                  "columns": [
+                    {
+                      "name": "title",
+                      "field": "singlecode",
+                      "icon": ""
+                    },
+                    {
+                      "name": "description",
+                      "field": "groupstatustext",
+                      "icon": ""
+                    }
+                  ],
+                  "separator": {                                
+                    "left": [
+                      {
+                        "field": "groupstatus",
+                        "value": 1
+                      }
+                    ],
+                    "right": [
+                      {
+                        "field": "groupstatus",
+                        "value": 2
+                      },
+                      {
+                        "field": "groupid",
+                        "type": "tempValue",
+                        "valueName": "_id"
+                      }
+                    ]
+                  },
+                  "leftToRight": {
+                    "ajaxConfig": [
+                      {
+                        "url": "common/APS_TASKPLANBATCHSINGLECODE_SELECT",
+                        "ajaxType": "put",
+                        "params": [
+                          {
+                            "name": "ID",
+                            "type": "checked",
+                            "valueName": "Id"
+                          },
+                          {
+                            "name": "GROUPID",
+                            "type": "tempValue",
+                            "valueName": "_id"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "rightToLeft": {
+                    "ajaxConfig": [
+                      {
+                        "url": "common/APS_TASKPLANBATCHSINGLECODE_CANCEL",
+                        "ajaxType": "put",
+                        "params": [
+                          {
+                            "name": "ID",
+                            "type": "checked",
+                            "valueName": "Id"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "relations": [
+                    {
+                      "relationViewId": "APS_BATCHSPLIT_01",
+                      "cascadeMode": "REFRESH_AS_CHILD",
+                      "params": [
+                        {
+                          "pid": "Id",
+                          "cid": "_id"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "dataList": []
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

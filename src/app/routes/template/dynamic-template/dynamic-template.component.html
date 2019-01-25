@@ -1,0 +1,33 @@
+
+<page-header class="templateHeader" [title]="config.title">
+        <ng-template #content>
+                <div class="template_desc">{{config.desc}}</div>
+        </ng-template>
+        <ng-template #logo>
+                <div class="template_logo">
+                        <i nz-icon type="schedule" theme="outline"></i>
+                </div>
+        </ng-template>
+        <ng-template #extra>
+                <!-- <nz-button-group>
+                  <button nz-button>操作</button>
+                  <button nz-button>操作</button>
+                </nz-button-group>
+                <nz-dropdown class="mx-sm">
+                  <button nz-button nz-dropdown><i nz-icon type="ellipsis"></i></button>
+                  <ul nz-menu>
+                    <li nz-menu-item>选项一</li>
+                    <li nz-menu-item>选项二</li>
+                    <li nz-menu-item>选项三</li>
+                  </ul>
+                </nz-dropdown>
+                <button nz-button [nzType]="'primary'">主操作</button> -->
+                <bsn-toolbar *ngIf="config.toolbar" [config]="config.toolbar" [viewId]="config.targetViewId"></bsn-toolbar>
+              </ng-template>
+        
+</page-header>
+
+<div class="workplace">
+    <cn-layout-resolver *ngIf="isLoadLayout" [config]="config" [initData]="initData" [permissions] = "permissions ? permissions : []"></cn-layout-resolver>
+</div>
+

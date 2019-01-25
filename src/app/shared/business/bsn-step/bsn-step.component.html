@@ -1,0 +1,45 @@
+
+
+
+<div nz-row nzGutter="8">
+  <div nz-col nzSpan="16" nzOffset="4">
+      <nz-steps class="steps-header" [nzCurrent]="_current" [nzSize]="config.size">
+          <nz-step
+          *ngFor="let step of config.steps"
+          [nzTitle]="step.title"
+          [nzDescription]="step.desc"
+          [nzIcon]="step.icon"
+          >
+          </nz-step>
+      </nz-steps>
+  </div>
+</div>
+<!--<ng-template #progressTemplate let-dot let-status="status" let-index="index">-->
+    <!--<nz-popover nzContent="steps {{index}} status: {{status}}">-->
+        <!--<span nz-popover style="margin-left: -100%;">-->
+          <!--&lt;!&ndash;<ng-template [ngTemplateOutlet]="dot"></ng-template>&ndash;&gt;-->
+             <!--<nz-avatar [nzText]="1" nzSize="large" [ngStyle]="{'background-color':color}" style="vertical-align: middle;"></nz-avatar>-->
+        <!--</span>-->
+    <!--</nz-popover>-->
+<!--</ng-template>-->
+
+<div class="steps-content">
+  <cn-component-resolver [config]="stepConfig" *ngFor="let stepConfig of viewCfg" (updateValue)="handleStep($event)"></cn-component-resolver>
+</div>
+<div class="steps-action" nz-row nzGutter="8">
+  <div nz-col nzSpan="24">
+    <nz-button-group>
+        <button (click)="backTo()" nz-button><i nz-icon type="rollback"></i> 返回</button>    
+        <button nzSize="default" nz-button nzType="default" (click)="pre()" *ngIf="_current > 0">
+          <span><i nz-icon type="arrow-left"></i> 上一步</span>
+        </button>
+        <button nz-button nzType="default" (click)="next()" *ngIf="_current < config.steps.length-1">
+          <span>下一步 <i nz-icon type="arrow-right"></i></span>
+        </button>
+        <button nz-button nzType="primary" (click)="done()"> 
+            <!-- *ngIf="_current === config.steps.length" -->
+            <span><i nz-icon type="save"></i> 完成</span>
+          </button>
+    </nz-button-group>
+  </div>
+</div>

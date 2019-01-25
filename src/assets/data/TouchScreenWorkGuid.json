@@ -1,0 +1,718 @@
+﻿{
+  "rows": [
+    {
+      "row": {
+        "cols": [
+          {
+            "id": "",
+            "title": "",
+            "span": 4,
+            "icon": "icon-list",
+            "size": {
+              "nzXs": 4,
+              "nzSm": 4,
+              "nzMd": 4,
+              "nzLg": 4,
+              "ngXl": 4
+            },
+            "viewCfg": [
+              {
+                "config": {
+                  "viewId": "touchscreenworkguid1",
+                  "component": "dataSteps",
+                  "width": 1000,
+                  "height": 1000,
+                  "stepNum": 100,
+                  "startX": 800,
+                  "startY": 100,
+                  "textField": "processname",
+                  "mainTitle": "",
+                  "subTitle": "",
+                  "size": 60,
+                  "position": "ct",
+                  "direction": "vertical",
+                  "labelOffsetX": 50,
+                  "labelOffsetY": 5,
+                  "ajaxConfig": {
+                    "url": "common/GetMpmPfChartsData",
+                    "ajaxType": "get",
+                    "params": [
+                      {
+                        "name": "mpfid",
+                        "type": "tempValue",
+                        "valueName": "Id",
+                        "value": "4431F27F-1542-42AF-A0A0-DBD130003F66"
+                      },
+                      {
+                        "name": "_sort",
+                        "type": "value",
+                        "value": "processcode ASC"
+                      }
+                    ]
+                  },
+                  "relations": [],
+                  "componentType": {
+                    "parent": true,
+                    "child": false,
+                    "sub": true
+                  }
+                },
+                "dataList": []
+              }
+            ]
+          },
+          {
+            "id": "",
+            "title": "",
+            "span": 16,
+            "icon": "icon-list",
+            "size": {
+              "nzXs": 16,
+              "nzSm": 16,
+              "nzMd": 16,
+              "nzLg": 16,
+              "ngXl": 16
+            },
+            "rows": [
+              {
+                "row": {
+                  "cols": [
+                    {
+                      "id": "",
+                      "title": "",
+                      "span": 24,
+                      "icon": "icon-list",
+                      "size": {
+                        "nzXs": 24,
+                        "nzSm": 24,
+                        "nzMd": 24,
+                        "nzLg": 24,
+                        "ngXl": 24
+                      },
+                      "viewCfg": [
+                        {
+                          "config": {
+                            "title": "工单详情",
+                            "viewId": "touchscreenworkguid2",
+                            "component": "form_view",
+                            "keyId": "Id",
+                            "ajaxConfig": {
+                              "url": "common/Touchscreeninfo",
+                              "ajaxType": "getById",
+                              "params": [
+                                {
+                                  "name": "Id",
+                                  "type": "value",
+                                  "valueName": "_id",
+                                  "value": "191150A1-B140-4EB5-85DE-82828A67216D"
+                                }
+                              ],
+                              "filter": []
+                            },
+                            "forms": [
+                              {
+                                "controls": [
+                                  {
+                                    "type": "input",
+                                    "labelSize": "6",
+                                    "controlSize": "8",
+                                    "inputType": "text",
+                                    "name": "ordervoucherid",
+                                    "label": "工单号",
+                                    "isRequired": false,
+                                    "placeholder": "",
+                                    "perfix": "",
+                                    "disabled": "",
+                                    "readonly": false,
+                                    "size": "default",
+                                    "layout": "column",
+                                    "span": "8"
+                                  },
+                                  {
+                                    "type": "input",
+                                    "labelSize": "6",
+                                    "controlSize": "8",
+                                    "inputType": "text",
+                                    "name": "processname",
+                                    "label": "任务名称",
+                                    "isRequired": false,
+                                    "placeholder": "",
+                                    "perfix": "",
+                                    "disabled": "",
+                                    "readonly": false,
+                                    "size": "default",
+                                    "layout": "column",
+                                    "span": "8"
+                                  },
+                                  {
+                                    "type": "input",
+                                    "labelSize": "6",
+                                    "controlSize": "8",
+                                    "inputType": "text",
+                                    "name": "processname",
+                                    "label": "工步名称",
+                                    "isRequired": false,
+                                    "placeholder": "",
+                                    "perfix": "",
+                                    "disabled": "",
+                                    "readonly": false,
+                                    "size": "default",
+                                    "layout": "column",
+                                    "span": "8"
+                                  }
+                                ]
+                              },
+                              {
+                                "controls": [
+                                  {
+                                    "type": "input",
+                                    "labelSize": "6",
+                                    "controlSize": "8",
+                                    "inputType": "text",
+                                    "name": "processname",
+                                    "label": "分组",
+                                    "isRequired": false,
+                                    "placeholder": "",
+                                    "perfix": "",
+                                    "disabled": "",
+                                    "readonly": false,
+                                    "size": "default",
+                                    "layout": "column",
+                                    "span": "8"
+                                  },
+                                  {
+                                    "type": "input",
+                                    "labelSize": "6",
+                                    "controlSize": "8",
+                                    "inputType": "text",
+                                    "name": "partsname",
+                                    "label": "零部件名称",
+                                    "isRequired": false,
+                                    "placeholder": "",
+                                    "perfix": "",
+                                    "disabled": "",
+                                    "readonly": false,
+                                    "size": "default",
+                                    "layout": "column",
+                                    "span": "8"
+                                  },
+                                  {
+                                    "type": "input",
+                                    "labelSize": "7",
+                                    "controlSize": "8",
+                                    "inputType": "text",
+                                    "name": "processfilename1",
+                                    "label": "工艺文件名称",
+                                    "isRequired": false,
+                                    "placeholder": "",
+                                    "perfix": "",
+                                    "disabled": "",
+                                    "readonly": false,
+                                    "size": "default",
+                                    "layout": "column",
+                                    "span": "8"
+                                  }
+                                ]
+                              }
+                            ],
+                            "componentType": {
+                              "parent": false,
+                              "child": false,
+                              "own": true
+                            },
+                            "relations": [],
+                            "toolbar": [
+                              {
+                                "name": "M_workguid",
+                                "text": "过程记录",
+                                "action": "WINDOW",
+                                "cancelPermission": true,
+                                "actionType": "windowDialog",
+                                "actionName": "CheckDate",
+                                "type": "showLayout"
+                              },
+                              {
+                                "name": "M_workguid",
+                                "text": "多媒体信息记录",
+                                "action": "WINDOW",
+                                "cancelPermission": true,
+                                "actionType": "windowDialog",
+                                "actionName": "Multimediarecord",
+                                "type": "showLayout"
+                              }
+                            ],
+                            "dataSet": [],
+                            "formDialog": [],
+                            "windowDialog": [
+                              {
+                                "title": "",
+                                "name": "CheckDate",
+                                "layoutName": "CheckDate",
+                                "width": "1200px",
+                                "buttons": [
+                                  {
+                                    "name": "ok1",
+                                    "text": "确定",
+                                    "type": "primary"
+                                  },
+                                  {
+                                    "name": "close",
+                                    "text": "关闭"
+                                  }
+                                ]
+                              },
+                              {
+                                "title": "",
+                                "name": "Multimediarecord",
+                                "layoutName": "Multimediarecord",
+                                "width": "1200px",
+                                "buttons": [
+                                  {
+                                    "name": "ok1",
+                                    "text": "确定",
+                                    "type": "primary"
+                                  },
+                                  {
+                                    "name": "close",
+                                    "text": "关闭"
+                                  }
+                                ]
+                              }
+                            ],
+                            "uploadDialog": []
+                          },
+                          "dataList": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "row": {
+                  "cols": [
+                    {
+                      "id": "",
+                      "title": "",
+                      "span": 24,
+                      "icon": "icon-list",
+                      "size": {
+                        "nzXs": 24,
+                        "nzSm": 24,
+                        "nzMd": 24,
+                        "nzLg": 24,
+                        "ngXl": 24
+                      },
+                      "viewCfg": [
+                        {
+                          "config": {
+                            "title": "操作要求",
+                            "viewId": "touchscreenworkguid3",
+                            "component": "form_view",
+                            "info": true,
+                            "keyId": "Id",
+                            "ajaxConfig": {
+                              "url": "common/MpmPf",
+                              "ajaxType": "getById",
+                              "params": [
+                                {
+                                  "name": "Id",
+                                  "type": "tempValue",
+                                  "valueName": "_Id",
+                                  "value": ""
+                                }
+                              ],
+                              "filter": []
+                            },
+                            "forms": [
+                              {
+                                "controls": [
+                                  {
+                                    "type": "textarea",
+                                    "labelSize": "8",
+                                    "controlSize": "16",
+                                    "inputType": "text",
+                                    "name": "techdemand",
+                                    "label": "技术要求",
+                                    "isRequired": false,
+                                    "placeholder": "",
+                                    "perfix": "",
+                                    "disabled": "",
+                                    "readonly": false,
+                                    "layout": "column",
+                                    "span": "24"
+                                  }
+                                ]
+                              }
+                            ],
+                            "componentType": {
+                              "parent": false,
+                              "child": true,
+                              "own": true
+                            },
+                            "relations": [
+                              {
+                                "relationViewId": "touchscreenworkguid1",
+                                "cascadeMode": "REFRESH_AS_CHILD",
+                                "params": [
+                                  {
+                                    "pid": "Id",
+                                    "cid": "_Id"
+                                  }
+                                ]
+                              }
+                            ],
+                            "toolbar": [],
+                            "dataSet": [],
+                            "formDialog": [],
+                            "windowDialog": [],
+                            "uploadDialog": []
+                          },
+                          "dataList": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "row": {
+                  "cols": [
+                    {
+                      "id": "",
+                      "title": "",
+                      "span": 24,
+                      "icon": "icon-list",
+                      "size": {
+                        "nzXs": 24,
+                        "nzSm": 24,
+                        "nzMd": 24,
+                        "nzLg": 24,
+                        "ngXl": 24
+                      },
+                      "viewCfg": [
+                        {
+                          "config": {
+                            "title": "图纸附件",
+                            "viewId": "touchscreenworkguid4",
+                            "component": "bsnCarousel",
+                            "autoPlay": "false",
+                            "dataMapping": [
+                              {
+                                "filed": "remark",
+                                "name": "alt"
+                              },
+                              {
+                                "filed": "savePath",
+                                "name": "src"
+                              }
+                            ],
+                            "ajaxConfig": {
+                              "url": "common/GetMpmPfChartsData",
+                              "ajaxType": "get",
+                              "params": [
+                                {
+                                  "name": "refDataId",
+                                  "type": "tempValue",
+                                  "valueName": "_Id"
+                                }
+                              ],
+                              "filter": []
+                            },
+                            "columns": [],
+                            "componentType": {
+                              "parent": false,
+                              "child": true,
+                              "sub": false
+                            },
+                            "relations": [
+                              {
+                                "relationViewId": "touchscreenworkguid1",
+                                "cascadeMode": "REFRESH_AS_CHILD",
+                                "params": [
+                                  {
+                                    "pid": "Id",
+                                    "cid": "_Id"
+                                  }
+                                ]
+                              }
+                            ],
+                            "toolbar": [],
+                            "dataSet": [],
+                            "formDialog": [],
+                            "windowDialog": [],
+                            "uploadDialog": []
+                          },
+                          "dataList": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "row": {
+                  "cols": [
+                    {
+                      "id": "",
+                      "title": "",
+                      "span": 24,
+                      "icon": "icon-list",
+                      "size": {
+                        "nzXs": 24,
+                        "nzSm": 24,
+                        "nzMd": 24,
+                        "nzLg": 24,
+                        "ngXl": 24
+                      },
+                      "viewCfg": [
+                        {
+                          "config": {
+                            "title": "操作人员",
+                            "viewId": "touchscreenworkguid5",
+                            "component": "form_view",
+                            "info": true,
+                            "keyId": "Id",
+                            "ajaxConfig": {
+                              "url": "common/GetCase",
+                              "ajaxType": "get",
+                              "params": [],
+                              "filter": []
+                            },
+                            "forms": [
+                              {
+                                "controls": [
+                                  {
+                                    "type": "input",
+                                    "labelSize": "6",
+                                    "controlSize": "24",
+                                    "inputType": "text",
+                                    "name": "techdemand",
+                                    "label": "检验方式",
+                                    "isRequired": false,
+                                    "placeholder": "",
+                                    "perfix": "",
+                                    "disabled": "",
+                                    "readonly": false,
+                                    "size": "default",
+                                    "layout": "column",
+                                    "span": "8"
+                                  },
+                                  {
+                                    "type": "input",
+                                    "labelSize": "6",
+                                    "controlSize": "24",
+                                    "inputType": "text",
+                                    "name": "techdemand",
+                                    "label": "检验项目",
+                                    "isRequired": false,
+                                    "placeholder": "",
+                                    "perfix": "",
+                                    "disabled": "",
+                                    "readonly": false,
+                                    "size": "default",
+                                    "layout": "column",
+                                    "span": "8"
+                                  },
+                                  {
+                                    "type": "input",
+                                    "labelSize": "6",
+                                    "controlSize": "24",
+                                    "inputType": "text",
+                                    "name": "techdemand",
+                                    "label": "多媒体项目",
+                                    "isRequired": false,
+                                    "placeholder": "",
+                                    "perfix": "",
+                                    "disabled": "",
+                                    "readonly": false,
+                                    "size": "default",
+                                    "layout": "column",
+                                    "span": "8"
+                                  }
+                                ]
+                              },
+                              {
+                                "controls": [
+                                  {
+                                    "type": "input",
+                                    "labelSize": "6",
+                                    "controlSize": "24",
+                                    "inputType": "text",
+                                    "name": "techdemand",
+                                    "label": "完成时间",
+                                    "isRequired": false,
+                                    "placeholder": "",
+                                    "perfix": "",
+                                    "disabled": "",
+                                    "readonly": false,
+                                    "size": "default",
+                                    "layout": "column",
+                                    "span": "8"
+                                  },
+                                  {
+                                    "type": "input",
+                                    "labelSize": "6",
+                                    "controlSize": "24",
+                                    "inputType": "text",
+                                    "name": "techdemand",
+                                    "label": "检验员",
+                                    "isRequired": false,
+                                    "placeholder": "",
+                                    "perfix": "",
+                                    "disabled": "",
+                                    "readonly": false,
+                                    "size": "default",
+                                    "layout": "column",
+                                    "span": "8"
+                                  },
+                                  {
+                                    "type": "input",
+                                    "labelSize": "6",
+                                    "controlSize": "24",
+                                    "inputType": "text",
+                                    "name": "techdemand",
+                                    "label": "操作人员",
+                                    "isRequired": false,
+                                    "placeholder": "",
+                                    "perfix": "",
+                                    "disabled": "",
+                                    "readonly": false,
+                                    "size": "default",
+                                    "layout": "column",
+                                    "span": "8"
+                                  }
+                                ]
+                              }
+                            ],
+                            "componentType": {},
+                            "relations": [],
+                            "toolbar": [],
+                            "dataSet": [],
+                            "formDialog": [],
+                            "windowDialog": [],
+                            "uploadDialog": []
+                          },
+                          "dataList": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "",
+            "title": "",
+            "span": 4,
+            "size": {
+              "nzXs": 4,
+              "nzSm": 4,
+              "nzMd": 4,
+              "nzLg": 4,
+              "ngXl": 4
+            },
+            "viewCfg": [
+              {
+                "config": {
+                  "viewId": "touchscreenworkguid6",
+                  "component": "bsnToolbar",
+                  "toolbar": [
+                    {
+                      "group": [
+                        {
+                          "name": "CheckDate",
+                          "text": "过程记录",
+                          "icon": "plus",
+                          "action": "WINDOW",
+                          "cancelPermission": true,
+                          "actionType": "windowDialog",
+                          "actionName": "CheckDate",
+                          "type": "showLayout"
+                        },
+                        {
+                          "name": "Multimediarecord",
+                          "text": "多媒体信息记录",
+                          "icon": "plus",
+                          "action": "WINDOW",
+                          "cancelPermission": true,
+                          "actionType": "windowDialog",
+                          "actionName": "Multimediarecord",
+                          "type": "showLayout"
+                        },
+                        {
+                          "name": "ProblemFeedBack",
+                          "text": "现场问题反馈",
+                          "icon": "plus",
+                          "action": "WINDOW",
+                          "cancelPermission": true,
+                          "actionType": "windowDialog",
+                          "actionName": "ProblemFeedBack",
+                          "type": "showLayout"
+                        }
+                      ]
+                    }
+                  ],
+                  "windowDialog": [
+                    {
+                      "title": "",
+                      "name": "CheckDate",
+                      "layoutName": "CheckDate",
+                      "width": 800,
+                      "buttons": [
+                        {
+                          "name": "ok1",
+                          "text": "确定",
+                          "type": "primary"
+                        },
+                        {
+                          "name": "close",
+                          "text": "关闭"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "",
+                      "name": "Multimediarecord",
+                      "layoutName": "Multimediarecord",
+                      "width": 800,
+                      "buttons": [
+                        {
+                          "name": "ok1",
+                          "text": "确定",
+                          "type": "primary"
+                        },
+                        {
+                          "name": "close",
+                          "text": "关闭"
+                        }
+                      ]
+                    },
+                    {
+                      "title": "",
+                      "name": "ProblemFeedBack",
+                      "layoutName": "ProblemFeedBack",
+                      "width": 800,
+                      "buttons": [
+                        {
+                          "name": "ok1",
+                          "text": "确定",
+                          "type": "primary"
+                        },
+                        {
+                          "name": "close",
+                          "text": "关闭"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+} 

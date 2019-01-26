@@ -204,7 +204,7 @@ export class TsDataTableComponent extends CnComponentBase
             this.loadDynamicColumns();
         }
         this.resolverRelation();
-        
+
         if (this.ref) {
             for (const p in this.ref) {
                 this.tempValue[p] = this.ref[p];
@@ -338,6 +338,13 @@ export class TsDataTableComponent extends CnComponentBase
                             option
                         ) && this.deleteRow(option);
                         break;
+                    case BSN_COMPONENT_MODES.DELETE_SELECTED:
+                        this.beforeOperation.operationItemData = this._getSelectedItem();
+                        !this.beforeOperation.beforeItemsDataOperation(
+                            option
+                        ) && this.deleteRowSelected(option, this._getSelectedItem());
+                        break;
+
                     case BSN_COMPONENT_MODES.DIALOG:
                         this.beforeOperation.operationItemData = this._selectRow;
                         !this.beforeOperation.beforeItemDataOperation(option) &&
@@ -470,6 +477,10 @@ export class TsDataTableComponent extends CnComponentBase
                                         break;
                                     case BSN_COMPONENT_CASCADE_MODES.SELECTED_ROW:
                                         break;
+                                    case BSN_COMPONENT_CASCADE_MODES.Scan_Code_ROW:
+                                        this.scanCodeROW();
+                                        break;
+
                                 }
                             }
                         });
@@ -1723,6 +1734,50 @@ export class TsDataTableComponent extends CnComponentBase
         }
     }
 
+    public deleteRowSelected(option, row) {
+        if (this.dataList.filter(item => item.key === row.key).length <= 0) {
+            this.baseMessage.create('info', '请选择要删除的数据');
+        } else {
+            if (option.ajaxConfig.length > 0) {
+                option.ajaxConfig.map(async delConfig => {
+                    this.baseModal.confirm({
+                        nzTitle: delConfig.title ? delConfig.title : '提示',
+                        nzContent: delConfig.message ? delConfig.message : '',
+                        nzOnOk: () => {
+                            const newData = [];
+                            const serverData = [];
+                            this.dataList.forEach(item => {
+                                if (item.key === row.key) {
+                                    if (item['row_status'] === 'adding') {
+                                        // 删除新增临时数据
+                                        newData.push(item.key);
+                                    } else {
+                                        // 删除服务端数据
+                                        serverData.push(item.Id);
+                                    }
+                                }
+
+                            });
+                            if (newData.length > 0) {
+                                newData.forEach(d => {
+                                    this.dataList.splice(
+                                        this.dataList.indexOf(d),
+                                        1
+                                    );
+                                });
+                            }
+                            if (serverData.length > 0) {
+                                // 目前对应单个操作可以正确执行，多个操作由于异步的问题，需要进一步调整实现方式
+                                this._executeDelete(delConfig, serverData);
+                            }
+                        },
+                        nzOnCancel: () => { }
+                    });
+                });
+            }
+        }
+    }
+
     public async _executeDelete(deleteConfig, ids) {
         let isSuccess;
         // 默认删除数据，无需进行参数的设置，删除数据的ids将会从列表勾选中自动获得
@@ -1918,7 +1973,7 @@ export class TsDataTableComponent extends CnComponentBase
                 case BSN_EXECUTE_ACTION.EXECUTE_EDIT_ROW:
                     // 获取保存状态的数据
                     handleData = this._getEditedRows();
-                    console.log('简析参数1838 ', handleData);
+                   // console.log('简析参数1838 ', handleData);
                     msg = '编辑数据保存成功';
                     if (handleData && handleData.length <= 0) {
                         return;
@@ -1927,7 +1982,7 @@ export class TsDataTableComponent extends CnComponentBase
                 case BSN_EXECUTE_ACTION.EXECUTE_EDIT_SELECTED_ROW:
                     // 获取保存状态的数据
                     handleData = this.EditSelectedRow;
-                    console.log('简析参数1838 ', handleData);
+                   // console.log('简析参数1838 ', handleData);
                     msg = '编辑数据保存成功';
                     if (handleData && handleData.length <= 0) {
                         return;
@@ -1948,9 +2003,15 @@ export class TsDataTableComponent extends CnComponentBase
                         return;
                     }
                     break;
+                case BSN_EXECUTE_ACTION.EXECUTE_AND_LOAD:
+                    // 获取更新状态的数据
+                    handleData = {};
+                    msg = '新增数据保存成功';
+                    break;
+
             }
 
-            console.log('简析参数1860 ', handleData);
+            // console.log('简析参数1860 ', handleData);
 
             if (c.message) {
                 this.baseModal.confirm({
@@ -2523,7 +2584,7 @@ export class TsDataTableComponent extends CnComponentBase
         this.editCache[key].data = JSON.parse(
             JSON.stringify(this.dataList[index])
         );
-        console.log('取消行数据', this.editCache[key].data);
+       // console.log('取消行数据', this.editCache[key].data);
     }
     /**
      * 保存编辑状态的数据
@@ -2991,7 +3052,7 @@ export class TsDataTableComponent extends CnComponentBase
                 nzContentParams: {
                     permissions: this.permissions,
                     config: data,
-                    initData: { ...tmpValue, ...selectedRow, ...handle, ...this.initValue}
+                    initData: { ...tmpValue, ...selectedRow, ...handle, ...this.initValue }
                 },
             });
 
@@ -3834,7 +3895,7 @@ export class TsDataTableComponent extends CnComponentBase
     // handleOperationConditions  // 选中行消息简析
 
     //  执行行内事件【】,不展示的按钮事件，日后扩充
-    public ExecRowEvent(enentname?) {
+    public ExecRowEvent(enentname?, row?) {
         //  name
         // const option = updateState.option;
         let option = {};
@@ -3893,6 +3954,10 @@ export class TsDataTableComponent extends CnComponentBase
                     option
                 ) && this.deleteRow(option);
                 break;
+            case BSN_COMPONENT_MODES.DELETE_SELECTED:
+                this.beforeOperation.operationItemData = row;
+                this.deleteRowSelected(option, row);
+                break;
             case BSN_COMPONENT_MODES.DIALOG:
                 this.beforeOperation.operationItemData = this._selectRow;
                 !this.beforeOperation.beforeItemDataOperation(option) &&
@@ -3900,7 +3965,7 @@ export class TsDataTableComponent extends CnComponentBase
                 break;
             case BSN_COMPONENT_MODES.EXECUTE:
                 // 使用此方式注意、需要在按钮和ajaxConfig中都配置响应的action
-                console.log('执行列3665：', option);
+                // console.log('执行列3665：', option);
                 this._resolveAjaxConfig(option);
                 break;
             case BSN_COMPONENT_MODES.WINDOW:
@@ -4514,6 +4579,78 @@ export class TsDataTableComponent extends CnComponentBase
             cacheValue: this.cacheValue
         });
         this.router.navigate([option.link], { queryParams: params });
+    }
+
+    public execFun(name?, key?) {
+        switch (name) {
+            case 'deleteRow':
+                // this.config.actions['deleteRow'] ? this.config.actions['deleteRow'] : null
+                this.deleteRowOnSelected(key);
+                break;
+            default:
+                break;
+        }
+    }
+
+    // 行内删除
+    public deleteRowOnSelected(key) {
+        const row = this.dataList.filter(item => item.key === key)[0];
+        // console.log('删除行', row);
+        if (this.config.events) {
+            const index = this.config.events.findIndex(item => item['onTrigger'] === 'deleteRow');
+            let c_eventConfig = {};
+            if (index > -1) {
+                c_eventConfig = this.config.events[index];
+            } else {
+                return true;
+            }
+
+            const isField = true; // 列变化触发
+            // 首先适配类别、字段，不满足的时候 看是否存在default 若存在 取default
+            if (isField) {
+                c_eventConfig['onEvent'].forEach(eventConfig => {
+                    // 无配置 的默认项
+                    if (eventConfig.type === 'default') {
+                        this.ExecRowEvent(eventConfig.action, row);
+                    }
+                });
+            }
+        }
+        console.log('行内删除', key);
+        // 注意，末页删除需要将数据页数上移
+
+
+    }
+
+    // 扫码响应
+    public scanCodeROW() {
+        const _ScanCode = '_ScanCode';
+        if (this.tempValue[_ScanCode]) {
+            if (this.tempValue[_ScanCode].length <= 0) {
+                //  this._message.info('扫码没有匹配到数据！');
+                return true;
+            }
+        }
+        if (this.config.events) {
+            const index = this.config.events.findIndex(item => item['onTrigger'] === 'scanCodeROW');
+            let c_eventConfig = {};
+            if (index > -1) {
+                c_eventConfig = this.config.events[index];
+            } else {
+                return true;
+            }
+
+            const isField = true; // 列变化触发
+            // 首先适配类别、字段，不满足的时候 看是否存在default 若存在 取default
+            if (isField) {
+                c_eventConfig['onEvent'].forEach(eventConfig => {
+                    // 无配置 的默认项
+                    if (eventConfig.type === 'default') {
+                        this.ExecRowEvent(eventConfig.action);
+                    }
+                });
+            }
+        }
     }
 
 }

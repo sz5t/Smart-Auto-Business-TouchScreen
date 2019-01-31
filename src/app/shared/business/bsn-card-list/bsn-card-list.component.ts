@@ -70,7 +70,6 @@ export class BsnCardListComponent extends CnComponentBase
         this.cacheValue = this._cacheService;
         this.baseModal = this._message;
         this.baseMessage = this._modal;
-        this.initValue = this.initData;
 
     }
 
@@ -78,7 +77,7 @@ export class BsnCardListComponent extends CnComponentBase
         // this.formConfig['viewId'] = this.config.viewId;
         // this.formConfig['forms'] = this.config.forms;
         // this.formConfig['editable'] = 'text';
-
+        this.initValue = this.initData ? this.initData : {};
         this.load();
         this.resolverRelation();
         // 初始化前置条件验证对象
@@ -198,17 +197,16 @@ export class BsnCardListComponent extends CnComponentBase
     }
 
     public async get() {
+        const url = this.config.ajaxConfig.url;
+        const params = CommonTools.parametersResolver({
+            params: this.config.ajaxConfig.params,
+            tempValue: this.tempValue,
+            initValue: this.initValue,
+            cacheValue: this._cacheService
+        });
+        debugger;
         return this._apiService
-            .get(
-                this.config.ajaxConfig.url,
-                CommonTools.parametersResolver({
-                    params: this.config.ajaxConfig.params,
-                    tempValue: this.tempValue,
-                    initValue: this.initValue,
-                    cacheValue: this._cacheService
-                })
-            )
-            .toPromise();
+            .get(url, params).toPromise();
     }
 
 

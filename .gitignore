@@ -4,6 +4,7 @@
 /dist
 /tmp
 /out-tsc
+/out
 
 # dependencies
 /node_modules
@@ -17,7 +18,11 @@
 *.launch
 .settings/
 *.sublime-workspace
-
+.docx
+.doc
+.pdf
+.pptx
+.xlsx
 # IDE - VSCode
 .vscode/*
 !.vscode/settings.json

@@ -295,7 +295,7 @@ export class FormResolverComponent extends CnFormBase
                                         }
                                         this.tempValue[param['cid']] =
                                             option.data[param['pid']];
-                                    });
+                                    }); 
                                 }
                                 // 匹配及联模式
                                 switch (mode) {

@@ -381,16 +381,20 @@ export class FormResolverComponent extends CnFormBase
 
     public async saveForm_2(ajaxConfigs) {
         let result;
-        const method = this.formState;
-        if (method === BSN_FORM_STATUS.TEXT) {
-            this.message.warning('请在编辑数据后进行保存！');
-            return false;
-        } else {
-            const index = ajaxConfigs.findIndex(
-                item => item.ajaxType === method
-            );
-            result = await this[method](ajaxConfigs[index]);
-        }
+        const index = ajaxConfigs.findIndex(
+            item => !item.parent 
+        );
+        const method = ajaxConfigs[index].ajaxType;
+        result = await this[method](ajaxConfigs[index]);
+        // if (method === BSN_FORM_STATUS.TEXT) {
+        //     this.message.warning('请在编辑数据后进行保存！');
+        //     return false;
+        // } else {
+        //     const index = ajaxConfigs.findIndex(
+        //         item => item.ajaxType === method
+        //     );
+        //     result = await this[method](ajaxConfigs[index]);
+        // }
     }
 
     /**

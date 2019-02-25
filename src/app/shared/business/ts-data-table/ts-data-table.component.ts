@@ -47,28 +47,7 @@ const component: { [type: string]: Type<any> } = {
     // tslint:disable-next-line:component-selector
     selector: 'ts-data-table',
     templateUrl: './ts-data-table.component.html',
-    styles: [
-        `
-            .table-operations {
-                margin-bottom: 8px;
-            }
-
-            .table-operations > button {
-                margin-right: 8px;
-            }
-
-            .selectedRow {
-                color: blue;
-            }
-            .text-center {
-                text-align: center;
-            }
-            ,
-            .text-right {
-                text-align: right;
-            }
-        `
-    ]
+    styleUrls: [`ts-data-table.component.less`]
 })
 export class TsDataTableComponent extends CnComponentBase
     implements OnInit, AfterViewInit, OnDestroy {
@@ -387,6 +366,9 @@ export class TsDataTableComponent extends CnComponentBase
                         const itemId = this._getSelectedItem();
                         this.linkToPage(option, itemId);
                         return;
+                    case BSN_COMPONENT_MODES.LINK:
+                        this.linkToPage(option, '');
+                        return;     
                 }
             }
         });
@@ -408,20 +390,21 @@ export class TsDataTableComponent extends CnComponentBase
                         }
                     )
                 );
-                // if (this.config.drawerDialog) {
-                //     if (this.config.drawerDialog.drawerType === 'condition') {
-                //         this.config.drawerDialog.drawerMapping.forEach(m => {
-                //             if (this._selectRow[m['field']] && this._selectRow[m['field']] === m['value']) {
-                //                 const drawer = this.config.drawerDialog.drawers.find(d => d.name === m['name']);
-                //                 this.showDrawer(drawer);
-                //                 return;
-                //             }
-                //         });
-                //     } else {
-                //         this.showDrawer(this.config.drawerDialog.drawers[0]);
-                //     }
+                if (this.config.drawerDialog) {
+                    if (this.config.drawerDialog.drawerType === 'condition') {
+                        this.config.drawerDialog.drawerMapping.forEach(m => {
+                            if (this._selectRow[m['field']] && this._selectRow[m['field']] === m['value']) {
+                                const drawer = this.config.drawerDialog.drawers.find(d => d.name === m['name']);
+                                this.showDrawer(drawer);
+                                return;
+                            }
+                        });
+                    } else {
+                        this.showDrawer(this.config.drawerDialog.drawers[0]);
+                    }
 
-                // }
+                }
+
             });
         }
         if (

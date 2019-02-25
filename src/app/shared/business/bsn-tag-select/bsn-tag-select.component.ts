@@ -257,7 +257,7 @@ export class BsnTagSelectComponent extends CnComponentBase
 
     public ngAfterViewInit() {
         if (this.config.componentType 
-            && this.config.componentType.parent === true) {
+            && this.config.componentType.parent === true) {  
                 this.load();
             }
         

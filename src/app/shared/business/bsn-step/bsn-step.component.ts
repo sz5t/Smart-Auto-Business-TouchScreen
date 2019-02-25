@@ -10,12 +10,13 @@ import {
     Type,
     Inject
 } from '@angular/core';
-import { Observable, Observer } from 'rxjs/index';
+import { Observable, Observer, Subscription } from 'rxjs/index';
 import {
     BSN_COMPONENT_CASCADE,
     BSN_COMPONENT_MODES,
     BsnComponentMessage,
-    BSN_EXECUTE_ACTION
+    BSN_EXECUTE_ACTION,
+    BSN_COMPONENT_CASCADE_MODES
 } from '@core/relative-Service/BsnTableStatus';
 import { ApiService } from '@core/utility/api-service';
 import { NzMessageService } from 'ng-zorro-antd';
@@ -28,7 +29,7 @@ import { Route } from '@angular/router';
         `bsn-step.component.less`
     ]
 })
-export class BsnStepComponent extends CnComponentBase implements OnInit {
+export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestroy {
     @Input()
     public config;
     @Input()
@@ -42,8 +43,13 @@ export class BsnStepComponent extends CnComponentBase implements OnInit {
     public indexContent = '';
     public itemList;
     public handleData;
+
+    public _statusSubscription: Subscription;
+    public _cascadeSubscription: Subscription;
+
     constructor(
         private _api: ApiService,
+        private router: Router,
         private _message: NzMessageService,
         private _cache: CacheService,
         private _route: Router,
@@ -62,6 +68,7 @@ export class BsnStepComponent extends CnComponentBase implements OnInit {
 
     public ngOnInit() {
         this.initValue = this.initData ? this.initData : {};
+        this.resolverRelation()
         if (this.config.ajaxConfig) {
             // 异步加载步骤
             this.loadSteps();
@@ -69,6 +76,111 @@ export class BsnStepComponent extends CnComponentBase implements OnInit {
             // 加载固定步骤
             this.getViewCfg();
         }
+    }
+
+    public ngOnDestroy() {
+        if (this._statusSubscription) {
+            this._statusSubscription.unsubscribe();
+        }
+        if (this._cascadeSubscription) {
+            this._cascadeSubscription.unsubscribe();
+        }
+    }
+
+    private resolverRelation() {
+        // 注册按钮状态触发接收器
+        this._statusSubscription = this.eventStatus.subscribe(updateState => {
+            if (updateState._viewId === this.config.viewId) {
+                const option = updateState.option;
+                switch (updateState._mode) {
+                    case BSN_COMPONENT_MODES.LINK:
+                        this.linkToPage(option, '');
+                        return; 
+                }
+            }
+        });
+        // 通过配置中的组件关系类型设置对应的事件接受者
+        // 表格内部状态触发接收器console.log(this.config);
+        if (
+            this.config.componentType &&
+            this.config.componentType.parent === true
+        ) {}
+        if (
+            this.config.componentType &&
+            this.config.componentType.child === true
+        ) {
+            this._cascadeSubscription = this.cascadeEvents.subscribe(
+                cascadeEvent => {
+                    // 解析子表消息配置
+                    if (
+                        this.config.relations &&
+                        this.config.relations.length > 0
+                    ) {
+                        this.config.relations.forEach(relation => {
+                            if (
+                                relation.relationViewId === cascadeEvent._viewId
+                            ) {
+                                // 获取当前设置的级联的模式
+                                const mode =
+                                    BSN_COMPONENT_CASCADE_MODES[
+                                    relation.cascadeMode
+                                    ];
+                                // 获取传递的消息数据
+                                const option = cascadeEvent.option;
+                                if (option) {
+                                    // 解析参数
+                                    if (
+                                        relation.params &&
+                                        relation.params.length > 0
+                                    ) {
+                                        relation.params.forEach(param => {
+                                            if (!this.tempValue) {
+                                                this.tempValue = {};
+                                            }
+                                            this.tempValue[param['cid']] =
+                                                option.data[param['pid']];
+                                        });
+                                    }
+                                }
+
+                                // 匹配及联模式
+                                switch (mode) {
+                                    case BSN_COMPONENT_CASCADE_MODES.REFRESH:
+                                        
+                                        break;
+                                    case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
+                                        
+                                        break;
+                                    case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILDREN:
+                                        
+                                        break;
+                                    case BSN_COMPONENT_CASCADE_MODES.CHECKED_ROWS:
+                                        break;
+                                    case BSN_COMPONENT_CASCADE_MODES.SELECTED_ROW:
+                                        break;
+                                }
+                            }
+                        });
+                    }
+                }
+            );
+        }
+    }
+
+    /**
+     * 根据表单组件routeParams属性配置参数,执行页面跳转
+     * @param option 按钮操作配置参数
+     */
+    private linkToPage(option, handleData) {
+        const params = CommonTools.parametersResolver({
+            params: this.config.routeParams,
+            // componentValue: this.loadData ? this.loadData : this.value,
+            tempValue: this.tempValue,
+            initValue: this.initValue,
+            cacheValue: this.cacheValue,
+            item: handleData
+        });
+        this.router.navigate([option.link], {queryParams: params});
     }
 
     public loadSteps() {

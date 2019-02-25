@@ -112,7 +112,6 @@ export class ComponentResolverComponent
     }
 
     public createBsnComponent() {
-        console.log(this.config.config.component);
         if (this.config.config) {
             if (!components[this.config.config.component]) {
                 const supportedTypes = Object.keys(components).join(', ');

@@ -204,7 +204,6 @@ export class BsnCardListComponent extends CnComponentBase
             initValue: this.initValue,
             cacheValue: this._cacheService
         });
-        debugger;
         return this._apiService
             .get(url, params).toPromise();
     }

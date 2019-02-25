@@ -24,7 +24,7 @@
 <!--</ng-template>-->
 
 <div class="steps-content">
-  <cn-component-resolver [config]="stepConfig" *ngFor="let stepConfig of viewCfg" (updateValue)="handleStep($event)"></cn-component-resolver>
+  <cn-component-resolver [config]="stepConfig" [initData]="initValue" *ngFor="let stepConfig of viewCfg" (updateValue)="handleStep($event)"></cn-component-resolver>
 </div>
 <div class="steps-action" nz-row nzGutter="8">
   <div nz-col nzSpan="24">

@@ -1,37 +1,74 @@
 
 <nz-spin [nzSpinning]="formState === 'put' && isSpinning" [nzDelay]="300" nzTip='加载中...'>
     <bsn-toolbar [config]="config.toolbar" [viewId]="config.viewId" [permissions] = "permissions ? permissions : []" ></bsn-toolbar>
-    <nz-card [nzTitle]="formTitle ? title : config.title" [nzBordered]="false">
-        <form nz-form [nzLayout]="config.layout ? config.layout : 'horizontal'" [formGroup]="form" >
-            <ng-container *ngFor="let formItem of config.forms">
-                <div nz-row [nzGutter]="24"  *ngIf="!formItem.hidden">
-                    <ng-container *ngFor="let control of formItem.controls">
-                        <ng-container *ngIf="!control.hidden">
-                            <!-- 垂直表单布局-->
-                            <nz-form-item *ngIf="control.layout==='row'">
-                                <ng-container *ngIf="formState === 'post'|| formState === 'put'" cnFormResolverDirective [formGroup]="form" [initValue] = "initValue" [config]="control" [changeConfig]="change_config[control.name]" [tempValue]="tempValue" (updateValue)="valueChange($event)" >
-
-                                </ng-container>
-                                <ng-container *ngIf="formState === 'text'"  cnFormLabelDirective [formGroup]="form" [config]="control">
-
-                                </ng-container>
-                            </nz-form-item>
-
-                            <!-- 水平表单布局-->
-                            <div nz-col [nzSpan]="control.span">
-                                <nz-form-item>
-                                    <ng-container *ngIf="formState === 'post'|| formState === 'put'" cnFormResolverDirective [formGroup]="form" [initValue]="initValue" [config]="control" [changeConfig]="change_config[control.name]" [tempValue]="tempValue" (updateValue)="valueChange($event)" >
-
+    <nz-card [nzTitle]="formTitle ? title : config.title" [nzBordered]="true">
+        <form nz-form [nzLayout]="config.layout ? config.layout : 'horizontal'" [formGroup]="form">
+            <div *ngIf="config.hasRowTitle;else noTitle">
+                    <ng-container *ngFor="let formItem of config.forms">
+                            <standard-form-row [title]="formItem.title" [ngClass]="formItem.layout">
+                                    <div nz-row [nzGutter]="24"  *ngIf="!formItem.hidden">
+                                            <ng-container *ngFor="let control of formItem.controls">
+                                                <ng-container *ngIf="!control.hidden">
+                                                    <!-- 垂直表单布局-->
+                                                    <nz-form-item *ngIf="control.layout==='row'" style="margin-bottom:0px">
+                                                        <ng-container *ngIf="formState === 'post'|| formState === 'put'" cnFormResolverDirective [formGroup]="form" [initValue] = "initValue" [config]="control" [changeConfig]="change_config[control.name]" [tempValue]="tempValue" (updateValue)="valueChange($event)" >
+                        
+                                                        </ng-container>
+                                                        <ng-container *ngIf="formState === 'text'"  cnFormLabelDirective [formGroup]="form" [config]="control">
+                        
+                                                        </ng-container>
+                                                    </nz-form-item>
+                        
+                                                    <!-- 水平表单布局-->
+                                                    <div nz-col [nzSpan]="control.span">
+                                                        <nz-form-item style="margin-bottom:0px">
+                                                            <ng-container *ngIf="formState === 'post'|| formState === 'put'" cnFormResolverDirective [formGroup]="form" [initValue]="initValue" [config]="control" [changeConfig]="change_config[control.name]" [tempValue]="tempValue" (updateValue)="valueChange($event)" >
+                        
+                                                            </ng-container>
+                                                            <ng-container *ngIf="formState === 'text'" cnFormLabelDirective [formGroup]="form" [config]="control">
+                        
+                                                            </ng-container>
+                                                        </nz-form-item>
+                                                    </div>
+                                                </ng-container>
+                                            </ng-container>
+                                        </div>
+                            </standard-form-row>
+                    </ng-container>
+                   
+            </div>
+            <ng-template #noTitle>
+                    <ng-container *ngFor="let formItem of config.forms">
+                            <div nz-row [nzGutter]="24"  *ngIf="!formItem.hidden">
+                                <ng-container *ngFor="let control of formItem.controls">
+                                    <ng-container *ngIf="!control.hidden">
+                                        <!-- 垂直表单布局-->
+                                        <nz-form-item *ngIf="control.layout==='row'">
+                                            <ng-container *ngIf="formState === 'post'|| formState === 'put'" cnFormResolverDirective [formGroup]="form" [initValue] = "initValue" [config]="control" [changeConfig]="change_config[control.name]" [tempValue]="tempValue" (updateValue)="valueChange($event)" >
+            
+                                            </ng-container>
+                                            <ng-container *ngIf="formState === 'text'"  cnFormLabelDirective [formGroup]="form" [config]="control">
+            
+                                            </ng-container>
+                                        </nz-form-item>
+            
+                                        <!-- 水平表单布局-->
+                                        <div nz-col [nzSpan]="control.span">
+                                            <nz-form-item>
+                                                <ng-container *ngIf="formState === 'post'|| formState === 'put'" cnFormResolverDirective [formGroup]="form" [initValue]="initValue" [config]="control" [changeConfig]="change_config[control.name]" [tempValue]="tempValue" (updateValue)="valueChange($event)" >
+            
+                                                </ng-container>
+                                                <ng-container *ngIf="formState === 'text'" cnFormLabelDirective [formGroup]="form" [config]="control">
+            
+                                                </ng-container>
+                                            </nz-form-item>
+                                        </div>
                                     </ng-container>
-                                    <ng-container *ngIf="formState === 'text'" cnFormLabelDirective [formGroup]="form" [config]="control">
-
-                                    </ng-container>
-                                </nz-form-item>
+                                </ng-container>
                             </div>
                         </ng-container>
-                    </ng-container>
-                </div>
-            </ng-container>
+            </ng-template>
+            
         </form>
         <ng-template #title>
             {{formTitle}}

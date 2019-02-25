@@ -30,7 +30,7 @@ import { TsLayoutPassportComponent } from 'app/layout/ts-passport/ts-passport.co
 const routes: Routes = [
     {
         path: '',
-        redirectTo: 'ts',
+        redirectTo: 'passport/ts-login',
         pathMatch: 'full',
         canActivate: [AuthGuard]
         // component: LayoutDefaultComponent, canActivate: [AuthGuard],

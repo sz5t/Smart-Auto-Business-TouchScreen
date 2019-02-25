@@ -295,7 +295,7 @@ export class FormResolverComponent extends CnFormBase
                                         }
                                         this.tempValue[param['cid']] =
                                             option.data[param['pid']];
-                                    });
+                                    }); 
                                 }
                                 // 匹配及联模式
                                 switch (mode) {
@@ -380,13 +380,17 @@ export class FormResolverComponent extends CnFormBase
 
 
     public async saveForm_2(ajaxConfigs) {
+        debugger;
         let result;
-        const index = ajaxConfigs.findIndex(
-            item => !item.parent 
-        );
-        const method = ajaxConfigs[index].ajaxType;
-        result = await this[method](ajaxConfigs[index]);
-        // if (method === BSN_FORM_STATUS.TEXT) {
+        const method = ajaxConfigs[0].ajaxType;
+        result = await this[method](ajaxConfigs[0]);
+        // let result;
+        // const method = this.formState;
+        // const index = ajaxConfigs.findIndex(
+        //     item => item.ajaxType === method
+        // );
+        // result = await this[method](ajaxConfigs[index]);
+        // // if (method === BSN_FORM_STATUS.TEXT) {
         //     this.message.warning('请在编辑数据后进行保存！');
         //     return false;
         // } else {

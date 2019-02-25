@@ -480,28 +480,32 @@ export class CnFormBase extends CnComponentBase {
 
     public resolveAjaxConfig(ajaxConfig, formState, callback?) {
         let enterAjaxConfig;
-        if (formState === BSN_FORM_STATUS.TEXT) {
-            enterAjaxConfig = ajaxConfig.filter(item => !item.parent && item.ajaxType === 'delete');
-
-        } else {
-            enterAjaxConfig = ajaxConfig.filter(item => !item.parent && item.ajaxType === formState);
-        }
+        enterAjaxConfig = ajaxConfig.filter(item => !item.parent);
         if (Array.isArray(enterAjaxConfig) && enterAjaxConfig[0]) {
             this.getAjaxConfig(enterAjaxConfig[0], ajaxConfig, callback);
-        } else {
-            let msg = '';
-            switch (formState) {
-                case 'text':
-                msg = '预览状态下无法执行此操作!'
-                break;
-                case 'post':
-                msg = '';
-                break;
-                case 'put': 
-                break;   
-            }
-            this.baseMessage.warning('配置异常,无法执行请求!');
         }
+        // if (formState === BSN_FORM_STATUS.TEXT) {
+        //     enterAjaxConfig = ajaxConfig.filter(item => !item.parent && item.ajaxType === 'delete');
+
+        // } else {
+        //     enterAjaxConfig = ajaxConfig.filter(item => !item.parent && item.ajaxType === formState);
+        // }
+        // if (Array.isArray(enterAjaxConfig) && enterAjaxConfig[0]) {
+        //     this.getAjaxConfig(enterAjaxConfig[0], ajaxConfig, callback);
+        // } else {
+        //     let msg = '';
+        //     switch (formState) {
+        //         case 'text':
+        //         msg = '预览状态下无法执行此操作!'
+        //         break;
+        //         case 'post':
+        //         msg = '';
+        //         break;
+        //         case 'put': 
+        //         break;   
+        //     }
+        //     this.baseMessage.warning('配置异常,无法执行请求!');
+        // }
     }
 
 }

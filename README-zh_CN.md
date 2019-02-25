@@ -125,3 +125,10 @@ docker rm $(docker ps -a -q)
 ##显示镜像
 docker images
 docker rm $(docker images -q)
+
+
+
+electron-packager . appTest --platform=win32 --arch=x64 --electron-version=4.0.2
+
+ electron-packager . appTest --platform=win32 --arch=x64 --asar --out=out --electron-version=4.0.2 --ignore=\"(dist|src|docs|.gitignore|LICENSE|README.md|webpack.config.js|node_modules)\" --prune
+asar pack ./app app.asar

@@ -402,7 +402,6 @@ export class TsDataTableComponent extends CnComponentBase
                     } else {
                         this.showDrawer(this.config.drawerDialog.drawers[0]);
                     }
-
                 }
 
             });
@@ -511,7 +510,6 @@ export class TsDataTableComponent extends CnComponentBase
         };
         (async () => {
             const method = this.config.ajaxConfig.ajaxType;
-            console.log(this.initValue);
             const loadData = await this._load(url, params, this.config.ajaxConfig.ajaxType);
 
             if (loadData.isSuccess) {
@@ -543,7 +541,7 @@ export class TsDataTableComponent extends CnComponentBase
                                     : 'Id';
                                 if (this.is_Selectgrid) {
                                     if (row.Id === focusId) {
-                                        this.selectRow(row);
+                                        !this.config.isDefaultNotSelected && this.selectRow(row);
                                     }
                                 }
                                 if (loadData.data.page === 1) {

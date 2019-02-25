@@ -106,6 +106,7 @@ export class BsnTableComponent extends CnComponentBase
     public selectGridValueName;
     public changeConfig_new = {};
     public changeConfig_newSearch = {};
+    private drawer;
     // 前置条件集合
     public beforeOperation;
     constructor(
@@ -487,7 +488,7 @@ export class BsnTableComponent extends CnComponentBase
                                 : 'Id';
                             if (this.is_Selectgrid) {
                                 if (row.Id === focusId) {
-                                    this.selectRow(row);
+                                    !this.config.isDefaultNotSelected && this.selectRow(row);
                                 }
                             }
                             if (loadData.data.page === 1) {
@@ -1673,7 +1674,7 @@ export class BsnTableComponent extends CnComponentBase
         this._http.getLocalData(dialog.layoutName).subscribe(data => {
             const selectedRow = this._selectRow ? this._selectRow : {};
             const tmpValue = this.tempValue ? this.tempValue : {};
-            const drawer = this.baseDrawer.create({
+            this.drawer = this.baseDrawer.create({
                 // nzTitle: dialog.title,
                 nzWidth: dialog.width,
                 nzContent: LayoutResolverComponent,
@@ -1694,11 +1695,11 @@ export class BsnTableComponent extends CnComponentBase
                 },
             });
 
-            drawer.afterOpen.subscribe(() => {
+            this.drawer.afterOpen.subscribe(() => {
                 
             });
 
-            drawer.afterClose.subscribe(() => {
+            this.drawer.afterClose.subscribe(() => {
                 
             });
             

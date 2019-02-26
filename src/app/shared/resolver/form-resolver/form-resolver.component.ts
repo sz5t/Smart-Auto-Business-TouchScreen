@@ -42,16 +42,16 @@ import { Router } from '@angular/router';
     templateUrl: './form-resolver.component.html',
     styles: [`
         :host ::ng-deep .ant-form-item {
-            // font-size: 1.1em;
+            font-size: 1.1em;
             
         }
 
         :host ::ng-deep .ant-form-item label {
-            // font-size: 1.1em;
+            font-size: 1.1em;
         }
 
         :host ::ng-deep .ant-form-text span{
-            // font-size: 1.1em;
+            font-size: 1.1em;
             font-weight: 600;
             /*text-decoration: underline;*/
             border-bottom: 1px solid #000;
@@ -820,7 +820,6 @@ export class FormResolverComponent extends CnFormBase
         // 判断跳转页面是否为根据跳转跳转不同页面
         if (Array.isArray(option.link)) {
             option.link.forEach(elem => {
-                console.log(this.loadData)
                 if (this.loadData[elem.field] && (this.loadData[elem.field] === elem.value)) {
                     this.router.navigate([elem.linkName], {queryParams: params}); 
                 }

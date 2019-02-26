@@ -3,7 +3,7 @@
         <span class="toolbarSingle" *ngIf="!toolbar.group && !toolbar.dropdown">
             <button [nzSize]="toolbar.size ? toolbar.size : 'default'" [nzType]="toolbar.style ? toolbar.style : 'default'" nz-button
                 (click)="toolbarAction(toolbar)" [attr.disabled]="toolbar.disabled" [nzBlock]="toolbar.isBlock"
-                style="margin-left: 0px">
+                style="margin-left: 0px;margin-top: 10px">
                <span> 
                    <i nz-icon [type]="toolbar.icon" class="btn-fontSize-ts" [theme]="toolbar.theme ? toolbar.theme : 'outline'"></i> 
                    {{toolbar.text}}

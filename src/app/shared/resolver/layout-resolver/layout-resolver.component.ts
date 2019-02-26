@@ -1,11 +1,11 @@
-import { Component, Input, OnInit, Output, EventEmitter, Inject } from "@angular/core";
-import { BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_CASCADE, BsnComponentMessage } from "@core/relative-Service/BsnTableStatus";
-import { CnComponentBase } from "@shared/components/cn-component-base";
-import { Observable } from "rxjs";
+import { Component, Input, OnInit, Output, EventEmitter, Inject } from '@angular/core';
+import { BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_CASCADE, BsnComponentMessage } from '@core/relative-Service/BsnTableStatus';
+import { CnComponentBase } from '@shared/components/cn-component-base';
+import { Observable } from 'rxjs';
 
 @Component({
-    selector: "cn-layout-resolver",
-    templateUrl: "./layout-resolver.component.html",
+    selector: 'cn-layout-resolver',
+    templateUrl: './layout-resolver.component.html',
     styles: [
         `
             :host ::ng-deep .ant-card-head {
@@ -25,15 +25,15 @@ import { Observable } from "rxjs";
 })
 export class LayoutResolverComponent extends CnComponentBase implements OnInit {
     @Input()
-    config;
+    public config;
     @Input()
-    permissions;
+    public permissions;
     @Input()
-    layoutId;
+    public layoutId;
     @Input()
-    initData;
+    public initData;
     @Input()
-    tempValue;
+    public tempValue;
     @Output()
     public updateValue = new EventEmitter();
     public value;
@@ -43,7 +43,6 @@ export class LayoutResolverComponent extends CnComponentBase implements OnInit {
     }
 
     public ngOnInit() {
-        console.log("layout resolver");
         this.resolverRelation();
     }
 
@@ -89,7 +88,7 @@ export class LayoutResolverComponent extends CnComponentBase implements OnInit {
      * autoResize
      */
     public autoResize(d?) {
-        if(d && Array.isArray(d)) {
+        if (d && Array.isArray(d)) {
             d.forEach(item => {
                 this.config.rows.forEach(row => {
                     row.row.cols.forEach(col => {

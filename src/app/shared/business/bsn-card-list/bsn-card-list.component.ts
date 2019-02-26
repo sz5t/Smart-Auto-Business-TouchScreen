@@ -190,6 +190,7 @@ export class BsnCardListComponent extends CnComponentBase
             //     item['selected'] = false;
             // });
             this.data = response.data;
+            this.getSelectedItems();
             this.isLoading = false;
         } else {
             this.isLoading = false;
@@ -258,7 +259,6 @@ export class BsnCardListComponent extends CnComponentBase
 
     private getSelectedItems() {
         this.selectedItems =  this.data.filter(d => d.selected);
-        console.log(this.selectedItems);
         this.updateValue.emit(this.selectedItems);
     }
 }

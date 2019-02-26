@@ -26,9 +26,9 @@
                     <td *ngIf="config.showCheckBox" [nzShowCheckbox]="config.showCheckBox" [(nzChecked)]="data.checked" (nzCheckedChange)="refChecked()">
                     </td>
                     <ng-template ngFor let-col [ngForOf]="config.columns">
-                        <td *ngIf="!col.hidden">
+                        <td *ngIf="!col.hidden" [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter):'','cellFont']">
                             <ng-container *ngIf="col.editor || col.searcheditor">
-                                <div *ngIf="!editCache[data.key]['edit']" [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter):'',col.fieldAlign ? col.fieldAlign : '', {'font-size':'1.2em'}]">
+                                <div *ngIf="!editCache[data.key]['edit']">
                                     <span>{{!col.dataType?data[col.field]:data[col.field] | date}}
                                     </span>
                                 </div>
@@ -70,13 +70,13 @@
                 </tr>
             </ng-container>
             <ng-container *ngIf="data.row_status != 'search'">
-                <tr (click)="selectRow(data, $event)" [ngClass]="{selectedRow:data.selected}">
+                <tr (click)="selectRow(data, $event)" [ngClass]="{selectedRow:data.selected}" [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter):'','cellFont']">
                     <td *ngIf="config.showCheckBox" [nzShowCheckbox]="config.showCheckBox" [(nzChecked)]="data.checked" (nzCheckedChange)="refChecked($event)">
                     </td>
                     <ng-template ngFor let-col [ngForOf]="config.columns">
-                        <td *ngIf="!col.hidden">
+                        <td *ngIf="!col.hidden" [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter):'','cellFont']">
                             <ng-container *ngIf="col.editor">
-                                <div *ngIf="!editCache[data.key]['edit']" [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter):'',col.fieldAlign ? col.fieldAlign : '','cellFont']">
+                                <div *ngIf="!editCache[data.key]['edit']">
                                     <span *ngIf="!col.badge; else badge">{{!col.dataType?data[col.field]:data[col.field] | date}}</span>
                                 </div>
                                 <ng-container [bsnData]="tempValue" [initData]="initData" [rowData]="editCache[data.key].data" [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
@@ -86,7 +86,8 @@
                                 </ng-container>
                             </ng-container>
                             <ng-container *ngIf="!col.editor">
-                                <span *ngIf="!col.badge; else badge" [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter):'','cellFont']">{{data[col.field]}}</span>
+                                <span *ngIf="!col.badge; else badge"
+                                >{{data[col.field]}}</span>
                             </ng-container>
 
                         </td>

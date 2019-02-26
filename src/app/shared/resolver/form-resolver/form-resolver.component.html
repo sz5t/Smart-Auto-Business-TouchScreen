@@ -1,5 +1,5 @@
 
-<nz-spin [nzSpinning]="formState === 'put' && isSpinning" [nzDelay]="300" nzTip='加载中...'>
+<nz-spin [nzSpinning]="formState === 'put' && isSpinning" [nzDelay]="300" nzTip='加载中...' style="position: fix;">
     <bsn-toolbar [config]="config.toolbar" [viewId]="config.viewId" [permissions] = "permissions ? permissions : []" ></bsn-toolbar>
     <nz-card [nzTitle]="formTitle ? title : config.title" [nzBordered]="true">
         <form nz-form [nzLayout]="config.layout ? config.layout : 'horizontal'" [formGroup]="form">
@@ -10,7 +10,7 @@
                                             <ng-container *ngFor="let control of formItem.controls">
                                                 <ng-container *ngIf="!control.hidden">
                                                     <!-- 垂直表单布局-->
-                                                    <nz-form-item *ngIf="control.layout==='row'" style="margin-bottom:0px">
+                                                    <nz-form-item *ngIf="control.layout==='row'" style="margin-bottom:1.5em;margin-top: 1.5em">
                                                         <ng-container *ngIf="formState === 'post'|| formState === 'put'" cnFormResolverDirective [formGroup]="form" [initValue] = "initValue" [config]="control" [changeConfig]="change_config[control.name]" [tempValue]="tempValue" (updateValue)="valueChange($event)" >
                         
                                                         </ng-container>
@@ -21,7 +21,7 @@
                         
                                                     <!-- 水平表单布局-->
                                                     <div nz-col [nzSpan]="control.span">
-                                                        <nz-form-item style="margin-bottom:0px">
+                                                        <nz-form-item style="margin-bottom:1.5em;margin-top: 1.5em">
                                                             <ng-container *ngIf="formState === 'post'|| formState === 'put'" cnFormResolverDirective [formGroup]="form" [initValue]="initValue" [config]="control" [changeConfig]="change_config[control.name]" [tempValue]="tempValue" (updateValue)="valueChange($event)" >
                         
                                                             </ng-container>
@@ -43,7 +43,7 @@
                                 <ng-container *ngFor="let control of formItem.controls">
                                     <ng-container *ngIf="!control.hidden">
                                         <!-- 垂直表单布局-->
-                                        <nz-form-item *ngIf="control.layout==='row'">
+                                        <nz-form-item *ngIf="control.layout==='row'" style="margin-bottom:1.5em;margin-top: 1.5em">
                                             <ng-container *ngIf="formState === 'post'|| formState === 'put'" cnFormResolverDirective [formGroup]="form" [initValue] = "initValue" [config]="control" [changeConfig]="change_config[control.name]" [tempValue]="tempValue" (updateValue)="valueChange($event)" >
             
                                             </ng-container>
@@ -54,7 +54,7 @@
             
                                         <!-- 水平表单布局-->
                                         <div nz-col [nzSpan]="control.span">
-                                            <nz-form-item>
+                                            <nz-form-item style="margin-bottom:1.5em;margin-top: 1.5em">
                                                 <ng-container *ngIf="formState === 'post'|| formState === 'put'" cnFormResolverDirective [formGroup]="form" [initValue]="initValue" [config]="control" [changeConfig]="change_config[control.name]" [tempValue]="tempValue" (updateValue)="valueChange($event)" >
             
                                                 </ng-container>

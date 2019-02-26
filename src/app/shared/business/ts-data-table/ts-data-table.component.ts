@@ -4186,14 +4186,12 @@ export class TsDataTableComponent extends CnComponentBase
      * th_onmousedown
      */
     public th_onmousedown(event?) {
-        console.log('th_onmousedown');
         this.tTD = event.target;
         if (event.offsetX > this.tTD.offsetWidth - 10) {
             this.tTD.mouseDown = true;
             this.tTD.oldX = event.x;
             this.tTD.oldWidth = this.tTD.offsetWidth;
         }
-        console.log('3959', this.tTD.mouseDown);
     }
 
     /**
@@ -4224,7 +4222,6 @@ export class TsDataTableComponent extends CnComponentBase
         if (this.tTD === undefined) {
             this.tTD = event.target;
         }
-        console.log('3988', this.tTD.mouseDown);
         // 调整宽度 
         if (this.tTD.mouseDown != null && this.tTD.mouseDown === true) {
             this.tTD.style.cursor = 'default';
@@ -4301,12 +4298,12 @@ export class TsDataTableComponent extends CnComponentBase
             cf['width'] = f.width;
             cf['hidden'] = f.hidden;
             cf['titleField'] = f.titleField;
+            cf['fieldAlign'] = f.fieldAlign ? f.field.Align : 'text-center'
             if (f.isEdit) {
                 cf['editor'] = this.setEditConfig(f);
             }
             cf_config.push(cf);
         });
-        console.log('动态表格的列', cf_config)
         return cf_config;
     }
 

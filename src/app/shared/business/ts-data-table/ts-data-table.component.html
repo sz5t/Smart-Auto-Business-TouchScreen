@@ -1,5 +1,5 @@
 <bsn-toolbar *ngIf="config.toolbar" [permissions]="permissions ? permissions : []" [config]="config.toolbar" [viewId]="config.viewId"></bsn-toolbar>
-<nz-card [nzBordered]="false" [nzBodyStyle]="{height: '680px'}">
+<nz-card [nzBordered]="false" [nzBodyStyle]="config.bodyStyle?config.bodyStyle:{height: '500px'}">
     <nz-table #nzTable [nzData]="dataList" [nzSize]="config.size" [nzFrontPagination]="false" [nzShowSizeChanger]="true" [nzTotal]="total"
     [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize" [nzShowTotal]="totals" [nzPageSizeOptions]="config.pageSizeOptions"
     [nzLoading]="loading" (nzPageIndexChange)="searchData()" (nzPageSizeChange)="searchData(true)" [nzTitle]="this.config.title ? title : false"

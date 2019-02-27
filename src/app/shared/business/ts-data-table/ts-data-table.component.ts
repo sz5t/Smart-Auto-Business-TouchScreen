@@ -250,7 +250,7 @@ export class TsDataTableComponent extends CnComponentBase
         if (this.config.componentType) {
             if (!this.config.componentType.child) {
                 this.load();
-            } else if (this.config.componentType.own === true) {
+            } else if (this.config.componentType.owner === true) {
                 this.load();
             }
         } else {
@@ -3014,7 +3014,6 @@ export class TsDataTableComponent extends CnComponentBase
             const selectedRow = this._selectRow ? this._selectRow : {};
             const tmpValue = this.tempValue ? this.tempValue : {};
             const handle = handleData ? handleData : {};
-            console.log(this.initValue);
             // const checkedIds = {'_checkedIds': this._getCheckItemsId() ? this._getCheckItemsId() : ''};
             const drawer = this.baseDrawer.create({
                 // nzTitle: dialog.title,
@@ -3042,7 +3041,8 @@ export class TsDataTableComponent extends CnComponentBase
             });
 
             drawer.afterClose.subscribe(() => {
-
+                this.load();
+                
             });
 
         });
@@ -3892,7 +3892,6 @@ export class TsDataTableComponent extends CnComponentBase
         } else {
             model = BSN_COMPONENT_MODES['EXECUTE'];
         }
-        console.log('列值变化触发事件：', model, enentname, this.toolbarConfig, option);
         // option 操作的详细配置
         // 根据当前行绑定操作名称-》找到对应的操作配置
         // const model_c = '';
@@ -4400,7 +4399,6 @@ export class TsDataTableComponent extends CnComponentBase
          */
     public titleToolbarAction(col?) {
         //  this. ajaxColumns;  // 动态列信息，也就是检测项目信息
-        console.log('点击', this.ajaxColumns, this._getCheckedItems(), this._getCheckItemsId());
         if (this.ajaxColumns && this.ajaxColumns.length > 0) {
             const d = this.ajaxColumns.findIndex(c => c['Id'] === col['titleField']);
             console.log('ajaxColumns', this.ajaxColumns);
@@ -4477,8 +4475,10 @@ export class TsDataTableComponent extends CnComponentBase
             if (isField) {
                 c_eventConfig['onEvent'].forEach(eventConfig => {
                     // 无配置 的默认项
+                    debugger
                     if (eventConfig.type === 'default') {
                         const checkedItems = this._getCheckedItems();
+                        this._getCheckItemsId();
                         !this.beforeOperation.beforeItemsDataOperation(checkedItems) && this.resolverOperation(data);
                     }
                 });

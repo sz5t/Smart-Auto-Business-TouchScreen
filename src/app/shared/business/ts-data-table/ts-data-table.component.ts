@@ -250,7 +250,7 @@ export class TsDataTableComponent extends CnComponentBase
         if (this.config.componentType) {
             if (!this.config.componentType.child) {
                 this.load();
-            } else if (this.config.componentType.owner === true) {
+            } else if (this.config.componentType.own === true) {
                 this.load();
             }
         } else {
@@ -3379,7 +3379,7 @@ export class TsDataTableComponent extends CnComponentBase
     // liu 2018 12 04 
     public valueChangeSearch(data) {
         // const index = this.dataList.findIndex(item => item.key === data.key);
-        console.log('值变化valueChangeSearch', data);
+       
         if (data.data === null) {
             if (this.search_Row.hasOwnProperty(data.name)) {
                 delete this.search_Row[data.name];

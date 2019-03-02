@@ -108,5 +108,10 @@ export class ApiService {
             // headers: this.setHeaders()
         });
     }
+
+    public getSystemConfig() {
+        const urls = `${SystemResource.localResource.url}/assets/config.json?rtc=${CommonTools.uuID(10)}`;
+        return this.http.get<any>(urls);
+    }
     // endregion
 }

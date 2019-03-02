@@ -46,7 +46,7 @@ import { ApiService } from './../../../../core/utility/api-service';
 //         this.router.navigateByUrl(this.tokenService.login_url);
 //     }
 // }
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SettingsService, MenuService } from '@delon/theme';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
@@ -55,23 +55,24 @@ import { NzModalService } from 'ng-zorro-antd';
 
 @Component({
     selector: 'ts-header-user',
-    template: `
-    <nz-dropdown nzPlacement="bottomRight">
-        <div class="item d-flex align-items-center px-sm" nz-dropdown>
-            <nz-avatar [nzSrc]="settings.user['Remark']" nzSize="small" class="mr-sm"></nz-avatar>
-            {{settings.user['RealName']}}
-        </div>
-        <div nz-menu class="width-sm">
-            <div nz-menu-item [nzDisabled]="true"><i class="anticon anticon-user mr-sm"></i>个人中心</div>
-            <div nz-menu-item [nzDisabled]="true"><i class="anticon anticon-setting mr-sm"></i>设置</div>
-            <li nz-menu-divider></li>
-            <div nz-menu-item (click)="logout()"><i class="anticon anticon-setting mr-sm"></i>退出登录</div>
-        </div>
-    </nz-dropdown>
+    template: `        
+        <nz-dropdown nzPlacement="bottomRight">
+            <div class="item d-flex align-items-center px-sm" nz-dropdown>
+                <nz-avatar [nzSrc]="'../assets/img/user.svg'" nzSize="small" class="mr-sm"></nz-avatar>
+                {{userInfo?.value?.accountName ? userInfo?.value?.accountName: '用户'}}
+            </div>
+            <div nz-menu class="width-sm">
+                <div nz-menu-item [nzDisabled]="true"><i class="anticon anticon-user mr-sm"></i>个人中心</div>
+                <div nz-menu-item [nzDisabled]="true"><i class="anticon anticon-setting mr-sm"></i>设置</div>
+                <li nz-menu-divider></li>
+                <div nz-menu-item (click)="logout()"><i class="anticon anticon-setting mr-sm"></i>退出登录</div>
+            </div>
+        </nz-dropdown>
     `
 })
-export class TsHeaderUserComponent implements OnInit {
+export class TsHeaderUserComponent implements OnInit, AfterViewInit {
     // confirmModal: NzModalRef;
+    public userInfo: any;
     constructor(
         public settings: SettingsService,
         private cacheService: CacheService,
@@ -82,9 +83,9 @@ export class TsHeaderUserComponent implements OnInit {
         @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService) { }
 
     public ngOnInit(): void {
-        this.tokenService.change().subscribe((res: any) => {
-            this.settings.setUser(res);
-        });
+        // this.tokenService.change().subscribe((res: any) => {
+        //     this.settings.setUser(res);
+        // });
         // mock
         // const token = this.tokenService.get() || {
         //     token: 'nothing',
@@ -93,6 +94,10 @@ export class TsHeaderUserComponent implements OnInit {
         //     email: '888cipchk@qq.com'
         // };
         // this.tokenService.set(token);
+    }
+
+    public ngAfterViewInit () {
+        this.userInfo = this.cacheService.get('userInfo');
     }
 
     public logout() {

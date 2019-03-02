@@ -1,12 +1,15 @@
-import { Component } from '@angular/core';
+import { ApiService } from '@core/utility/api-service';
+import { APIResource } from './../../core/utility/api-resource';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'layout-passport',
     templateUrl: './passport.component.html',
     styleUrls: ['./passport.component.less']
 })
-export class LayoutPassportComponent {
-    links = [
+export class LayoutPassportComponent implements OnInit {
+    public links = [
         {
             title: '帮助',
             href: ''
@@ -20,4 +23,28 @@ export class LayoutPassportComponent {
             href: ''
         }
     ];
+    public title: string;
+    public subTitle: string;
+    public company: string;
+    public year: string
+    constructor(
+        private _route: ActivatedRoute,
+        private _apiService: ApiService
+        ) {
+        
+    }
+
+    public ngOnInit() {
+        this._apiService.getSystemConfig().subscribe(s => {
+             this.title = s.title;
+             this.subTitle = s.subTitle;
+             this.year = s.year;
+             this.company = s.company;
+        });
+        // this._route.data.subscribe(data => {
+        //     this.title = data['title'] ? data['title'] : 'Smart One 自动化业务平台';
+        //     this.subTitle = data['sub'] ? data['sub'] : '管理系统'
+        // });
+    }
+
 }

@@ -4475,7 +4475,6 @@ export class TsDataTableComponent extends CnComponentBase
             if (isField) {
                 c_eventConfig['onEvent'].forEach(eventConfig => {
                     // 无配置 的默认项
-                    debugger
                     if (eventConfig.type === 'default') {
                         const checkedItems = this._getCheckedItems();
                         this._getCheckItemsId();

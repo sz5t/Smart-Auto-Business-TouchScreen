@@ -49,3 +49,4 @@ yarn-error.log
 Thumbs.db
 package-lock.json
 package.json
+*.zip

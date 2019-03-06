@@ -49,3 +49,6 @@ yarn-error.log
 Thumbs.db
 package-lock.json
 package.json
+*.zip
+src/assets/webConfig.js
+src/assets/webConfig.js

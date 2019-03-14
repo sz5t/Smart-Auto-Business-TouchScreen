@@ -108,6 +108,9 @@ export class BsnCardListComponent extends CnComponentBase
                             this.linkToPage(option);
                             break;
                         case BSN_COMPONENT_MODES.EXECUTE:
+                        setTimeout(() => {
+                            this.isLoading = true;
+                        });
                         // 使用此方式注意、需要在按钮和ajaxConfig中都配置响应的action
                             this._resolveAjaxConfig(option);
                         break;
@@ -346,6 +349,9 @@ export class BsnCardListComponent extends CnComponentBase
                 this.baseMessage.error(result.message);
             }
         }
+        setTimeout(() => {
+            this.isLoading = false;
+        });
     }
     /**
     *

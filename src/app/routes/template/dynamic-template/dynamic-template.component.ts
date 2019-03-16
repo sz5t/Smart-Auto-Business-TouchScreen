@@ -1,6 +1,6 @@
 import { CacheService } from '@delon/cache';
 import { ApiService } from '@core/utility/api-service';
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, TemplateRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -11,11 +11,16 @@ import { ActivatedRoute } from '@angular/router';
 export class DynamicTemplateComponent implements OnInit, OnDestroy {
     public title;
     public permissions;
-    public config = {
+    public config: any = {
         rows: []
     };
     public initData;
     public isLoadLayout = false;
+
+    public isCollapsed =  true;
+    public triggerTemplate: TemplateRef<void> | null = null;
+    @ViewChild('trigger') public customTrigger: TemplateRef<void>;
+  
     constructor(
         private _http: ApiService,
         private _cacheService: CacheService,
@@ -44,6 +49,11 @@ export class DynamicTemplateComponent implements OnInit, OnDestroy {
             });
         });
 
+    }
+
+    /** custom trigger can be TemplateRef **/
+    public changeTrigger(): void {
+        this.triggerTemplate = this.customTrigger;
     }
 
     public ngOnDestroy(): void {

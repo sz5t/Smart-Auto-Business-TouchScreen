@@ -10,10 +10,9 @@
                 </ng-template>
                 <ng-template #extra>
                         <!-- <nz-button-group>
-                          <button nz-button>操作</button>
-                          <button nz-button>操作</button>
-                        </nz-button-group>
-                        <nz-dropdown class="mx-sm">
+                          <button nz-button (click)="isCollapsed=!isCollapsed"><i class="trigger" nz-icon [type]="isCollapsed?'menu-unfold':'menu-fold'"></i></button>
+                        </nz-button-group> -->
+                        <!-- <nz-dropdown class="mx-sm">
                           <button nz-button nz-dropdown><i nz-icon type="ellipsis"></i></button>
                           <ul nz-menu>
                             <li nz-menu-item>选项一</li>
@@ -22,13 +21,26 @@
                           </ul>
                         </nz-dropdown>
                         <button nz-button [nzType]="'primary'">主操作</button> -->
-                        <bsn-toolbar *ngIf="config.toolbar" [config]="config.toolbar" [viewId]="config.targetViewId"></bsn-toolbar>
+                        
+                        <bsn-toolbar style="float:left" *ngIf="config.toolbar" [config]="config.toolbar" [viewId]="config.targetViewId"></bsn-toolbar>
+                        <button *ngIf="config.siderLayout" nz-button (click)="isCollapsed=!isCollapsed"><i class="trigger" nz-icon [type]="isCollapsed?'menu-unfold':'menu-fold'"></i></button>
                       </ng-template>
                 
         </page-header>
         
         <div class="workplace">
-            <cn-layout-resolver *ngIf="isLoadLayout" [config]="config" [initData]="initData" [permissions] = "permissions ? permissions : []"></cn-layout-resolver>
+                <nz-layout>
+                        <nz-layout>
+                                <cn-layout-resolver *ngIf="isLoadLayout" [config]="config" [initData]="initData" [permissions] = "permissions ? permissions : []"></cn-layout-resolver>
+                        </nz-layout>
+                        <nz-sider [nzWidth]="700" style="background: #fff" [nzCollapsedWidth]="0" nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="triggerTemplate">
+                                
+                        </nz-sider>
+                        <ng-template #trigger>
+                                        <i nz-icon type="up"></i>
+                        </ng-template>
+                </nz-layout>
+            
         </div>
 </div>
 

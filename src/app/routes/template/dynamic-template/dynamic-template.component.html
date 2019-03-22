@@ -33,8 +33,8 @@
                         <nz-layout>
                                 <cn-layout-resolver *ngIf="isLoadLayout" [config]="config" [initData]="initData" [permissions] = "permissions ? permissions : []"></cn-layout-resolver>
                         </nz-layout>
-                        <nz-sider [nzWidth]="700" style="background: #fff" [nzCollapsedWidth]="0" nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="triggerTemplate">
-                                
+                        <nz-sider *ngIf="config.siderLayout" [nzWidth]="700" style="background: #fff" [nzCollapsedWidth]="0" nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="triggerTemplate">
+                                <cn-layout-resolver   [config]="config.siderLayout" [initData]="initData" [permissions] = "permissions ? permissions : []"></cn-layout-resolver>
                         </nz-sider>
                         <ng-template #trigger>
                                         <i nz-icon type="up"></i>

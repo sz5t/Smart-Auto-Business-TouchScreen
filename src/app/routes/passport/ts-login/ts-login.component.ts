@@ -1,7 +1,7 @@
 import { SysResource } from '@core/utility/sys-resource';
 
 import { SettingsService, TitleService, MenuService } from '@delon/theme';
-import { Component, OnDestroy, Inject, Optional, OnInit } from '@angular/core';
+import { Component, OnDestroy, Inject, Optional, OnInit, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NzMessageService, NzModalService, NzTabChangeEvent } from 'ng-zorro-antd';
@@ -29,7 +29,7 @@ import { SystemResource } from '@core/utility/system-resource';
     styleUrls: ['./ts-login.component.less'],
     providers: [SocialService]
 })
-export class TsLoginComponent implements OnInit, OnDestroy {
+export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     private form: FormGroup;
     private error = '';
     private errorApp = '';
@@ -69,8 +69,61 @@ export class TsLoginComponent implements OnInit, OnDestroy {
     }
 
     public ngOnInit(): void {
+        
         this.titleService.setTitle('SmartOne');
         this.cacheService.set('AppName', 'SmartOne');
+
+        this.cacheService.set(
+            'currentConfig',
+            SystemResource.settingSystem
+        );
+    }
+
+    public ngAfterViewInit(): void {
+        const that = this;
+        const ws = new WebSocket('ws://localhost:8086/Laputa');
+        ws.onopen = function() {
+            // Web Socket 已连接上，使用 send() 方法发送数据
+            // 连接服务端socket
+            ws.send('客户端以上线');
+            console.log('数据发送中...');
+        };
+        
+        ws.onmessage = function (evt) { 
+            const received_msg = evt.data;
+            console.log('数据已接收...', received_msg);
+            that.apiService.login('common/card/login',  {cardNo: received_msg})
+            .toPromise()
+            .then(user => {
+                if (user.isSuccess) {
+                    
+                    // console.log(user.data);
+                    that.cacheService.set('userInfo', user.data);
+                    const token: ITokenModel = { token: user.data.token };
+                    that.tokenService.set(token); // 后续projectId需要进行动态获取
+                    let url = user.data.modules[0].link;
+                    // if (!that.isCardLogin) {
+                    //     // 配置平台
+                    //     url = 
+                    // } else {
+                    //     // 解析平台
+                    //     url = '/';
+                    // }
+                    // this.cacheService.set('Menus', menus);
+                    // this.menuService.add(menus);
+                    that.router.navigate([`${url}`]);
+                } else {
+                    that.showError(user.message);
+                    ws.send('reload');
+                }
+                
+            });
+            
+        };
+        ws.onclose = function() { 
+            // 关闭 websocket
+            console.log('连接已关闭...'); 
+        };
     }
 
     private chooseLogin() {
@@ -131,66 +184,6 @@ export class TsLoginComponent implements OnInit, OnDestroy {
         this._remarkLoginForm();
         // 构建用户登录信息
         this._buildOnlineUser(userLogin);
-
-        // (async () => {
-        //     const onlineUserResult = await this._getOnlineUser(onlineUser);
-        //     if (onlineUserResult.Data && onlineUserResult.Status === 200) {
-        //         onlineUser = onlineUserResult.Data;
-        //         if (!onlineUser.Online) {
-        //             this.showError(onlineUser.Message);
-        //             this.loading = false;
-        //             return;
-        //         }
-        //         this.cacheService.set('OnlineUser', OnlineUser);
-        //         cacheInfo.ProjectId = onlineUser.ProjId;
-        //         cacheInfo.PlatCustomerId = onlineUser.PlatCustomerId;
-        //         this.tokenService.set({ token: onlineUser.Token });
-        //     }
-
-        //     const appUserResult = await this._getAppUser(onlineUser.UserId);
-        //     if (appUserResult.Data && appUserResult.Status === 200) {
-        //         this.settingsService.setUser(appUserResult.Data);
-        //         cacheInfo.RealName = appUserResult.Data.RealName;
-        //         this.cacheService.set('User', appUserResult.Data);
-        //     }
-
-        //     const sysCommonCodeResult = await this._getSysCommonCode();
-        //     if (sysCommonCodeResult.Data && sysCommonCodeResult.Status === 200) {
-        //         console.log(sysCommonCodeResult);
-        //         cacheInfo.ApplyId = sysCommonCodeResult.Data[0].Id;
-        //         this.cacheService.set('ParamsUrl', cacheInfo);
-        //     }
-
-        //     const appModuleResult = await this._getAppModule(cacheInfo.ApplyId);
-        //     if (appModuleResult.Data && appModuleResult.Status === 200) {
-        //         if (this.type === 0) {
-        //             const localAppDataResult = await this._getLocalAppData();
-        //             if (localAppDataResult) {
-        //                 this.cacheService.set('Menus', localAppDataResult.menu);
-        //                 this.menuService.add(localAppDataResult.menu);
-        //             }
-        //         } else {
-        //             // 运行平台菜单
-        //             const moduleMenu = this.arrayToTree(appModuleResult.Data, '');
-        //             this.cacheService.set('Menus', moduleMenu);
-        //             this.menuService.add(moduleMenu);
-        //         }
-        //     }
-
-        //     const appPermissionResult = await this._getAppPermission();
-        //     if (appPermissionResult.Data && appPermissionResult.Status === 200) {
-        //         if (this.type === 0) {
-        //             this.router.navigate(['/']);
-        //         } else {
-        //             const appper = appPermissionResult.Data;
-        //             this.router.navigate(['/dashboard/analysis']);
-        //             // this.cacheService.set('AppPermission', appper);
-        //             // this.appPerMerge(appper);
-        //         }
-        //     }
-
-        //     this.loading = false;
-        // })();
 
         this.login(userLogin);
     }
@@ -253,39 +246,6 @@ export class TsLoginComponent implements OnInit, OnDestroy {
     public async _userLogin(userLogin) {
         return this.apiService.login('common/login', userLogin).toPromise();
     }
-
-    // async _getOnlineUser(onlineUser) {
-    //     return this.apiService
-    //         .post(APIResource.OnlineUser, onlineUser)
-    //         .toPromise();
-    // }
-
-    // async _getAppUser(userId) {
-    //     return this.apiService
-    //         .get(APIResource.AppUser + "/" + userId)
-    //         .toPromise();
-    // }
-
-    // async _getSysCommonCode() {
-    //     return this.apiService
-    //         .get(APIResource.SysCommonCode, {
-    //             name: environment.COMMONCODE,
-    //             ApplyId: "ApplyId"
-    //         })
-    //         .toPromise();
-    // }
-    // async _getAppModule(applyId) {
-    //     return this.apiService
-    //         .get(
-    //             `${APIResource.AppModuleConfig}/_root/${
-    //                 APIResource.AppModuleConfig
-    //             }?_recursive=true&_deep=4&_root.ApplyId=${applyId}&_root.parentid=in("",null)`,
-    //             {
-    //                 _orderBy: "order asc"
-    //             }
-    //         )
-    //         .toPromise();
-    // }
 
     public async _getLocalAppData() {
         return this.httpClient

@@ -37,6 +37,7 @@ import { CnFormScancodeComponent } from '@shared/components/cn-form-scancode/cn-
 import { CnFormGridComponent } from '@shared/components/cn-form-grid/cn-form-grid.component';
 import { CnFormSelectGridMultipleComponent } from '@shared/components/cn-form-select-grid-multiple/cn-form-select-grid-multiple.component';
 import { CnFormInputSensorComponent } from '@shared/components/cn-form-input-sensor/cn-form-input-sensor.component';
+import { CnFormElectronicScaleComponent } from '@shared/components/cn-form-electronic-scale/cn-form-electronic-scale.component';
 
 const components: { [type: string]: Type<any> } = {
     input: CnFormInputComponent,
@@ -63,7 +64,11 @@ const components: { [type: string]: Type<any> } = {
     scanCode: CnFormScancodeComponent,
     datagrid: CnFormGridComponent,
     selectGridMultiple: CnFormSelectGridMultipleComponent,
+<<<<<<< HEAD
     inputSensor: CnFormInputSensorComponent
+=======
+    electronicScaleInput: CnFormElectronicScaleComponent
+>>>>>>> 8d7b88e88bc0b955b4b3eec6a46d72b92d0b0071
 };
 @Directive({
     // tslint:disable-next-line:directive-selector

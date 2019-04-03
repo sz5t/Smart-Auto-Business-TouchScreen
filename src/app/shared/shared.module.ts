@@ -107,11 +107,8 @@ import { CnFormSelectGridMultipleComponent } from './components/cn-form-select-g
 import { CnGridSelectGridMultipleComponent } from './components/cn-grid-select-grid-multiple/cn-grid-select-grid-multiple.component';
 import { TsToolbarComponent } from './business/ts-toolbar/ts-toolbar.component';
 import { TsDataTableComponent } from './business/ts-data-table/ts-data-table.component';
-<<<<<<< HEAD
 import { CnFormInputSensorComponent } from './components/cn-form-input-sensor/cn-form-input-sensor.component';
-=======
 import { CnFormElectronicScaleComponent } from '@shared/components/cn-form-electronic-scale/cn-form-electronic-scale.component';
->>>>>>> 8d7b88e88bc0b955b4b3eec6a46d72b92d0b0071
 
 
 const THIRDMODULES = [
@@ -214,11 +211,8 @@ const COMPONENTS = [
     BsnDetailListComponent,
     BsnTagSelectComponent,
     BsnTagComponent,
-<<<<<<< HEAD
-    CnFormInputSensorComponent
-=======
+    CnFormInputSensorComponent,
     CnFormElectronicScaleComponent
->>>>>>> 8d7b88e88bc0b955b4b3eec6a46d72b92d0b0071
 ];
 const DIRECTIVES = [
     FormResolverDirective,

@@ -64,11 +64,8 @@ const components: { [type: string]: Type<any> } = {
     scanCode: CnFormScancodeComponent,
     datagrid: CnFormGridComponent,
     selectGridMultiple: CnFormSelectGridMultipleComponent,
-<<<<<<< HEAD
-    inputSensor: CnFormInputSensorComponent
-=======
+    inputSensor: CnFormInputSensorComponent,
     electronicScaleInput: CnFormElectronicScaleComponent
->>>>>>> 8d7b88e88bc0b955b4b3eec6a46d72b92d0b0071
 };
 @Directive({
     // tslint:disable-next-line:directive-selector

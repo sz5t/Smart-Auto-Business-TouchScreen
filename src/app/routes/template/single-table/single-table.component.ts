@@ -140,7 +140,7 @@ export class SingleTableComponent implements OnInit, AfterViewInit {
                                                 collapse: true,
                                                 controls: [
                                                     {
-                                                        type: "input",
+                                                        type: "inputSensor",
                                                         labelSize: "6",
                                                         controlSize: "18",
                                                         inputType: "text",

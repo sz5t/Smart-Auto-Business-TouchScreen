@@ -81,7 +81,7 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
 
     public ngAfterViewInit(): void {
         const that = this;
-        const ws = new WebSocket('ws://localhost:8086/Laputa');
+        const ws = new WebSocket('ws://127.0.0.1:8086/Laputa');
         ws.onopen = function() {
             // Web Socket 已连接上，使用 send() 方法发送数据
             // 连接服务端socket

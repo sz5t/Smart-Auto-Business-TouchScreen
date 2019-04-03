@@ -13,12 +13,21 @@
         <input nz-input
                type="{{config.inputType}}"
                formControlName="{{config.name}}"
-               [nzSize]="config.size"
+              
                placeholder="{{config.placeholder}}"
                disabled="{{config.disabled}}"
                [(ngModel)]="model"/>
 
     </nz-input-group>
+    <ng-template #suffixTemplate1>
+        <i nz-icon type="close-circle" theme="fill"></i>
+    </ng-template>
+    <ng-template #suffixTemplate>
+            <button nz-button nzSearch style="height: 32
+            px" [nzType]="'default'" (click)="getData()">
+                    <i nz-icon type="edit" theme="outline"></i> 获取数据
+                </button>
+      </ng-template>
     <nz-form-extra *ngIf="config.explain">{{config.explain}}</nz-form-extra>
     <nz-form-explain
         *ngIf="formGroup.get(config.name).dirty && formGroup.get(config.name).errors || formGroup.get(config.name).pending ">
@@ -27,9 +36,3 @@
         </ng-container>
     </nz-form-explain>
 </nz-form-control>
-<ng-template #suffixTemplate>
-    <i nz-icon type="close-circle" theme="fill"></i>
-</ng-template>
-<ng-template #suffixButton>
-    <button nz-button (click)="getData()" nzType="primary" nzSize="'default'" nzSearch>获取数据</button>
-  </ng-template>

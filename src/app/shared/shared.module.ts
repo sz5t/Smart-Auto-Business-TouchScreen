@@ -107,6 +107,7 @@ import { CnFormSelectGridMultipleComponent } from './components/cn-form-select-g
 import { CnGridSelectGridMultipleComponent } from './components/cn-grid-select-grid-multiple/cn-grid-select-grid-multiple.component';
 import { TsToolbarComponent } from './business/ts-toolbar/ts-toolbar.component';
 import { TsDataTableComponent } from './business/ts-data-table/ts-data-table.component';
+import { CnFormElectronicScaleComponent } from '@shared/components/cn-form-electronic-scale/cn-form-electronic-scale.component';
 
 
 const THIRDMODULES = [
@@ -208,7 +209,8 @@ const COMPONENTS = [
     TsDataTableComponent,
     BsnDetailListComponent,
     BsnTagSelectComponent,
-    BsnTagComponent
+    BsnTagComponent,
+    CnFormElectronicScaleComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,

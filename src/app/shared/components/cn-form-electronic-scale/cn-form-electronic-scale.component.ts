@@ -72,7 +72,7 @@ export class CnFormElectronicScaleComponent implements OnInit {
         }
       ]
     }
-    
+
     this.selectoptions = await this.load(ajaxConfig);
     this.select = this.selectoptions[0].value;
   }
@@ -104,7 +104,7 @@ export class CnFormElectronicScaleComponent implements OnInit {
 
   public showModal() {
     const that = this;
-    console.log(this.config.wsconfig);
+
     if (this.isEQUIPMENT) {
       let wsconfig;
       this.selectoptions.forEach(element => {
@@ -113,6 +113,7 @@ export class CnFormElectronicScaleComponent implements OnInit {
         }
       });
       // const wsconfig = this.config.wsconfig ? this.config.wsconfig : 'ws://127.0.0.1:8086/ElectronicScale';
+      console.log(wsconfig);
       const ws = new WebSocket(wsconfig);
       ws.onopen = function () {
         // Web Socket 已连接上，使用 send() 方法发送数据

@@ -2,35 +2,33 @@
     {{config.label}}
 </nz-form-label>
 <nz-form-control [formGroup]="formGroup" [nzSpan]="config.controlSize">
-    <nz-input-group
-        nzAddOnAfterIcon="{{config.addOnAfterIcon}}"
-        nzAddOnBeforeIcon="{{config.addOnBeforeIcon}}"
-        [nzCompact]="false"
-        [nzSize]="'default'"
-        [nzSuffix]="suffixTemplate"
-        [nzPrefixIcon]="config.perfix"
+    <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate" [nzSuffix]="suffixTemplate" nzAddOnAfterIcon="{{config.addOnAfterIcon}}"
+        nzAddOnBeforeIcon="{{config.addOnBeforeIcon}}" [nzCompact]="false" [nzSize]="'default'" [nzPrefixIcon]="config.perfix"
         nzSearch>
-        <input nz-input
-        (blur)="onblur($event,'end')"
-               type="{{config.inputType}}"
-               formControlName="{{config.name}}"
-               [nzSize]="config.size"
-               placeholder="{{config.placeholder}}"
-               disabled="{{config.disabled}}"
-               [(ngModel)]="model" (keyup)="onKeyPress($event)"/>
+        <!--  [nzAddOnAfter]="suffixTemplate"-->
+        <input nz-input (blur)="onblur($event,'end')" type="{{config.inputType}}" formControlName="{{config.name}}" [nzSize]="config.size"
+            placeholder="{{config.placeholder}}" disabled="{{config.disabled}}" [(ngModel)]="model" (keyup)="onKeyPress($event)"
+        />
 
     </nz-input-group>
     <nz-form-extra *ngIf="config.explain">{{config.explain}}</nz-form-extra>
-    <nz-form-explain
-        *ngIf="formGroup.get(config.name).dirty && formGroup.get(config.name).errors || formGroup.get(config.name).pending ">
+    <nz-form-explain *ngIf="formGroup.get(config.name).dirty && formGroup.get(config.name).errors || formGroup.get(config.name).pending ">
         <ng-container *ngFor="let valid of config.validations">
             <span style="margin-top:3px" *ngIf="formGroup.get(config.name).hasError(valid.validator.toLowerCase())">{{valid.errorMessage}}</span>
         </ng-container>
     </nz-form-explain>
 </nz-form-control>
+<ng-template #addOnBeforeTemplate>
+    <nz-select [ngModel]="select">
+        <ng-container *ngFor="let option of selectoptions">
+            <nz-option [nzLabel]="option.name" [nzValue]="option.value"></nz-option>
+        </ng-container>
+    </nz-select>
+</ng-template>
 <ng-template #suffixTemplate>
     <!-- <i nz-icon type="close-circle" theme="fill"></i> -->
-    <button nz-button nzSearch [nzType]="'default'" (click)="showModal()" style="height: 32px;">
+    <i nz-icon type="edit" theme="outline" (click)="showModal()"></i>
+    <!--   <button nz-button nzSearch [nzType]="'default'" (click)="showModal()" style="height: 32px;">
         <i nz-icon type="edit" theme="outline"></i>
-    </button>
+    </button> -->
 </ng-template>

@@ -1,5 +1,8 @@
 import { FormGroup } from '@angular/forms';
 import { Component, Input, OnInit, EventEmitter, Output } from '@angular/core';
+import { ApiService } from '@core/utility/api-service';
+import { CommonTools } from '@core/utility/common-tools';
+import { CacheService } from '@delon/cache';
 
 @Component({
   selector: 'cn-form-electronic-scale',
@@ -20,26 +23,58 @@ import { Component, Input, OnInit, EventEmitter, Output } from '@angular/core';
     .anticon-close-circle:active {
       color: #666;
     }
+    
+    i {
+      cursor: pointer;
+    }
+  
     `
   ]
 })
 export class CnFormElectronicScaleComponent implements OnInit {
   @Input() public config;
   @Input() public formGroup: FormGroup;
+
+  @Input() public value;
+  @Input() public bsnData;
+  @Input() public rowData;
+  @Input() public dataSet;
   @Output()
   public updateValue = new EventEmitter();
-
+  public selectoptions = [];
+  public select;
   public model;
-  constructor(
+  public isEQUIPMENT = false;
+  constructor(private apiService: ApiService,
+    private cacheService: CacheService,
   ) { }
 
-  public ngOnInit() {
+  public async ngOnInit() {
     if (!this.config['disabled']) {
       this.config['disabled'] = false;
     }
     if (!this.config['readonly']) {
       this.config['readonly'] = false;
     }
+    const ajaxConfig = {
+      url: 'common/getEquipment',
+      ajaxType: 'get',
+      params: [
+        {
+          'name': 'typeCode',
+          'type': 'value',
+          'value': this.config['Equipment']
+        },
+        {
+          'name': 'clientIp',
+          'type': 'cacheValue',
+          'valueName': 'loginIp'
+        }
+      ]
+    }
+    
+    this.selectoptions = await this.load(ajaxConfig);
+    this.select = this.selectoptions[0].value;
   }
 
   public valueChange(name?) {
@@ -69,26 +104,85 @@ export class CnFormElectronicScaleComponent implements OnInit {
 
   public showModal() {
     const that = this;
-    const wsconfig = this.config.wsconfig ? this.config.wsconfig : 'ws://127.0.0.1:8086/ElectronicScale';
-    const ws = new WebSocket(wsconfig);
-    ws.onopen = function() {
+    console.log(this.config.wsconfig);
+    if (this.isEQUIPMENT) {
+      let wsconfig;
+      this.selectoptions.forEach(element => {
+        if (element['value'] === this.select) {
+          wsconfig = element['wsconfig'];
+        }
+      });
+      // const wsconfig = this.config.wsconfig ? this.config.wsconfig : 'ws://127.0.0.1:8086/ElectronicScale';
+      const ws = new WebSocket(wsconfig);
+      ws.onopen = function () {
         // Web Socket 已连接上，使用 send() 方法发送数据
         // 连接服务端socket
         ws.send('客户端以上线');
         console.log('数据发送中...');
-    };
-    
-    ws.onmessage = function (evt) { 
+      };
+
+      ws.onmessage = function (evt) {
         const received_msg = evt.data;
         console.log('数据已接收...', received_msg);
-        that.model =  received_msg;
+        that.model = received_msg;
         that.assemblyValue();
 
-    };
-    ws.onclose = function() { 
+      };
+      ws.onclose = function () {
         // 关闭 websocket
-        console.log('连接已关闭...'); 
+        console.log('连接已关闭...');
+      };
+    }
+
+  }
+
+
+
+  public isString(obj) {
+    // 判断对象是否是字符串
+    return Object.prototype.toString.call(obj) === '[object String]';
+  }
+
+  public async load(ajaxConfig) {
+    let m = [{ name: '未找到设备', value: '0' }];
+    const url = this._buildURL(ajaxConfig.url);
+    const params = {
+      ...this._buildParameters(ajaxConfig.params)
     };
+    const loadData = await this._load(url, params);
+    if (loadData && loadData.status === 200 && loadData.isSuccess) {
+      if (loadData.data.length > 0) {
+        loadData.data.forEach(element => {
+          element['value'] = element['Id'];
+          element['name'] = element['name'];
+          element['wsconfig'] = 'ws://' + element['webSocketIp'] + ':' + element['webSocketPort'] + '/' + element['connEntry'];
+        });
+        m = loadData.data;
+        this.isEQUIPMENT = true;
+      }
+    }
+    return m;
+  }
+  private async _load(url, params) {
+    return this.apiService.get(url, params).toPromise();
+  }
+  private _buildURL(ajaxUrl) {
+    let url = '';
+    if (ajaxUrl && this.isString(ajaxUrl)) {
+      url = ajaxUrl;
+    } else if (ajaxUrl) {
+    }
+    return url;
+  }
+  private _buildParameters(paramsConfig) {
+    let params = {};
+    if (paramsConfig) {
+      params = CommonTools.parametersResolver({
+        params: paramsConfig,
+        cacheValue: this.cacheService
+      });
+    }
+    return params;
   }
 
 }

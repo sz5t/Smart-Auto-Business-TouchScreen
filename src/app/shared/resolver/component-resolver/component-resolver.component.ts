@@ -39,6 +39,7 @@ import { WfDesignComponent } from '@shared/work-flow/wf-design/wf-design.compone
 import { BsnCarouselComponent } from '@shared/business/bsn-carousel/bsn-carousel';
 import { BsnAsyncTreeTableComponent } from '@shared/business/bsn-treeTable/bsn-treeTable.component';
 import { TsToolbarComponent } from '@shared/business/ts-toolbar/ts-toolbar.component';
+import { BsnScreenShotComponent } from '@shared/business/bsn-screen-shot/bsn-screen-shot.component';
 const components: { [type: string]: Type<any> } = {
     code_edit: CnCodeEditComponent,
     bsnTable: BsnTableComponent,
@@ -63,7 +64,8 @@ const components: { [type: string]: Type<any> } = {
     tsTable: TsDataTableComponent,
     bsnDetailList: BsnDetailListComponent,
     bsnTagSelect: BsnTagSelectComponent,
-    bsnTag: BsnTagComponent
+    bsnTag: BsnTagComponent,
+    bsnScreenShot: BsnScreenShotComponent
 };
 @Component({
     // tslint:disable-next-line:component-selector

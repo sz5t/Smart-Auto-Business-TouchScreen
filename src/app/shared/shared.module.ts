@@ -109,6 +109,7 @@ import { TsToolbarComponent } from './business/ts-toolbar/ts-toolbar.component';
 import { TsDataTableComponent } from './business/ts-data-table/ts-data-table.component';
 import { CnFormInputSensorComponent } from './components/cn-form-input-sensor/cn-form-input-sensor.component';
 import { CnFormElectronicScaleComponent } from '@shared/components/cn-form-electronic-scale/cn-form-electronic-scale.component';
+import { BsnScreenShotComponent } from './business/bsn-screen-shot/bsn-screen-shot.component';
 
 
 const THIRDMODULES = [
@@ -212,7 +213,9 @@ const COMPONENTS = [
     BsnTagSelectComponent,
     BsnTagComponent,
     CnFormInputSensorComponent,
-    CnFormElectronicScaleComponent
+    CnFormElectronicScaleComponent,
+    BsnScreenShotComponent
+    
 ];
 const DIRECTIVES = [
     FormResolverDirective,

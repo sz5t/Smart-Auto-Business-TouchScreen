@@ -1,42 +1,39 @@
-import { SysResource } from "@core/utility/sys-resource";
 
-import { SettingsService, TitleService, MenuService } from "@delon/theme";
-import { Component, OnDestroy, Inject, Optional, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
-import { NzMessageService, NzModalService } from "ng-zorro-antd";
+import { SettingsService, TitleService, MenuService } from '@delon/theme';
+import { Component, OnDestroy, Inject, Optional, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import {
     SocialService,
     TokenService,
     DA_SERVICE_TOKEN,
     ITokenModel
-} from "@delon/auth";
-import { ReuseTabService } from "@delon/abc";
-import { environment } from "@env/environment";
-import { OnlineUser, UserLogin } from "../../../model/APIModel/OnlineUser";
-import { AppUser, CacheInfo } from "../../../model/APIModel/AppUser";
-import { APIResource } from "@core/utility/api-resource";
-import { CacheService } from "@delon/cache";
-import { ApiService } from "@core/utility/api-service";
+} from '@delon/auth';
+import { ReuseTabService } from '@delon/abc';
+import { UserLogin } from '../../../model/APIModel/OnlineUser';
+import { CacheInfo } from '../../../model/APIModel/AppUser';
+import { CacheService } from '@delon/cache';
+import { ApiService } from '@core/utility/api-service';
 // import { Md5 } from 'ts-md5/dist/md5';
-import { HttpClient } from "@angular/common/http";
-import { SystemResource } from "@core/utility/system-resource";
+import { HttpClient } from '@angular/common/http';
+import { SystemResource } from '@core/utility/system-resource';
 
 @Component({
-    selector: "passport-login",
-    templateUrl: "./login.component.html",
-    styleUrls: ["./login.component.less"],
+    selector: 'passport-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.less'],
     providers: [SocialService]
 })
 export class UserLoginComponent implements OnInit, OnDestroy {
-    form: FormGroup;
-    error = "";
-    errorApp = "";
+    public form: FormGroup;
+    public error = '';
+    public errorApp = '';
     // 登录配置/解析系统的标识：0配置平台，1解析平台
-    type = 0;
-    loading = false;
+    public type = 0;
+    public loading = false;
     // 当前选择登录系统的配置项
-    _currentSystem;
+    public _currentSystem;
 
     constructor(
         fb: FormBuilder,
@@ -45,9 +42,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
         private cacheService: CacheService,
         private apiService: ApiService,
         public msg: NzMessageService,
-        private modalSrv: NzModalService,
-        private settingsService: SettingsService,
-        private socialService: SocialService,
+        modalSrv: NzModalService,
         private titleService: TitleService,
         private menuService: MenuService,
         @Optional()
@@ -68,9 +63,9 @@ export class UserLoginComponent implements OnInit, OnDestroy {
         this.menuService.clear();
     }
 
-    ngOnInit(): void {
-        this.titleService.setTitle("SmartOne");
-        this.cacheService.set("AppName", "SmartOne");
+    public ngOnInit(): void {
+        this.titleService.setTitle('SmartOne');
+        this.cacheService.set('AppName', 'SmartOne');
     }
     // region: fields
 
@@ -89,13 +84,13 @@ export class UserLoginComponent implements OnInit, OnDestroy {
 
     // endregion
 
-    switchLogin(ret: any) {
+    public switchLogin(ret: any) {
         this.type = ret.index;
         if (ret.index === 0) {
-            this.titleService.setTitle("SmartOne配置平台");
+            this.titleService.setTitle('SmartOne配置平台');
         } else {
-            this.titleService.setTitle("SmartOne运行平台");
-            this.cacheService.set("AppName", "SmartOne");
+            this.titleService.setTitle('SmartOne运行平台');
+            this.cacheService.set('AppName', 'SmartOne');
         }
     }
 
@@ -115,14 +110,13 @@ export class UserLoginComponent implements OnInit, OnDestroy {
 
     // endregion
 
-    submit() {
-        this.error = "";
-        this.errorApp = "";
+    public submit() {
+        this.error = '';
+        this.errorApp = '';
         this.loading = true;
         this.reuseTabService.clear();
 
         const userLogin = new UserLogin();
-        const cacheInfo = new CacheInfo();
         // 重置表单状态
         this._remarkLoginForm();
         // 构建用户登录信息
@@ -191,11 +185,11 @@ export class UserLoginComponent implements OnInit, OnDestroy {
         this.login(userLogin);
     }
 
-    async login(userLogin) {
+    public async login(userLogin) {
         const user = await this._userLogin(userLogin);
         if (user && user.status === 200 && user.isSuccess) {
             // console.log(user.data);
-            this.cacheService.set("userInfo", user.data);
+            this.cacheService.set('userInfo', user.data);
             const token: ITokenModel = { token: user.data.token };
             this.tokenService.set(token); // 后续projectId需要进行动态获取
 
@@ -205,14 +199,14 @@ export class UserLoginComponent implements OnInit, OnDestroy {
                 // 配置平台
                 const localAppDataResult = await this._getLocalAppData();
                 menus = localAppDataResult.menu;
-                url = "/dashboard/v1";
+                url = '/dashboard/v1';
             } else {
                 // 解析平台
                 // const projModule = await this._loadProjectModule();
                 menus = [
                     {
-                        text: "功能导航",
-                        i18n: "",
+                        text: '功能导航',
+                        i18n: '',
                         group: true,
                         hideInBreadcrumb: true,
                         children: []
@@ -220,10 +214,10 @@ export class UserLoginComponent implements OnInit, OnDestroy {
                 ];
                 // menus[0].children = this.arrayToTree(projModule.data, null);
                 menus[0].children = user.data.modules;
-                url = "/";
+                url = '/';
             }
 
-            this.cacheService.set("Menus", menus);
+            this.cacheService.set('Menus', menus);
             this.menuService.add(menus);
 
             this.router.navigate([`${url}`]);
@@ -233,16 +227,16 @@ export class UserLoginComponent implements OnInit, OnDestroy {
         this.loading = false;
     }
 
-    async _loadProjectModule() {
+    public async _loadProjectModule() {
         return this.apiService
             .get(
-                "common/ComProjectModule/null/ComProjectModule?refProjectId=7fe971700f21d3a796d2017398812dcd&_recursive=true&_deep=3"
+                'common/ComProjectModule/null/ComProjectModule?refProjectId=7fe971700f21d3a796d2017398812dcd&_recursive=true&_deep=3'
             )
             .toPromise();
     }
 
-    async _userLogin(userLogin) {
-        return this.apiService.post("common/login", userLogin).toPromise();
+    public async _userLogin(userLogin) {
+        return this.apiService.post('common/login', userLogin).toPromise();
     }
 
     // async _getOnlineUser(onlineUser) {
@@ -278,12 +272,12 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     //         .toPromise();
     // }
 
-    async _getLocalAppData() {
+    public async _getLocalAppData() {
         return this.httpClient
             .get<any>(
                 // environment.SERVER_URL
                 SystemResource.localResource.url 
-                + "/assets/app-data.json"
+                + '/assets/app-data.json'
             )
             .toPromise();
     }
@@ -294,11 +288,11 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     //         .toPromise();
     // }
 
-    async _getAppConfig() {
-        return this.httpClient.get("assets/app-config.json").toPromise();
+    public async _getAppConfig() {
+        return this.httpClient.get('assets/app-config.json').toPromise();
     }
 
-    _buildOnlineUser(onlineUser: UserLogin) {
+    public _buildOnlineUser(onlineUser: UserLogin) {
         if (this.type === 0) {
             onlineUser.loginName = this.userName.value;
             onlineUser.loginPwd = this.password.value;
@@ -307,7 +301,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
             // environment.COMMONCODE = APIResource.SettingCommonCode;
 
             this.cacheService.set(
-                "currentConfig",
+                'currentConfig',
                 SystemResource.settingSystem
             );
         } else {
@@ -316,11 +310,11 @@ export class UserLoginComponent implements OnInit, OnDestroy {
             // Md5.hashStr(this.uPassword.value).toString().toUpperCase();
             // environment.SERVER_URL = APIResource.LoginUrl;
             // environment.COMMONCODE = APIResource.LoginCommonCode;
-            this.cacheService.set("currentConfig", SystemResource.appSystem);
+            this.cacheService.set('currentConfig', SystemResource.appSystem);
         }
     }
 
-    _remarkLoginForm() {
+    public _remarkLoginForm() {
         if (this.type === 0) {
             // 配置平台
             this.userName.markAsDirty();
@@ -338,39 +332,39 @@ export class UserLoginComponent implements OnInit, OnDestroy {
         }
     }
 
-    appPerMerge(data) {
-        const menus: any[] = this.cacheService.getNone("Menus");
-        if (data["FuncResPermission"]) {
+    public appPerMerge(data) {
+        const menus: any[] = this.cacheService.getNone('Menus');
+        if (data['FuncResPermission']) {
             const permis =
-                data["FuncResPermission"].SubFuncResPermissions[0]
+                data['FuncResPermission'].SubFuncResPermissions[0]
                     .SubFuncResPermissions;
             this.seachModule(menus, permis);
-            this.cacheService.set("Menus", menus);
+            this.cacheService.set('Menus', menus);
 
             this.menuService.add(menus);
-            this.router.navigate(["/dashboard/analysis"]);
+            this.router.navigate(['/dashboard/analysis']);
         } else {
-            this.showError("该用户没有任何权限");
+            this.showError('该用户没有任何权限');
         }
     }
 
-    seachModule(menus, data) {
+    public seachModule(menus, data) {
         menus.forEach(item => {
             const strPer = JSON.stringify(this.searchAppper(item.id, data));
 
             const subStr = strPer.substring(
-                strPer.indexOf("[{"),
-                strPer.lastIndexOf("}]") + 2
+                strPer.indexOf('[{'),
+                strPer.lastIndexOf('}]') + 2
             );
             if (subStr.length > 5) {
                 const Perer = JSON.parse(subStr);
                 switch (Perer[0].Permission) {
-                    case "Invisible":
+                    case 'Invisible':
                         // console.log(111, item.hide);
                         item.hide = true;
                         // console.log(222, item.hide);
                         break;
-                    case "Permitted":
+                    case 'Permitted':
                         // console.log(333, item.hide);
                         item.hide = false;
                         // console.log(444, item.hide);
@@ -387,7 +381,7 @@ export class UserLoginComponent implements OnInit, OnDestroy {
         });
     }
 
-    searchAppper(moduleId, data): string {
+    public searchAppper(moduleId, data): string {
         const OpPer: any = [];
         if (data && data.length > 0) {
             data.forEach(item => {
@@ -406,16 +400,16 @@ export class UserLoginComponent implements OnInit, OnDestroy {
         return OpPer;
     }
 
-    showError(errmsg) {
+    public showError(errmsg) {
         if (this.type === 0) this.error = errmsg;
         else this.errorApp = errmsg;
     }
 
-    ngOnDestroy(): void {
+    public ngOnDestroy(): void {
         // if (this.interval$) clearInterval(this.interval$);
     }
 
-    arrayToTree(data, parentid): any[] {
+    public arrayToTree(data, parentid): any[] {
         const result = [];
         let temp;
         for (let i = 0; i < data.length; i++) {
@@ -424,15 +418,15 @@ export class UserLoginComponent implements OnInit, OnDestroy {
                     text: data[i].name,
                     id: data[i].Id,
                     // group: JSON.parse(data[i].ConfigData).group,
-                    link: data[i].url ? data[i].url : "",
+                    link: data[i].url ? data[i].url : '',
                     icon: data[i].icon,
                     hide: data[i].isEnabled ? false : true
                 };
                 temp = this.arrayToTree(data[i].children, data[i].Id);
                 if (temp.length > 0) {
-                    obj["children"] = temp;
+                    obj['children'] = temp;
                 } else {
-                    obj["isLeaf"] = true;
+                    obj['isLeaf'] = true;
                 }
                 result.push(obj);
             }

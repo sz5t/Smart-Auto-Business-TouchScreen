@@ -167,12 +167,16 @@ export class CnFormBase extends CnComponentBase {
 
     public initControls(formConfig) {
         const controls = [];
-        formConfig.map(formItem => {
-            const items = formItem.controls.filter(({ type }) => {
-                return type !== 'button' && type !== 'submit';
+        if(formConfig) {
+            
+            formConfig.map(formItem => {
+                const items = formItem.controls.filter(({ type }) => {
+                    return type !== 'button' && type !== 'submit';
+                });
+                controls.push(...items);
             });
-            controls.push(...items);
-        });
+        }
+        
         return controls;
     }
     // 处理参数 liu

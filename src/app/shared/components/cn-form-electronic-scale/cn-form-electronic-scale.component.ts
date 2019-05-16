@@ -23,11 +23,11 @@ import { CacheService } from '@delon/cache';
     .anticon-close-circle:active {
       color: #666;
     }
-    
+
     i {
       cursor: pointer;
     }
-  
+
     `
   ]
 })
@@ -124,7 +124,8 @@ export class CnFormElectronicScaleComponent implements OnInit {
 
       ws.onmessage = function (evt) {
         const received_msg = evt.data;
-        console.log('数据已接收...', received_msg);
+        console.log(evt.data);
+        console.log('数据已接收...' + received_msg + '---' );
         that.model = received_msg;
         that.assemblyValue();
 

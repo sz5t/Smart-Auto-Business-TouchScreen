@@ -368,11 +368,11 @@ export class TsDataTableComponent extends CnComponentBase
                         return;
                     case BSN_COMPONENT_MODES.LINK:
                         this.linkToPage(option, '');
-                        return;     
+                        return;
                 }
             }
         });
-        // 通过配置中的组件关系类型设置对应的事件接受者 
+        // 通过配置中的组件关系类型设置对应的事件接受者
         // 表格内部状态触发接收器console.log(this.config);
         if (
             this.config.componentType &&
@@ -1373,7 +1373,7 @@ export class TsDataTableComponent extends CnComponentBase
                                  if (this.changeConfig_new[rowCasade][key]['cascadeValue'] ) {
                                      delete this.changeConfig_new[rowCasade][key]['cascadeValue'];
                                  }
-                               
+
                              } */
                                 if (caseItem['type'] === 'show') {
                                     if (caseItem['show']) {
@@ -1487,7 +1487,7 @@ export class TsDataTableComponent extends CnComponentBase
         // console.log('当前编辑缓存行内容', this.editCache[data.key].data);
 
 
-        //  开始解析 当前feild 的适配条件【重点】 参数 conditions  返回 true/false 
+        //  开始解析 当前feild 的适配条件【重点】 参数 conditions  返回 true/false
         // this.beforeOperation.handleOperationConditions([]);
 
         // 执行列事件
@@ -1500,15 +1500,15 @@ export class TsDataTableComponent extends CnComponentBase
 
     /**
      * 执行值变化触发的事件 liu 20181226
-     * @param data 
+     * @param data
      */
     public ExecEventByValueChange(data?) {
         const ss = {
             events: [  // 行事件、列事件
                 {
-                    // 首先 判断 onTrigger 什么类别触发，其次 ，看当前是新增、修改， 最后 执行onEvent 
+                    // 首先 判断 onTrigger 什么类别触发，其次 ，看当前是新增、修改， 最后 执行onEvent
                     name: '', // 名称唯一，为日后扩充权限做准备
-                    onTrigger: 'onColumnValueChange',  // 什么条件触发  例如：oncolumnValueChange   onSelectedRow  on CheckedRow    
+                    onTrigger: 'onColumnValueChange',  // 什么条件触发  例如：oncolumnValueChange   onSelectedRow  on CheckedRow
                     type: 'EditableSave',  // 需要区分 新增 修改
                     actiontype: 'add、update', // 不满足条件的 均可
                     onEvent: [
@@ -1524,7 +1524,7 @@ export class TsDataTableComponent extends CnComponentBase
                                             {
                                                 name: 'enabled',
                                                 value: '[0-1]',
-                                                checkType: 'regexp'  //  'value'  'regexp' 'tempValue' 'initValue'  'cacheValue' 
+                                                checkType: 'regexp'  //  'value'  'regexp' 'tempValue' 'initValue'  'cacheValue'
                                             }
                                         ]
                                     ],
@@ -3010,12 +3010,13 @@ export class TsDataTableComponent extends CnComponentBase
   */
     private showDrawer(dialog, handleData?) {
         const footer = [];
+        let drawer;
         this._http.getLocalData(dialog.layoutName).subscribe(data => {
             const selectedRow = this._selectRow ? this._selectRow : {};
             const tmpValue = this.tempValue ? this.tempValue : {};
             const handle = handleData ? handleData : {};
             // const checkedIds = {'_checkedIds': this._getCheckItemsId() ? this._getCheckItemsId() : ''};
-            const drawer = this.baseDrawer.create({
+            drawer = this.baseDrawer.create({
                 // nzTitle: dialog.title,
                 nzWidth: dialog.width,
                 nzContent: LayoutResolverComponent,
@@ -3026,15 +3027,17 @@ export class TsDataTableComponent extends CnComponentBase
                 //     'padding' : '8px',
                 //     'background': 'hsla(0,0%,100%,.3)',
                 //     'overflow': 'hidden',
-                //     'scroll-y': true 
+                //     'scroll-y': true
                 // },
                 nzClosable: false,
                 nzContentParams: {
                     permissions: this.permissions,
                     config: data,
                     initData: { ...tmpValue, ...selectedRow, ...handle, ...this.initValue }
-                },
+                }
             });
+
+
 
             drawer.afterOpen.subscribe(() => {
 
@@ -3042,7 +3045,7 @@ export class TsDataTableComponent extends CnComponentBase
 
             drawer.afterClose.subscribe(() => {
                 this.load();
-                
+
             });
 
         });
@@ -3125,7 +3128,7 @@ export class TsDataTableComponent extends CnComponentBase
     }
     // "formatter": [
     //     {
-    //         caseValue: { type: "selectValue", valueName: "value", regular: "^1$" }, // 哪个字段的值触发，正则表达 type：selectValue （当前值） selectObjectValue（当前选中对象）  
+    //         caseValue: { type: "selectValue", valueName: "value", regular: "^1$" }, // 哪个字段的值触发，正则表达 type：selectValue （当前值） selectObjectValue（当前选中对象）
     //         "value": "起草",
     //         "bgcolor": "",
     //         "fontcolor": "text-blue",
@@ -3376,10 +3379,10 @@ export class TsDataTableComponent extends CnComponentBase
     public _isArray(a) {
         return (Object.prototype.toString.call(a) === '[object Array]');
     }
-    // liu 2018 12 04 
+    // liu 2018 12 04
     public valueChangeSearch(data) {
         // const index = this.dataList.findIndex(item => item.key === data.key);
-       
+
         if (data.data === null) {
             if (this.search_Row.hasOwnProperty(data.name)) {
                 delete this.search_Row[data.name];
@@ -3650,7 +3653,7 @@ export class TsDataTableComponent extends CnComponentBase
                                  if (this.changeConfig_newSearch[rowCasade][key]['cascadeValue'] ) {
                                      delete this.changeConfig_newSearch[rowCasade][key]['cascadeValue'];
                                  }
-                               
+
                              } */
                                 if (caseItem['type'] === 'show') {
                                     if (caseItem['show']) {
@@ -3835,9 +3838,9 @@ export class TsDataTableComponent extends CnComponentBase
         ],
         events: [  // 行事件、列事件
             {
-                // 首先 判断 onTrigger 什么类别触发，其次 ，看当前是新增、修改， 最后 执行onEvent 
+                // 首先 判断 onTrigger 什么类别触发，其次 ，看当前是新增、修改， 最后 执行onEvent
                 name: '', // 名称唯一，为日后扩充权限做准备
-                onTrigger: 'onColumnValueChange',  // 什么条件触发  例如：oncolumnValueChange   onSelectedRow  on CheckedRow    
+                onTrigger: 'onColumnValueChange',  // 什么条件触发  例如：oncolumnValueChange   onSelectedRow  on CheckedRow
                 type: 'EditableSave',  // 需要区分 新增 修改
                 actiontype: 'add、update', // 不满足条件的 均可
                 onEvent: [
@@ -3852,7 +3855,7 @@ export class TsDataTableComponent extends CnComponentBase
                                         {
                                             name: 'enabled',
                                             value: '[0-1]',
-                                            checkType: 'regexp'  //  'value'  'regexp' 'tempValue' 'initValue'  'cacheValue' 
+                                            checkType: 'regexp'  //  'value'  'regexp' 'tempValue' 'initValue'  'cacheValue'
                                         }
                                     ]
                                 ],
@@ -3980,7 +3983,7 @@ export class TsDataTableComponent extends CnComponentBase
 
     // tslint:disable-next-line:member-ordering
     public toolbarConfig = [];
-    //  获取event 事件的配置 
+    //  获取event 事件的配置
     public GetToolbarEvents() {
         if (this.config.toolbarEvent && Array.isArray(this.config.toolbarEvent)) {
             this.config.toolbarEvent.forEach(item => {
@@ -4210,24 +4213,24 @@ export class TsDataTableComponent extends CnComponentBase
      */
     public th_onmousemove(event?, col?) {
         // console.log('th_onmousemove');
-        // 更改鼠标样式 
+        // 更改鼠标样式
         if (event.offsetX > event.target.offsetWidth - 10) {
             event.target.style.cursor = 'col-resize';
         } else {
             event.target.style.cursor = 'default';
         }
 
-        // 取出暂存的Table Cell 
+        // 取出暂存的Table Cell
         if (this.tTD === undefined) {
             this.tTD = event.target;
         }
-        // 调整宽度 
+        // 调整宽度
         if (this.tTD.mouseDown != null && this.tTD.mouseDown === true) {
             this.tTD.style.cursor = 'default';
             console.log('原来宽度', this.tTD.oldWidth, col.width);
             if (this.tTD.oldWidth + (event.x - this.tTD.oldX) > 0)
                 this.tTD.width = this.tTD.oldWidth + (event.x - this.tTD.oldX);
-            // 调整列宽 
+            // 调整列宽
             this.tTD.style.width = this.tTD.width;
             this.tTD.style.cursor = 'col-resize';
             col.width = this.tTD.width + 'px';
@@ -4438,7 +4441,7 @@ export class TsDataTableComponent extends CnComponentBase
 
     /**
  * 执行值变化触发的事件 liu 20181226
- * @param data 
+ * @param data
  */
     public ExecEventByTitleClick(data?) {
         console.log(data);

@@ -21,6 +21,7 @@ import { ApiService } from '@core/utility/api-service';
 // import { Md5 } from 'ts-md5/dist/md5';
 import { HttpClient } from '@angular/common/http';
 import { SystemResource } from '@core/utility/system-resource';
+import { CommonTools } from '@core/utility/common-tools';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -38,6 +39,27 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     // 当前选择登录系统的配置项
     private _currentSystem;
     private isCardLogin = true;
+    private ajax = {
+        url: 'open/getEquipment',
+        ajaxType: 'get',
+        params: [
+          {
+            'name': 'typeCode',
+            'type': 'value',
+            'value': 'CARD'
+          },
+          {
+            'name': 'clientIp',
+            'type': 'value',
+            'value': ''
+          }
+        ]
+    }
+    private ipConfig = {
+        url: 'utils/getClientIp',
+        ajaxType: 'get',
+        params: []
+    };
     constructor(
         fb: FormBuilder,
         private router: Router,
@@ -69,62 +91,119 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public ngOnInit(): void {
-        
         this.titleService.setTitle('SmartOne');
         this.cacheService.set('AppName', 'SmartOne');
 
-        this.cacheService.set(
-            'currentConfig',
-            SystemResource.settingSystem
-        );
+        this.cacheService.set('currentConfig', SystemResource.settingSystem);
     }
 
-    public ngAfterViewInit(): void {
+    public async  ngAfterViewInit() {
+
         const that = this;
-        const ws = new WebSocket('ws://127.0.0.1:8086/Laputa');
-        ws.onopen = function() {
+        const clientIp = await this.loadClientIP();
+        this.ajax.params[1]['value'] = clientIp;
+        const wsString = await this.loadWsConfig();
+        console.log(wsString);
+        const ws = new WebSocket(wsString);
+        ws.onopen = function () {
             // Web Socket 已连接上，使用 send() 方法发送数据
             // 连接服务端socket
             ws.send('客户端以上线');
             console.log('数据发送中...');
         };
-        
-        ws.onmessage = function (evt) { 
+        ws.onmessage = function (evt) {
             const received_msg = evt.data;
             console.log('数据已接收...', received_msg);
-            that.apiService.login('common/card/login',  {cardNo: received_msg})
-            .toPromise()
-            .then(user => {
-                if (user.isSuccess) {
-                    
-                    // console.log(user.data);
-                    that.cacheService.set('userInfo', user.data);
-                    const token: ITokenModel = { token: user.data.token };
-                    that.tokenService.set(token); // 后续projectId需要进行动态获取
-                    let url = user.data.modules[0].link;
-                    // if (!that.isCardLogin) {
-                    //     // 配置平台
-                    //     url = 
-                    // } else {
-                    //     // 解析平台
-                    //     url = '/';
-                    // }
-                    // this.cacheService.set('Menus', menus);
-                    // this.menuService.add(menus);
-                    that.router.navigate([`${url}`]);
-                } else {
-                    that.showError(user.message);
-                    ws.send('reload');
-                }
-                
-            });
-            
+            that.apiService.login('common/card/login', { cardNo: received_msg })
+                .toPromise()
+                .then(user => {
+                    if (user.isSuccess) {
+
+                        // console.log(user.data);
+                        that.cacheService.set('userInfo', user.data);
+                        const token: ITokenModel = { token: user.data.token };
+                        that.tokenService.set(token); // 后续projectId需要进行动态获取
+                        let url = user.data.modules[0].link;
+                        // if (!that.isCardLogin) {
+                        //     // 配置平台
+                        //     url =
+                        // } else {
+                        //     // 解析平台
+                        //     url = '/';
+                        // }
+                        // this.cacheService.set('Menus', menus);
+                        // this.menuService.add(menus);
+                        that.router.navigate([`${url}`]);
+                    } else {
+                        that.showError(user.message);
+                        ws.send('reload');
+                    }
+
+                });
+
         };
-        ws.onclose = function() { 
+        ws.onclose = function () {
             // 关闭 websocket
-            console.log('连接已关闭...'); 
+            console.log('连接已关闭...');
         };
     }
+
+    public isString(obj) {
+        // 判断对象是否是字符串
+        return Object.prototype.toString.call(obj) === '[object String]';
+    }
+
+    public async loadClientIP() {
+        let ip;
+        const url = this.ipConfig.url;
+        const loadData = await this._load(url, {});
+        if (loadData.isSuccess) {
+            ip = loadData.data.clientIp;
+        }
+        return ip;
+    }
+
+    public async loadWsConfig() {
+        let wsString;
+        const url = this._buildURL(this.ajax.url);
+        const params = {
+            ...this._buildParameters(this.ajax.params)
+        };
+        const loadData = await this._load(url, params);
+        if (loadData && loadData.status === 200 && loadData.isSuccess) {
+            if (loadData.data.length > 0) {
+                loadData.data.forEach(element => {
+                    wsString = 'ws://' + element['webSocketIp'] + ':' + element['webSocketPort'] + '/' + element['connEntry'];
+                    return true;
+                });
+            }
+        }
+        return wsString;
+    }
+
+
+    private async _load(url, params) {
+        return this.apiService.get(url, params).toPromise();
+    }
+    private _buildURL(ajaxUrl) {
+        let url = '';
+        if (ajaxUrl && this.isString(ajaxUrl)) {
+            url = ajaxUrl;
+        } else if (ajaxUrl) {
+        }
+        return url;
+    }
+    private _buildParameters(paramsConfig) {
+        let params = {};
+        if (paramsConfig) {
+            params = CommonTools.parametersResolver({
+                params: paramsConfig,
+                cacheValue: this.cacheService
+            });
+        }
+        return params;
+    }
+
 
     private chooseLogin() {
         this.isCardLogin = !this.isCardLogin;
@@ -251,7 +330,7 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
         return this.httpClient
             .get<any>(
                 // environment.SERVER_URL
-                SystemResource.localResource.url 
+                SystemResource.localResource.url
                 + '/assets/app-data.json'
             )
             .toPromise();

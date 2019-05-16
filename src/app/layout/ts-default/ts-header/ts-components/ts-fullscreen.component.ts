@@ -14,13 +14,13 @@ export class TsHeaderFullScreenComponent {
 
     @HostListener('window:resize')
     public _resize() {
-        this.status = screenfull.isFullscreen;
+        // this.status = screenfull.isFullscreen;
     }
 
     @HostListener('click')
     public _click() {
-        if (screenfull.enabled) {
-            screenfull.toggle();
-        }
+        // if (screenfull.enabled) {
+        //     screenfull.toggle();
+        // }
     }
 }

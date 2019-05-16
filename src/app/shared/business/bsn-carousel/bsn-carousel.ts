@@ -1,3 +1,4 @@
+import { template } from '@angular/core/src/render3';
 import { SystemResource } from '@core/utility/system-resource';
 import { CnComponentBase } from './../../components/cn-component-base';
 import {
@@ -28,13 +29,19 @@ import { NzCarouselComponent } from 'ng-zorro-antd';
     // tslint:disable-next-line:component-selector
     selector: 'bsn-carousel',
     template: `
+  
+  <nz-card nzBordered="false" [ngStyle]="{'width': config.width, 'background-color':'#ddd'}">
   <nz-spin [nzSpinning]="isLoading" nzTip='加载中...'>
     <nz-carousel #carousel [nzEffect]="'fade'" [nzAutoPlay]="config.autoPlay">
-    <div nz-carousel-content *ngFor="let img of imgList">
-        <img alt="{{img.alt}}" src="{{serverPath + img.src}}"/>
-    </div>
+        <div nz-carousel-content *ngFor="let img of imgList">
+            <img alt="{{img.alt}}" src="{{serverPath + img.src}}"/>
+        </div>
     </nz-carousel>
-  </nz-spin>
+    </nz-spin>
+    </nz-card>
+    
+    
+  
   
     `,
     styleUrls: [`./bsn-carousel.less`]
@@ -45,6 +52,8 @@ export class BsnCarouselComponent extends CnComponentBase
     public config;
     @Input()
     public initData;
+    @Input() 
+    public tempValue;
     @ViewChild('carousel')
     private carousel: NzCarouselComponent;
     public isLoading = true;
@@ -70,6 +79,9 @@ export class BsnCarouselComponent extends CnComponentBase
             this.initValue = this.initValue;
         }
         this.resolverRelation();
+        if (this.config.componentType.own) {
+            this.load();
+        }
     }
 
     public load() {
@@ -94,7 +106,7 @@ export class BsnCarouselComponent extends CnComponentBase
                 setTimeout(() => {
                     this.isLoading = false;
                 })
-                this.carousel.activeIndex = 1;
+                // this.carousel.activeIndex = 0;
                 this.carousel.goTo(0);
             }
         });
@@ -167,9 +179,7 @@ export class BsnCarouselComponent extends CnComponentBase
     }
 
     public ngAfterViewInit() {
-        if (this.config.componentType.owner) {
-            this.load();
-        }
+        
         
     }
 

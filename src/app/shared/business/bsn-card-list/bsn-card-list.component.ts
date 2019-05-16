@@ -90,8 +90,8 @@ export class BsnCardListComponent extends CnComponentBase
             modal: this.baseModal,
             tempValue: this.tempValue,
             initValue: this.initValue,
-            cacheValue: this.cacheValue.get('userInfo').value
-                ? this.cacheValue.get('userInfo').value
+            cacheValue: this.cacheValue.getNone('userInfo')
+                ? this.cacheValue.getNone('userInfo').value
                 : {},
             apiResource: this.apiResource
         });

@@ -8,7 +8,7 @@ import { ScrollService, MenuService, SettingsService } from '@delon/theme';
     templateUrl: './ts-default.component.html',
     styles: [`
     .ts-content {
-        margin:64px 5px 5px 5px;
+        margin:0;
     }
         
     `]

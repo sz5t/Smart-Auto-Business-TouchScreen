@@ -32,8 +32,8 @@ export class DynamicTemplateComponent implements OnInit, OnDestroy {
             this._http.getLocalData(params.templateName).subscribe(data => {
                 this.config = data;
                 (async() => {
-                    const userInfo = this._cacheService.get('userInfo');
-                    const userId = userInfo['value']['userId'];    
+                    const userInfo = this._cacheService.getNone('userInfo');
+                    const userId = userInfo['userId'];    
                     const permission = await this._getOperationPermission(params.name, userId, 'button');
                     if (permission.isSuccess) {
                         this.permissions = permission.data;
@@ -50,7 +50,6 @@ export class DynamicTemplateComponent implements OnInit, OnDestroy {
         });
 
     }
-
     /** custom trigger can be TemplateRef **/
     public changeTrigger(): void {
         this.triggerTemplate = this.customTrigger;

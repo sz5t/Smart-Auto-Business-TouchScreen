@@ -97,7 +97,7 @@ export class TsHeaderUserComponent implements OnInit, AfterViewInit {
     }
 
     public ngAfterViewInit () {
-        this.userInfo = this.cacheService.get('userInfo');
+        this.userInfo = this.cacheService.getNone('userInfo');
     }
 
     public logout() {

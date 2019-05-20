@@ -27,7 +27,8 @@ import { CommonTools } from '@core/utility/common-tools';
     // tslint:disable-next-line:component-selector
     selector: 'ts-passport-login',
     templateUrl: './ts-login.component.html',
-    styleUrls: ['./ts-login.component.less']
+    styleUrls: ['./ts-login.component.less'],
+    providers: [SocialService]
 })
 export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     private form: FormGroup;
@@ -260,7 +261,6 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     public async login(userLogin) {
         const user = await this._userLogin(userLogin);
         if (user.isSuccess) {
-            debugger;
             console.log(user.data);
             this.cacheService.set('userInfo', user.data);
             const token: ITokenModel = { token: user.data.token };

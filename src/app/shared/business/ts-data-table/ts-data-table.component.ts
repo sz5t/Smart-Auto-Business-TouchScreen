@@ -276,6 +276,7 @@ export class TsDataTableComponent extends CnComponentBase
     private resolverRelation() {
         // 注册按钮状态触发接收器
         this._statusSubscription = this.stateEvents.subscribe(updateState => {
+            debugger;
             if (updateState._viewId === this.config.viewId) {
                 const option = updateState.option;
                 switch (updateState._mode) {
@@ -362,13 +363,17 @@ export class TsDataTableComponent extends CnComponentBase
                         const itemIds = this._getCheckItemsId();
                         this.linkToPage(option, itemIds);
                         return;
-                    case BSN_EXECUTE_ACTION.EXECCUTE_SELECTED_LINK:
+                    case BSN_EXECUTE_ACTION.EXECUTE_SELECTED_LINK:
                         const itemId = this._getSelectedItem();
                         this.linkToPage(option, itemId);
                         return;
                     case BSN_COMPONENT_MODES.LINK:
                         this.linkToPage(option, '');
                         return;
+                    case BSN_COMPONENT_MODES.EXECUTE_SELECTED_LINK:
+                    const item = this._getSelectedItem();
+                          this.linkToPage(option, item);
+                        return
                 }
             }
         });
@@ -486,7 +491,16 @@ export class TsDataTableComponent extends CnComponentBase
             cacheValue: this.cacheValue,
             item: handleData
         });
-        this.router.navigate([option.link], { queryParams: params });
+         // 判断跳转页面是否为根据跳转跳转不同页面
+         if (Array.isArray(option.link)) {
+            option.link.forEach(elem => {
+                if (handleData[elem.field] && (handleData[elem.field] === elem.value)) {
+                    this.router.navigate([elem.linkName], {queryParams: params}); 
+                }
+            });
+        } else {
+            this.router.navigate([option.link], {queryParams: params});
+        }
     }
 
     public load() {

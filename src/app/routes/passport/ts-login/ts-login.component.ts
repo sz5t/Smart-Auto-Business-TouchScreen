@@ -27,8 +27,7 @@ import { CommonTools } from '@core/utility/common-tools';
     // tslint:disable-next-line:component-selector
     selector: 'ts-passport-login',
     templateUrl: './ts-login.component.html',
-    styleUrls: ['./ts-login.component.less'],
-    providers: [SocialService]
+    styleUrls: ['./ts-login.component.less']
 })
 export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     private form: FormGroup;
@@ -103,7 +102,6 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
         const clientIp = await this.loadClientIP();
         this.ajax.params[1]['value'] = clientIp;
         const wsString = await this.loadWsConfig();
-        console.log(wsString);
         const ws = new WebSocket(wsString);
         ws.onopen = function () {
             // Web Socket 已连接上，使用 send() 方法发送数据
@@ -123,16 +121,8 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
                         that.cacheService.set('userInfo', user.data);
                         const token: ITokenModel = { token: user.data.token };
                         that.tokenService.set(token); // 后续projectId需要进行动态获取
-                        let url = user.data.modules[0].link;
-                        // if (!that.isCardLogin) {
-                        //     // 配置平台
-                        //     url =
-                        // } else {
-                        //     // 解析平台
-                        //     url = '/';
-                        // }
-                        // this.cacheService.set('Menus', menus);
-                        // this.menuService.add(menus);
+                        //let url = user.data.modules[0].link;
+                        let url = '/ts/ts-template/moduleEntry';
                         that.router.navigate([`${url}`]);
                     } else {
                         that.showError(user.message);
@@ -270,7 +260,8 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     public async login(userLogin) {
         const user = await this._userLogin(userLogin);
         if (user.isSuccess) {
-            // console.log(user.data);
+            debugger;
+            console.log(user.data);
             this.cacheService.set('userInfo', user.data);
             const token: ITokenModel = { token: user.data.token };
             this.tokenService.set(token); // 后续projectId需要进行动态获取
@@ -281,7 +272,8 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
                 // 配置平台
                 // const localAppDataResult = await this._getLocalAppData();
                 // menus = localAppDataResult.menu;
-                url = user.data.modules[0].link;
+                // url = user.data.modules[0].link;
+                url = '/ts/entry';
             } else {
                 // 解析平台
                 // const projModule = await this._loadProjectModule();
@@ -296,7 +288,7 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
                 // ];
                 // // menus[0].children = this.arrayToTree(projModule.data, null);
                 // menus[0].children = user.data.modules;
-                url = '/';
+                url = '/ts/entry';
             }
 
             // this.cacheService.set('Menus', menus);

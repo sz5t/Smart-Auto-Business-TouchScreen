@@ -28,34 +28,18 @@
         </page-header> -->
 
         <nz-page-header class="templateHeader" [nzBackIcon]="backIcon">
-                <nz-page-header-title>{{config.title}}</nz-page-header-title>
-                <nz-page-header-subtitle></nz-page-header-subtitle>
+                <nz-page-header-title>工作中心</nz-page-header-title>
+                <!-- <nz-page-header-subtitle></nz-page-header-subtitle> -->
                 <nz-page-header-extra>
-                        <bsn-toolbar style="float:left" *ngIf="config.toolbar" [config]="config.toolbar" [viewId]="config.targetViewId"></bsn-toolbar>
-                        <button *ngIf="config.siderLayout" nz-button (click)="isCollapsed=!isCollapsed"><i class="trigger" nz-icon [type]="isCollapsed?'menu-unfold':'menu-fold'"></i></button>
+                        <button nz-button nzType="primary" (click)="logout()">退出登录</button>
                 </nz-page-header-extra>
-                <!-- <nz-page-header-content>
-                        {{config.desc}}
-                </nz-page-header-content> -->
         </nz-page-header>
         <ng-template #backIcon>
                 <i nz-icon style="font-size:16px" type="schedule" theme="outline"></i>
         </ng-template>
         
         <div class="workplace">
-                <nz-layout>
-                        <nz-content>
-                                <cn-layout-resolver *ngIf="isLoadLayout" [config]="config" [initData]="initData" [permissions] = "permissions ? permissions : []"></cn-layout-resolver>
-                        </nz-content>
-                        <nz-sider *ngIf="config.siderLayout" [nzWidth]="config.siderWidth" style="background: #fff" [nzCollapsedWidth]="0" nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="triggerTemplate">
-                                <cn-layout-resolver   [config]="config.siderLayout" [initData]="initData" [permissions] = "permissions ? permissions : []"></cn-layout-resolver>
-                        
-                        </nz-sider>
-                        <ng-template #trigger>
-                                        <i nz-icon type="up"></i>
-                        </ng-template>
-                </nz-layout>
-            
+                <bsn-entry-card-list></bsn-entry-card-list>
         </div>
 </div>
 

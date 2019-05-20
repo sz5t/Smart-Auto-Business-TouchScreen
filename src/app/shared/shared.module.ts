@@ -1,3 +1,4 @@
+import { BsnEntryCardListComponent } from './business/bsn-entry-card-list/bsn-entry-card-list.component';
 import { BsnTagComponent } from './business/bsn-tag/bsn-tag.component';
 import { BsnTagSelectComponent } from './business/bsn-tag-select/bsn-tag-select.component';
 import { BsnDetailListComponent } from './business/ts-detail-list/bsn-detail-list.component';
@@ -214,7 +215,8 @@ const COMPONENTS = [
     BsnTagComponent,
     CnFormInputSensorComponent,
     CnFormElectronicScaleComponent,
-    BsnScreenShotComponent
+    BsnScreenShotComponent,
+    BsnEntryCardListComponent
     
 ];
 const DIRECTIVES = [

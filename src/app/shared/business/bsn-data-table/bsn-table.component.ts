@@ -342,7 +342,7 @@ export class BsnTableComponent extends CnComponentBase
                         const itemIds = this._getCheckItemsId();
                         this.linkToPage(option, itemIds);
                         return;
-                    case BSN_EXECUTE_ACTION.EXECCUTE_SELECTED_LINK:
+                    case BSN_EXECUTE_ACTION.EXECUTE_SELECTED_LINK:
                         const itemId = this._getSelectedItem();
                         this.linkToPage(option, itemId);
                         return;
@@ -1816,7 +1816,7 @@ export class BsnTableComponent extends CnComponentBase
                     const itemIds = this._getCheckItemsId();
                     this.linkToPage(option, itemIds);
                     return;
-                case BSN_EXECUTE_ACTION.EXECCUTE_SELECTED_LINK:
+                case BSN_EXECUTE_ACTION.EXECUTE_SELECTED_LINK:
                     const itemId = this._getSelectedItem();
                     this.linkToPage(option, itemId);
                     return;

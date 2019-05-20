@@ -1,3 +1,4 @@
+import { ModuleEntryComponent } from './module-entry/module-entry.component';
 // import { CnCodeEditComponent } from '@shared/components/cn-code-edit/cn-code-edit.component';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';

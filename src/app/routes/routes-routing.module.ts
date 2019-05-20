@@ -26,6 +26,7 @@ import { TsLoginComponent } from './passport/ts-login/ts-login.component';
 import { TsWorkPlaceComponent } from './touch-screen/ts-workplace/ts-workplace.component';
 import { template } from '@angular/core/src/render3';
 import { TsLayoutPassportComponent } from 'app/layout/ts-passport/ts-passport.component';
+import { ModuleEntryComponent } from './template/module-entry/module-entry.component';
 
 const routes: Routes = [
     {
@@ -61,6 +62,9 @@ const routes: Routes = [
             },
             {
                 path: 'workplace', component: TsWorkPlaceComponent , data: { title: '工作台'}
+            },
+            {
+                path: 'entry', component: ModuleEntryComponent , data: { title: '工作台'}, canActivate: [AuthGuard]
             },
             {
                 path: 'ts_template', loadChildren: './template/template.module#TemplateModule'

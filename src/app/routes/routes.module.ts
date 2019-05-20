@@ -1,3 +1,4 @@
+import { ModuleEntryComponent } from './template/module-entry/module-entry.component';
 import { NgModule } from '@angular/core';
 
 import { SharedModule } from '@shared/shared.module';
@@ -30,6 +31,7 @@ import { TsWorkPlaceComponent } from './touch-screen/ts-workplace/ts-workplace.c
         DashboardMonitorComponent,
         DashboardWorkplaceComponent,
         TsWorkPlaceComponent,
+        ModuleEntryComponent,
         // passport pages
         
         UserLoginComponent,

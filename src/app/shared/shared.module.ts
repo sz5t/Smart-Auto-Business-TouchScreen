@@ -1,3 +1,5 @@
+import { LayoutInnerResolverDirective } from './resolver/layout-resolver/layout-inner-resolver.directive';
+import { BsnEntryCardListComponent } from './business/bsn-entry-card-list/bsn-entry-card-list.component';
 import { BsnTagComponent } from './business/bsn-tag/bsn-tag.component';
 import { BsnTagSelectComponent } from './business/bsn-tag-select/bsn-tag-select.component';
 import { BsnDetailListComponent } from './business/ts-detail-list/bsn-detail-list.component';
@@ -110,6 +112,7 @@ import { TsDataTableComponent } from './business/ts-data-table/ts-data-table.com
 import { CnFormInputSensorComponent } from './components/cn-form-input-sensor/cn-form-input-sensor.component';
 import { CnFormElectronicScaleComponent } from '@shared/components/cn-form-electronic-scale/cn-form-electronic-scale.component';
 import { BsnScreenShotComponent } from './business/bsn-screen-shot/bsn-screen-shot.component';
+import { SafeUrlPipe } from '@core/pipe/safe-url.pipe';
 
 
 const THIRDMODULES = [
@@ -214,14 +217,15 @@ const COMPONENTS = [
     BsnTagComponent,
     CnFormInputSensorComponent,
     CnFormElectronicScaleComponent,
-    BsnScreenShotComponent
-    
+    BsnScreenShotComponent,
+    BsnEntryCardListComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,
     GridEditorDirective,
     CnFormLabelDirective,
-    LayoutResolverDirective
+    LayoutResolverDirective,
+    LayoutInnerResolverDirective
 ];
 // endregion
 
@@ -242,7 +246,8 @@ const DIRECTIVES = [
         // your components
         ...COMPONENTS,
         ...DIRECTIVES,
-        BtnTableFieldLimit
+        BtnTableFieldLimit,
+        SafeUrlPipe
         
     ],
     exports: [

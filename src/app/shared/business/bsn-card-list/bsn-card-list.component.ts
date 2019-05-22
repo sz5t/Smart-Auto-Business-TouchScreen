@@ -28,6 +28,8 @@ import { FormGroup } from '@angular/forms';
 import { BeforeOperation } from '../before-operation.base';
 import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { Router } from '@angular/router';
+import { SettingsService, MenuService } from '@delon/theme';
+import { ITokenService, DA_SERVICE_TOKEN } from '@delon/auth';
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'bsn-card-list',
@@ -66,7 +68,10 @@ export class BsnCardListComponent extends CnComponentBase
         private cascade: Observer<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascadeEvents: Observable<BsnComponentMessage>,
-        private router: Router
+        private router: Router,
+        public settings: SettingsService,
+        private menuService: MenuService,
+        @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     ) {
         super();
         this.apiResource = this._apiService;
@@ -114,6 +119,9 @@ export class BsnCardListComponent extends CnComponentBase
                         // 使用此方式注意、需要在按钮和ajaxConfig中都配置响应的action
                             this._resolveAjaxConfig(option);
                         break;
+                        case BSN_COMPONENT_MODES.LOGIN_OUT:
+                            this.logout();
+                            break;
                     }
                 }
             }
@@ -651,5 +659,25 @@ export class BsnCardListComponent extends CnComponentBase
             });
         }
         return ids.join(',');
+    }
+
+    public logout() {
+        this.baseModal.confirm({
+            nzTitle: '确认要关闭本系统吗？',
+            nzContent: '关闭后将清空相关操作数据！',
+            nzOnOk: () => {
+                this.tokenService.clear();
+                this.cacheValue.clear();
+                this.menuService.clear();
+                // console.log(this.tokenService.login_url);
+                // this.router.navigateByUrl(this.tokenService.login_url);
+                // new Promise((resolve, reject) => {
+                //     setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
+                this.router.navigateByUrl('/passport/ts-login').catch(() => {
+                    this.apiResource.post('login_out');
+                });    
+                // }).catch(() => console.log('Oops errors!'));
+            }
+        });
     }
 }

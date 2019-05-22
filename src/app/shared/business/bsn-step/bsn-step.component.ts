@@ -19,8 +19,10 @@ import {
     BSN_COMPONENT_CASCADE_MODES
 } from '@core/relative-Service/BsnTableStatus';
 import { ApiService } from '@core/utility/api-service';
-import { NzMessageService } from 'ng-zorro-antd';
+import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { Route } from '@angular/router';
+import { SettingsService, MenuService } from '@delon/theme';
+import { ITokenService, DA_SERVICE_TOKEN } from '@delon/auth';
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'bsn-step',
@@ -58,7 +60,11 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
         @Inject(BSN_COMPONENT_CASCADE)
         private cascade: Observer<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
-        private cascadeEvents: Observable<BsnComponentMessage>
+        private cascadeEvents: Observable<BsnComponentMessage>,
+        public settings: SettingsService,
+        private menuService: MenuService,
+        private modal: NzModalService,
+        @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
     ) {
         super();
         this.apiResource = _api;
@@ -95,6 +101,9 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
                 switch (updateState._mode) {
                     case BSN_COMPONENT_MODES.LINK:
                         this.linkToPage(option, '');
+                        return; 
+                    case BSN_COMPONENT_MODES.LOGIN_OUT:
+                        this.logout();
                         return; 
                 }
             }
@@ -359,5 +368,25 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
 
     public handleStep(data) {
         this.handleData = data;
+    }
+
+    public logout() {
+        this.baseModal.confirm({
+            nzTitle: '确认要关闭本系统吗？',
+            nzContent: '关闭后将清空相关操作数据！',
+            nzOnOk: () => {
+                this.tokenService.clear();
+                this.cacheValue.clear();
+                this.menuService.clear();
+                // console.log(this.tokenService.login_url);
+                // this.router.navigateByUrl(this.tokenService.login_url);
+                // new Promise((resolve, reject) => {
+                //     setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
+                this.router.navigateByUrl('/passport/ts-login').catch(() => {
+                    this.apiResource.post('login_out');
+                });    
+                // }).catch(() => console.log('Oops errors!'));
+            }
+        });
     }
 }

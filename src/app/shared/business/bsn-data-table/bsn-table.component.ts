@@ -35,6 +35,8 @@ import { CnFormWindowResolverComponent } from '@shared/resolver/form-resolver/fo
 import { BeforeOperation } from '../before-operation.base';
 import { createEmitAndSemanticDiagnosticsBuilderProgram } from 'typescript';
 import { Router } from '@angular/router';
+import { SettingsService, MenuService } from '@delon/theme';
+import { ITokenService, DA_SERVICE_TOKEN } from '@delon/auth';
 const component: { [type: string]: Type<any> } = {
     layout: LayoutResolverComponent,
     form: CnFormWindowResolverComponent,
@@ -121,7 +123,10 @@ export class BsnTableComponent extends CnComponentBase
         @Inject(BSN_COMPONENT_CASCADE)
         private cascade: Observer<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
-        private cascadeEvents: Observable<BsnComponentMessage>
+        private cascadeEvents: Observable<BsnComponentMessage>,
+        public settings: SettingsService,
+        private menuService: MenuService,
+        @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService
     ) {
         super();
         this.apiResource = this._http;
@@ -348,7 +353,10 @@ export class BsnTableComponent extends CnComponentBase
                         return;
                     case BSN_COMPONENT_MODES.LINK:
                         this.linkToPage(option, '');
-                        return; 
+                        return;
+                    case BSN_COMPONENT_MODES.LOGOUT:
+                        this.logout();
+                        return;  
                 }
             }
         });
@@ -3462,5 +3470,25 @@ export class BsnTableComponent extends CnComponentBase
         // console.log('查询缓存数据', this.editCache[data.key]);
         this.load();
 
+    }
+
+    public logout() {
+        this.baseModal.confirm({
+            nzTitle: '确认要关闭本系统吗？',
+            nzContent: '关闭后将清空相关操作数据！',
+            nzOnOk: () => {
+                this.tokenService.clear();
+                this.cacheValue.clear();
+                this.menuService.clear();
+                // console.log(this.tokenService.login_url);
+                // this.router.navigateByUrl(this.tokenService.login_url);
+                // new Promise((resolve, reject) => {
+                //     setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
+                this.router.navigateByUrl('/passport/ts-login').catch(() => {
+                    this.apiResource.post('login_out');
+                });    
+                // }).catch(() => console.log('Oops errors!'));
+            }
+        });
     }
 }

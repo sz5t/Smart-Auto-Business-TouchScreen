@@ -36,7 +36,8 @@ export class BsnTabsComponent extends CnComponentBase implements OnInit, OnDestr
         @Inject(BSN_COMPONENT_CASCADE)
         private cascade: Observer<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
-        private cascadeEvents: Observable<BsnComponentMessage>
+        private cascadeEvents: Observable<BsnComponentMessage>,
+        
     ) {
         super();
     }

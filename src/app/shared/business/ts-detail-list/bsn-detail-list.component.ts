@@ -27,6 +27,8 @@ import { BeforeOperation } from '../before-operation.base';
 import { NzMessageService, NzModalService, NzDrawerService } from 'ng-zorro-antd';
 import { Router } from '@angular/router';
 import { LayoutResolverComponent } from '@shared/resolver/layout-resolver/layout-resolver.component';
+import { SettingsService, MenuService } from '@delon/theme';
+import { ITokenService, DA_SERVICE_TOKEN } from '@delon/auth';
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'bsn-detail-list',
@@ -67,13 +69,16 @@ export class BsnDetailListComponent extends CnComponentBase
         private cascade: Observer<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascadeEvents: Observable<BsnComponentMessage>,
-        private router: Router
+        private router: Router,
+        public settings: SettingsService,
+        private menuService: MenuService,
+        @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     ) {
         super();
         this.apiResource = this._apiService;
         this.cacheValue = this._cacheService;
-        this.baseModal = this._message;
-        this.baseMessage = this._modal;
+        this.baseModal = this._modal;
+        this.baseMessage = this._message;
         this.baseDrawer = this._drawer;
     }
 
@@ -140,6 +145,9 @@ export class BsnDetailListComponent extends CnComponentBase
                     switch (updateState._mode) {
                         case BSN_COMPONENT_MODES.LINK:
                             this.linkToPage(option);
+                            break;
+                        case BSN_COMPONENT_MODES.LOGIN_OUT:
+                            this.logout();
                             break;
                     }
                 }
@@ -381,5 +389,25 @@ export class BsnDetailListComponent extends CnComponentBase
     private getSelectedItems() {
         this.selectedItems =  this.data.filter(d => d.selected);
         this.updateValue.emit(this.selectedItems);
+    }
+
+    public logout() {
+        this.baseModal.confirm({
+            nzTitle: '确认要关闭本系统吗？',
+            nzContent: '关闭后将清空相关操作数据！',
+            nzOnOk: () => {
+                this.tokenService.clear();
+                this.cacheValue.clear();
+                this.menuService.clear();
+                // console.log(this.tokenService.login_url);
+                // this.router.navigateByUrl(this.tokenService.login_url);
+                // new Promise((resolve, reject) => {
+                //     setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
+                this.router.navigateByUrl('/passport/ts-login').catch(() => {
+                    this.apiResource.post('login_out');
+                });    
+                // }).catch(() => console.log('Oops errors!'));
+            }
+        });
     }
 }

@@ -357,6 +357,9 @@ export class BsnTableComponent extends CnComponentBase
                     case BSN_COMPONENT_MODES.LOGIN_OUT:
                         this.logout();
                         return;  
+                    case BSN_COMPONENT_MODES.WORK_CENTER:
+                        this.linkToCenter(option);
+                        break;
                 }
             }
         });
@@ -704,6 +707,17 @@ export class BsnTableComponent extends CnComponentBase
             item: handleData
         });
         this.router.navigate([option.link], {queryParams: params});
+    }
+    
+    private linkToCenter(option) {
+        const params = CommonTools.parametersResolver({
+            params: this.config.routeParams,
+            componentValue: option.data ? option.data : {},
+            tempValue: this.tempValue,
+            initValue: this.initValue,
+            cacheValue: this.cacheValue
+        });
+        this.router.navigate(['/ts/entry'], {queryParams: params});
     }
 
     public async _execute(rowsData, method, postConfig) {

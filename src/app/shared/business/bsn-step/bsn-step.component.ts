@@ -105,6 +105,9 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
                     case BSN_COMPONENT_MODES.LOGIN_OUT:
                         this.logout();
                         return; 
+                    case BSN_COMPONENT_MODES.WORK_CENTER:
+                        this.linkToCenter(option);
+                        return;
                 }
             }
         });
@@ -190,6 +193,17 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
             item: handleData
         });
         this.router.navigate([option.link], {queryParams: params});
+    }
+
+    private linkToCenter(option) {
+        const params = CommonTools.parametersResolver({
+            params: this.config.routeParams,
+            componentValue: option.data ? option.data : {},
+            tempValue: this.tempValue,
+            initValue: this.initValue,
+            cacheValue: this.cacheValue
+        });
+        this.router.navigate(['/ts/entry'], {queryParams: params});
     }
 
     public loadSteps() {

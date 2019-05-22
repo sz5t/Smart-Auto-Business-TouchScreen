@@ -387,9 +387,6 @@ export class BsnDataStepComponent extends CnComponentBase
                                     case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
                                         this.load();
                                         break;
-                                    case BSN_COMPONENT_CASCADE_MODES.LOGOUT:
-                                        this.logout();
-                                        break;
                                 }
                             }
                         });

@@ -102,7 +102,7 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
                     case BSN_COMPONENT_MODES.LINK:
                         this.linkToPage(option, '');
                         return; 
-                    case BSN_COMPONENT_MODES.LOGOUT:
+                    case BSN_COMPONENT_MODES.LOGIN_OUT:
                         this.logout();
                         return; 
                 }

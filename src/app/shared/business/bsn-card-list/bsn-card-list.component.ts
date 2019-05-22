@@ -119,7 +119,7 @@ export class BsnCardListComponent extends CnComponentBase
                         // 使用此方式注意、需要在按钮和ajaxConfig中都配置响应的action
                             this._resolveAjaxConfig(option);
                         break;
-                        case BSN_COMPONENT_MODES.LOGOUT:
+                        case BSN_COMPONENT_MODES.LOGIN_OUT:
                             this.logout();
                             break;
                     }

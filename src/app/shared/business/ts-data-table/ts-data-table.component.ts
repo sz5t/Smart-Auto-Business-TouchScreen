@@ -378,7 +378,7 @@ export class TsDataTableComponent extends CnComponentBase
                     const item = this._getSelectedItem();
                           this.linkToPage(option, item);
                         return;
-                    case BSN_COMPONENT_MODES.LOGOUT:
+                    case BSN_COMPONENT_MODES.LOGIN_OUT:
                         this.logout();
                         return;
                 }

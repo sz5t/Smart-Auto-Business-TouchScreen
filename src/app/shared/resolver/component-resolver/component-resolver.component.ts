@@ -40,6 +40,7 @@ import { BsnCarouselComponent } from '@shared/business/bsn-carousel/bsn-carousel
 import { BsnAsyncTreeTableComponent } from '@shared/business/bsn-treeTable/bsn-treeTable.component';
 import { TsToolbarComponent } from '@shared/business/ts-toolbar/ts-toolbar.component';
 import { BsnScreenShotComponent } from '@shared/business/bsn-screen-shot/bsn-screen-shot.component';
+import { BsnReportComponent } from '@shared/business/bsn-report/bsn-report.component';
 const components: { [type: string]: Type<any> } = {
     code_edit: CnCodeEditComponent,
     bsnTable: BsnTableComponent,
@@ -65,7 +66,8 @@ const components: { [type: string]: Type<any> } = {
     bsnDetailList: BsnDetailListComponent,
     bsnTagSelect: BsnTagSelectComponent,
     bsnTag: BsnTagComponent,
-    bsnScreenShot: BsnScreenShotComponent
+    bsnScreenShot: BsnScreenShotComponent,
+    bsnReport: BsnReportComponent
 };
 @Component({
     // tslint:disable-next-line:component-selector
@@ -80,7 +82,7 @@ export class ComponentResolverComponent
     @Input()
     public permissions;
     @Input()
-    public blockId;                                             
+    public blockId;
     @Input()
     public layoutId;
     @Input()

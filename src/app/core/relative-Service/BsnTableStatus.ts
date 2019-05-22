@@ -22,6 +22,7 @@ export const BSN_COMPONENT_MODES = {
     FORM_BATCH: 'formBatch',
     LINK: 'link',
     EXECUTE_SELECTED_LINK: 'link_selected_item',
+    LOGIN_OUT: 'login_out',
     
     // tree
     ADD_NODE: 'addNode',

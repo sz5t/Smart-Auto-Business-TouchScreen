@@ -276,7 +276,6 @@ export class TsDataTableComponent extends CnComponentBase
     private resolverRelation() {
         // 注册按钮状态触发接收器
         this._statusSubscription = this.stateEvents.subscribe(updateState => {
-            debugger;
             if (updateState._viewId === this.config.viewId) {
                 const option = updateState.option;
                 switch (updateState._mode) {
@@ -373,7 +372,7 @@ export class TsDataTableComponent extends CnComponentBase
                     case BSN_COMPONENT_MODES.EXECUTE_SELECTED_LINK:
                     const item = this._getSelectedItem();
                           this.linkToPage(option, item);
-                        return
+                        return;
                 }
             }
         });
@@ -495,7 +494,7 @@ export class TsDataTableComponent extends CnComponentBase
          if (Array.isArray(option.link)) {
             option.link.forEach(elem => {
                 if (handleData[elem.field] && (handleData[elem.field] === elem.value)) {
-                    this.router.navigate([elem.linkName], {queryParams: params}); 
+                    this.router.navigate([elem.linkName], {queryParams: params});
                 }
             });
         } else {

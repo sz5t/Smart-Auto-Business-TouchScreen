@@ -41,9 +41,12 @@ import { Router } from '@angular/router';
     selector: 'cn-form-resolver,[cn-form-resolver]',
     templateUrl: './form-resolver.component.html',
     styles: [`
+
+
+
         :host ::ng-deep .ant-form-item {
             font-size: 1.1em;
-            
+
         }
 
         :host ::ng-deep .ant-form-item label {
@@ -55,6 +58,18 @@ import { Router } from '@angular/router';
             font-weight: 600;
             /*text-decoration: underline;*/
             border-bottom: 1px solid #000;
+        }
+
+        :host ::ng-deep .ad-standard-form-row {
+            border: none;
+            margin-top:10px;
+            margin-bottom: 10px;
+            padding:0px;
+
+        }
+
+        :host ::ng-deep .ad-standard-form-row .label >span {
+            line-height:0px;
         }
 
     `]
@@ -133,11 +148,11 @@ export class FormResolverComponent extends CnFormBase
             apiResource: this.apiResource
         });
 
-        this.GetToolbarEvents(); 
+        this.GetToolbarEvents();
     }
 
     // region: 组件生命周期事件
-    
+
     public ngOnInit() {
         this.initValue = this.initData ? this.initData : {};
         this.cacheValue = this.cacheService ? this.cacheService : {};
@@ -157,7 +172,7 @@ export class FormResolverComponent extends CnFormBase
                 });
             });
         }
-       
+
         this.form = this.createGroup();
         this.resolverRelation();
 
@@ -295,7 +310,7 @@ export class FormResolverComponent extends CnFormBase
                                         }
                                         this.tempValue[param['cid']] =
                                             option.data[param['pid']];
-                                    }); 
+                                    });
                                 }
                                 // 匹配及联模式
                                 switch (mode) {
@@ -452,7 +467,7 @@ export class FormResolverComponent extends CnFormBase
         return result;
     }
 
-  
+
 
     /**
      * 删除数据
@@ -821,13 +836,13 @@ export class FormResolverComponent extends CnFormBase
         if (Array.isArray(option.link)) {
             option.link.forEach(elem => {
                 if (this.loadData[elem.field] && (this.loadData[elem.field] === elem.value)) {
-                    this.router.navigate([elem.linkName], {queryParams: params}); 
+                    this.router.navigate([elem.linkName], {queryParams: params});
                 }
             });
         } else {
             this.router.navigate([option.link], {queryParams: params});
         }
-        
+
     }
     // endregion
 
@@ -967,7 +982,7 @@ export class FormResolverComponent extends CnFormBase
         // 第一步，知道是谁发出的级联消息（包含信息： field、json、组件类别（类别决定取值））
         // { name: this.config.name, value: name }
         const sendCasade = data.name;
-        const receiveCasade = ' ';  
+        const receiveCasade = ' ';
 
         // 第二步，根据配置，和返回值，来构建应答数据集合
         // 第三步，
@@ -1314,10 +1329,10 @@ export class FormResolverComponent extends CnFormBase
                 setTimeout(() => {
                     this.change_config[changeConfig.name] = changeConfig;
                 });
-                
+
             })
 
-            
+
           //  console.log('*****变更后配置******',  this.change_config);
         }
 
@@ -1382,7 +1397,7 @@ export class FormResolverComponent extends CnFormBase
                             }
                         });
                     }
-                    
+
                     this.cascade.next(
                         new BsnComponentMessage(
                             BSN_COMPONENT_CASCADE_MODES[element.cascadeMode],
@@ -1402,15 +1417,15 @@ export class FormResolverComponent extends CnFormBase
 
     /**
      * 执行值变化触发的事件 liu 20190115
-     * @param data 
+     * @param data
      */
    public ExecEventByValueChange(data?) {
     const ss = {
         events: [  // 行事件、列事件
             {
-                // 首先 判断 onTrigger 什么类别触发，其次 ，看当前是新增、修改， 最后 执行onEvent 
+                // 首先 判断 onTrigger 什么类别触发，其次 ，看当前是新增、修改， 最后 执行onEvent
                 name: '', // 名称唯一，为日后扩充权限做准备
-                onTrigger: 'onColumnValueChange',  // 什么条件触发  例如：oncolumnValueChange   onSelectedRow  on CheckedRow    
+                onTrigger: 'onColumnValueChange',  // 什么条件触发  例如：oncolumnValueChange   onSelectedRow  on CheckedRow
                 type: 'EditableSave',  // 需要区分 新增 修改
                 actiontype: 'add、update', // 不满足条件的 均可
                 onEvent: [
@@ -1426,7 +1441,7 @@ export class FormResolverComponent extends CnFormBase
                                         {
                                             name: 'enabled',
                                             value: '[0-1]',
-                                            checkType: 'regexp'  //  'value'  'regexp' 'tempValue' 'initValue'  'cacheValue' 
+                                            checkType: 'regexp'  //  'value'  'regexp' 'tempValue' 'initValue'  'cacheValue'
                                         }
                                     ]
                                 ],
@@ -1485,7 +1500,7 @@ export class FormResolverComponent extends CnFormBase
     }
 }
 
-   //  获取event 事件的配置 
+   //  获取event 事件的配置
    public GetToolbarEvents() {
     if (this.config.toolbarEvent && Array.isArray(this.config.toolbarEvent)) {
         this.config.toolbarEvent.forEach(item => {
@@ -1530,7 +1545,7 @@ public ExecRowEvent(enentname) {
     }
     const option = updateState;
     this.beforeOperation.operationItemData = this.value;
-    
+
     if (!this.beforeOperation.beforeItemDataOperation(option)) {
         switch (updateState.action) {
             case BSN_COMPONENT_MODES.REFRESH:
@@ -1600,7 +1615,7 @@ public ExecRowEvent(enentname) {
     // setValue 由form 层控制（继续使用表单内部的机制）
     // 隐藏，显示 也是由 form 控制（和渲染模板有关）
     // 顺序：ajax、option 》 setvalue
-    // 异步参数？表单值 
+    // 异步参数？表单值
 
 
 

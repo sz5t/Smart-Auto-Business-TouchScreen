@@ -281,55 +281,56 @@ export class FormResolverComponent extends CnFormBase
         if (
             this.config.componentType &&
             this.config.componentType.child === true
-        ) {            this.cascadeSubscriptions = this.cascadeEvents.subscribe(
-                cascadeEvent => {
-                    // 解析子表消息配置
-                    if (
-                        this.config.relations &&
-                        this.config.relations.length > 0
-                    ) {
-                        this.config.relations.forEach(relation => {
+        ) {
+        this.cascadeSubscriptions = this.cascadeEvents.subscribe(
+            cascadeEvent => {
+                // 解析子表消息配置
+                if (
+                    this.config.relations &&
+                    this.config.relations.length > 0
+                ) {
+                    this.config.relations.forEach(relation => {
+                        if (
+                            relation.relationViewId === cascadeEvent._viewId
+                        ) {
+                            // 获取当前设置的级联的模式
+                            const mode =
+                                BSN_COMPONENT_CASCADE_MODES[
+                                relation.cascadeMode
+                                ];
+                            // 获取传递的消息数据
+                            const option = cascadeEvent.option;
+                            // 解析参数
                             if (
-                                relation.relationViewId === cascadeEvent._viewId
+                                relation.params &&
+                                relation.params.length > 0
                             ) {
-                                // 获取当前设置的级联的模式
-                                const mode =
-                                    BSN_COMPONENT_CASCADE_MODES[
-                                    relation.cascadeMode
-                                    ];
-                                // 获取传递的消息数据
-                                const option = cascadeEvent.option;
-                                // 解析参数
-                                if (
-                                    relation.params &&
-                                    relation.params.length > 0
-                                ) {
-                                    relation.params.forEach(param => {
-                                        if (!this.tempValue) {
-                                            this.tempValue = {};
-                                        }
-                                        this.tempValue[param['cid']] =
-                                            option.data[param['pid']];
-                                    });
-                                }
-                                // 匹配及联模式
-                                switch (mode) {
-                                    case BSN_COMPONENT_CASCADE_MODES.REFRESH:
-                                        this.load();
-                                        break;
-                                    case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
-                                        this.load();
-                                        break;
-                                    case BSN_COMPONENT_CASCADE_MODES.CHECKED_ROWS:
-                                        break;
-                                    case BSN_COMPONENT_CASCADE_MODES.SELECTED_ROW:
-                                        break;
-                                }
+                                relation.params.forEach(param => {
+                                    if (!this.tempValue) {
+                                        this.tempValue = {};
+                                    }
+                                    this.tempValue[param['cid']] =
+                                        option.data[param['pid']];
+                                });
                             }
-                        });
-                    }
+                            // 匹配及联模式
+                            switch (mode) {
+                                case BSN_COMPONENT_CASCADE_MODES.REFRESH:
+                                    this.load();
+                                    break;
+                                case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
+                                    this.load();
+                                    break;
+                                case BSN_COMPONENT_CASCADE_MODES.CHECKED_ROWS:
+                                    break;
+                                case BSN_COMPONENT_CASCADE_MODES.SELECTED_ROW:
+                                    break;
+                            }
+                        }
+                    });
                 }
-            );
+            }
+        );
         }
     }
 
@@ -511,7 +512,7 @@ export class FormResolverComponent extends CnFormBase
                     BSN_COMPONENT_CASCADE_MODES.REFRESH,
                     this.config.viewId,
                     {
-                        data: { ...this.returnValue, ...this.value}
+                        data: { ...this.returnValue, ...this.value }
                     }
                 )
             );
@@ -836,11 +837,11 @@ export class FormResolverComponent extends CnFormBase
         if (Array.isArray(option.link)) {
             option.link.forEach(elem => {
                 if (this.loadData[elem.field] && (this.loadData[elem.field] === elem.value)) {
-                    this.router.navigate([elem.linkName], {queryParams: params});
+                    this.router.navigate([elem.linkName], { queryParams: params });
                 }
             });
         } else {
-            this.router.navigate([option.link], {queryParams: params});
+            this.router.navigate([option.link], { queryParams: params });
         }
 
     }
@@ -963,6 +964,14 @@ export class FormResolverComponent extends CnFormBase
                             valueTypeItem['relation'] =
                                 item.data.relation_data.option;
                         }
+                        if (item.data.type === 'link') {
+                            // 跳转交互 20190522 liu 
+                            this.cascadeList[c.name][cobj.cascadeName][
+                                'link'
+                            ] = item.data.link_data.option;
+                            valueTypeItem['link'] =
+                                item.data.link_data.option;
+                        }
                         valueType.push(valueTypeItem);
                     });
 
@@ -979,6 +988,7 @@ export class FormResolverComponent extends CnFormBase
     }
 
     public valueChange(data?) {
+        // console.log('当前表单数据：', data);
         // 第一步，知道是谁发出的级联消息（包含信息： field、json、组件类别（类别决定取值））
         // { name: this.config.name, value: name }
         const sendCasade = data.name;
@@ -1164,7 +1174,7 @@ export class FormResolverComponent extends CnFormBase
                                         regularData = data.data;
                                     }
                                     const regularflag = reg1.test(regularData);
-                                    // console.log("正则结果：", regularflag);
+                                    // console.log("正则结果：", caseItem, regularData, regularflag);
                                     // endregion  解析结束 正则表达
                                     if (regularflag) {
                                         // region: 解析开始 根据组件类型组装新的配置【静态option组装】
@@ -1315,6 +1325,12 @@ export class FormResolverComponent extends CnFormBase
                                                 );
                                             }
                                         }
+                                        if (caseItem['type'] === 'link') {
+                                            console.log('扫码跳转：', caseItem['link']);
+                                            if (caseItem['link']) {
+                                                this.linkToPages(caseItem['link'], data['dataItem'] ? data['dataItem'] : {});
+                                            }
+                                        }
                                     }
                                     // endregion  解析结束
                                 });
@@ -1333,7 +1349,7 @@ export class FormResolverComponent extends CnFormBase
             })
 
 
-          //  console.log('*****变更后配置******',  this.change_config);
+            //  console.log('*****变更后配置******',  this.change_config);
         }
 
         // console.log('变更后的', this.config.forms);
@@ -1419,196 +1435,211 @@ export class FormResolverComponent extends CnFormBase
      * 执行值变化触发的事件 liu 20190115
      * @param data
      */
-   public ExecEventByValueChange(data?) {
-    const ss = {
-        events: [  // 行事件、列事件
-            {
-                // 首先 判断 onTrigger 什么类别触发，其次 ，看当前是新增、修改， 最后 执行onEvent
-                name: '', // 名称唯一，为日后扩充权限做准备
-                onTrigger: 'onColumnValueChange',  // 什么条件触发  例如：oncolumnValueChange   onSelectedRow  on CheckedRow
-                type: 'EditableSave',  // 需要区分 新增 修改
-                actiontype: 'add、update', // 不满足条件的 均可
-                onEvent: [
-                    {
-                        type: 'field',
-                        field: 'code',
-                        action: '',
-                        execEvent: [  // 【预留目前不实现】 当前字段的 执行事件，如果 没有 conditions 则执行action
-                            {
-                                conditions: [
-                                    // 描述 ：【】 之间 或者or {} 之间 并且 and 条件
-                                    [
-                                        {
-                                            name: 'enabled',
-                                            value: '[0-1]',
-                                            checkType: 'regexp'  //  'value'  'regexp' 'tempValue' 'initValue'  'cacheValue'
-                                        }
-                                    ]
-                                ],
-                                action: '', // action 就是 toolbar 里配置的执行操作配置
-                            }
-                        ]
+    public ExecEventByValueChange(data?) {
+        const ss = {
+            events: [  // 行事件、列事件
+                {
+                    // 首先 判断 onTrigger 什么类别触发，其次 ，看当前是新增、修改， 最后 执行onEvent
+                    name: '', // 名称唯一，为日后扩充权限做准备
+                    onTrigger: 'onColumnValueChange',  // 什么条件触发  例如：oncolumnValueChange   onSelectedRow  on CheckedRow
+                    type: 'EditableSave',  // 需要区分 新增 修改
+                    actiontype: 'add、update', // 不满足条件的 均可
+                    onEvent: [
+                        {
+                            type: 'field',
+                            field: 'code',
+                            action: '',
+                            execEvent: [  // 【预留目前不实现】 当前字段的 执行事件，如果 没有 conditions 则执行action
+                                {
+                                    conditions: [
+                                        // 描述 ：【】 之间 或者or {} 之间 并且 and 条件
+                                        [
+                                            {
+                                                name: 'enabled',
+                                                value: '[0-1]',
+                                                checkType: 'regexp'  //  'value'  'regexp' 'tempValue' 'initValue'  'cacheValue'
+                                            }
+                                        ]
+                                    ],
+                                    action: '', // action 就是 toolbar 里配置的执行操作配置
+                                }
+                            ]
 
-                    },
-                    {
-                        type: 'default',
-                        action: '', // 方法名称
-                    }
-                ]
-            }
-        ]
-    }
-    const vc_field = data.name;
-    //  ts_saveEdit data.key
-    const vc_rowdata = this.GetComponentValue();
-    this.form.value['currentValue'] = vc_rowdata[data.name];
-    this.form.value['currentValue'] = data.name;
-    // vc_rowdata['currentValue'] = vc_rowdata[data.name];
-    // vc_rowdata['currentName'] = data.name;
-
-    console.log('当前表单数据：', vc_rowdata);
-    // 判断是否存在配置
-    if (this.config.events) {
-        const index = this.config.events.findIndex(item => item['onTrigger'] === 'onColumnValueChange');
-        let c_eventConfig = {};
-        if (index > -1) {
-            c_eventConfig = this.config.events[index];
-        } else {
-            return true;
-        }
-        let isField = true; // 列变化触发
-        // 首先适配类别、字段，不满足的时候 看是否存在default 若存在 取default
-        c_eventConfig['onEvent'].forEach(eventConfig => {
-            // 指定具体feild的操作
-            if (eventConfig.type === 'field') {
-                if (eventConfig.field === vc_field) {
-                    isField = false;
-                    // 调用 执行方法，方法
-                    this.ExecRowEvent(eventConfig.action);
-                    return true;
+                        },
+                        {
+                            type: 'default',
+                            action: '', // 方法名称
+                        }
+                    ]
                 }
+            ]
+        }
+        const vc_field = data.name;
+        //  ts_saveEdit data.key
+        const vc_rowdata = this.GetComponentValue();
+        this.form.value['currentValue'] = vc_rowdata[data.name];
+        this.form.value['currentValue'] = data.name;
+        // vc_rowdata['currentValue'] = vc_rowdata[data.name];
+        // vc_rowdata['currentName'] = data.name;
+
+        console.log('当前表单数据：', vc_rowdata);
+        // 判断是否存在配置
+        if (this.config.events) {
+            const index = this.config.events.findIndex(item => item['onTrigger'] === 'onColumnValueChange');
+            let c_eventConfig = {};
+            if (index > -1) {
+                c_eventConfig = this.config.events[index];
+            } else {
+                return true;
             }
-        });
-        if (isField) {
+            let isField = true; // 列变化触发
+            // 首先适配类别、字段，不满足的时候 看是否存在default 若存在 取default
             c_eventConfig['onEvent'].forEach(eventConfig => {
-                // 无配置 的默认项
-                if (eventConfig.type === 'default') {
-                    this.ExecRowEvent(eventConfig.action);
+                // 指定具体feild的操作
+                if (eventConfig.type === 'field') {
+                    if (eventConfig.field === vc_field) {
+                        isField = false;
+                        // 调用 执行方法，方法
+                        this.ExecRowEvent(eventConfig.action);
+                        return true;
+                    }
+                }
+            });
+            if (isField) {
+                c_eventConfig['onEvent'].forEach(eventConfig => {
+                    // 无配置 的默认项
+                    if (eventConfig.type === 'default') {
+                        this.ExecRowEvent(eventConfig.action);
+                    }
+                });
+            }
+        }
+    }
+
+    //  获取event 事件的配置
+    public GetToolbarEvents() {
+        if (this.config.toolbarEvent && Array.isArray(this.config.toolbarEvent)) {
+            this.config.toolbarEvent.forEach(item => {
+                if (item.group) {
+                    item.group.forEach(g => {
+                        this.toolbarConfig.push(g);
+                    });
+
+
+                } else if (item.dropdown) {
+                    const dropdown = [];
+                    item.dropdown.forEach(b => {
+                        const down = {};
+                        const { name, text, icon } = b;
+                        down['name'] = name;
+                        down['text'] = text;
+                        down['icon'] = icon;
+                        down['buttons'] = [];
+                        b.buttons.forEach(btn => {
+                            this.toolbarConfig.push(btn);
+                        });
+                    });
+
                 }
             });
         }
-    }
-}
-
-   //  获取event 事件的配置
-   public GetToolbarEvents() {
-    if (this.config.toolbarEvent && Array.isArray(this.config.toolbarEvent)) {
-        this.config.toolbarEvent.forEach(item => {
-            if (item.group) {
-                item.group.forEach(g => {
-                    this.toolbarConfig.push(g);
-                });
 
 
-            } else if (item.dropdown) {
-                const dropdown = [];
-                item.dropdown.forEach(b => {
-                    const down = {};
-                    const { name, text, icon } = b;
-                    down['name'] = name;
-                    down['text'] = text;
-                    down['icon'] = icon;
-                    down['buttons'] = [];
-                    b.buttons.forEach(btn => {
-                        this.toolbarConfig.push(btn);
-                    });
-                });
-
-            }
-        });
     }
 
-
-}
-
-/**
- * ce
- */
-public ExecRowEvent(enentname) {
-    console.log(enentname, this.toolbarConfig);
-    let updateState;
-    const index = this.toolbarConfig.findIndex(
-        item => item['name'] === enentname
-    );
-    if (index > -1) {
-        updateState = this.toolbarConfig[index];
-    }
-    const option = updateState;
-    this.beforeOperation.operationItemData = this.value;
-
-    if (!this.beforeOperation.beforeItemDataOperation(option)) {
-        switch (updateState.action) {
-            case BSN_COMPONENT_MODES.REFRESH:
-                this.load();
-                break;
-            case BSN_COMPONENT_MODES.CREATE:
-                this.formState = BSN_FORM_STATUS.CREATE;
-                this.resetForm();
-                break;
-            case BSN_COMPONENT_MODES.EDIT:
-                this.load();
-                this.formState = BSN_FORM_STATUS.EDIT;
-                break;
-            case BSN_COMPONENT_MODES.CANCEL:
-                this.load();
-                this.formState = BSN_FORM_STATUS.TEXT;
-                break;
-            case BSN_COMPONENT_MODES.SAVE:
-                if (option.ajaxConfig) {
-                    this.saveForm_2(option.ajaxConfig);
-                } else {
-                    this.message.info('未配置任何操作!');
-                }
-                break;
-            case BSN_COMPONENT_MODES.DELETE:
-                if (option.ajaxConfig) {
-                    this.modalService.confirm({
-                        nzTitle: '确认删除当前数据？',
-                        nzContent: '',
-                        nzOnOk: () => {
-                            this.delete(option.ajaxConfig);
-                        },
-                        nzOnCancel() { }
-                    });
-                }
-                break;
-            case BSN_COMPONENT_MODES.EXECUTE:
-                if (option.ajaxConfig) {
-                    // 根据表单状态进行具体配置操作
-                    this.resolveAjaxConfig(
-                        option.ajaxConfig,
-                        this.formState,
-                        () => {
-                            // this.load();
-                            this.sendCascadeMessage();
-                        }
-                    );
-                }
-                break;
-            case BSN_COMPONENT_MODES.WINDOW:
-                this.windowDialog(option);
-                break;
-            case BSN_COMPONENT_MODES.FORM:
-                this.formDialog(option);
-                break;
-            case BSN_COMPONENT_MODES.UPLOAD:
-                this.uploadDialog(option);
-                break;
+    /**
+     * ce
+     */
+    public ExecRowEvent(enentname) {
+        console.log(enentname, this.toolbarConfig);
+        let updateState;
+        const index = this.toolbarConfig.findIndex(
+            item => item['name'] === enentname
+        );
+        if (index > -1) {
+            updateState = this.toolbarConfig[index];
         }
+        const option = updateState;
+        this.beforeOperation.operationItemData = this.value;
+
+        if (!this.beforeOperation.beforeItemDataOperation(option)) {
+            switch (updateState.action) {
+                case BSN_COMPONENT_MODES.REFRESH:
+                    this.load();
+                    break;
+                case BSN_COMPONENT_MODES.CREATE:
+                    this.formState = BSN_FORM_STATUS.CREATE;
+                    this.resetForm();
+                    break;
+                case BSN_COMPONENT_MODES.EDIT:
+                    this.load();
+                    this.formState = BSN_FORM_STATUS.EDIT;
+                    break;
+                case BSN_COMPONENT_MODES.CANCEL:
+                    this.load();
+                    this.formState = BSN_FORM_STATUS.TEXT;
+                    break;
+                case BSN_COMPONENT_MODES.SAVE:
+                    if (option.ajaxConfig) {
+                        this.saveForm_2(option.ajaxConfig);
+                    } else {
+                        this.message.info('未配置任何操作!');
+                    }
+                    break;
+                case BSN_COMPONENT_MODES.DELETE:
+                    if (option.ajaxConfig) {
+                        this.modalService.confirm({
+                            nzTitle: '确认删除当前数据？',
+                            nzContent: '',
+                            nzOnOk: () => {
+                                this.delete(option.ajaxConfig);
+                            },
+                            nzOnCancel() { }
+                        });
+                    }
+                    break;
+                case BSN_COMPONENT_MODES.EXECUTE:
+                    if (option.ajaxConfig) {
+                        // 根据表单状态进行具体配置操作
+                        this.resolveAjaxConfig(
+                            option.ajaxConfig,
+                            this.formState,
+                            () => {
+                                // this.load();
+                                this.sendCascadeMessage();
+                            }
+                        );
+                    }
+                    break;
+                case BSN_COMPONENT_MODES.WINDOW:
+                    this.windowDialog(option);
+                    break;
+                case BSN_COMPONENT_MODES.FORM:
+                    this.formDialog(option);
+                    break;
+                case BSN_COMPONENT_MODES.UPLOAD:
+                    this.uploadDialog(option);
+                    break;
+            }
+        }
+
+
     }
 
-
-}
+    /**
+     * 根据表单组件routeParams属性配置参数,执行页面跳转
+     * @param option 按钮操作配置参数
+     */
+    private linkToPages(option, componentValue?) {
+        const params = CommonTools.parametersResolver({
+            params: option.routeParams ? option.routeParams : {},
+            componentValue: componentValue ? componentValue : {},
+            tempValue: this.tempValue,
+            initValue: this.initValue,
+            cacheValue: this.cacheValue
+        });
+        this.router.navigate([option.linkName], { queryParams: params });
+    }
     // 【20181126】 针对级联编辑状态目前问题处理
     // 原来的结构不合理，在于变化的检测均是完全修改配置
     // 现在调整为，将级联包装成对象，给小组件，小组件自行完成

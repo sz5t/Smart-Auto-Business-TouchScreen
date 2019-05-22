@@ -48,9 +48,9 @@ export class CnFormScancodeComponent implements OnInit {
         @Inject(BSN_COMPONENT_CASCADE)
         private cascadeEvents: Observable<BsnComponentMessage>,
         private apiService: ApiService
-    ) {}
+    ) { }
 
-    ngOnInit() {}
+    ngOnInit() { }
     isScan = true;
     oldvalue = null;
     async onKeyPress(e) {
@@ -59,9 +59,24 @@ export class CnFormScancodeComponent implements OnInit {
             this.isScan = false;
             this.oldvalue = this._value;
             console.log("huiche", this._value);
+            let resultData;
             const result = await this.asyncLoad(
                 this.config.ajaxConfig ? this.config.ajaxConfig : null
             );
+            if(this.config.ajaxConfig) {
+                if (this.config.ajaxConfig.ajaxType === 'proc') {
+                    const backData = result.data.dataSet1 ? result.data.dataSet1 : [];
+                    if (backData.length > 0) {
+                        resultData['data'] = backData[0];
+                    }
+    
+                } else {
+                    resultData = result;
+                }
+            } else {
+                resultData = result;
+            }
+           
             // this.cascade.next(
             //   new BsnComponentMessage(
             //     BSN_COMPONENT_CASCADE_MODES.Scan_Code_ROW,
@@ -71,7 +86,7 @@ export class CnFormScancodeComponent implements OnInit {
             //     }
             //   )
             // );
-            this.valueChange(this._value, result.data);
+            this.valueChange(this._value, resultData.data);
             // this.cascade.next(
             //   new BsnComponentMessage(
             //     BSN_COMPONENT_CASCADE_MODES.Scan_Code_Locate_ROW,
@@ -152,9 +167,13 @@ export class CnFormScancodeComponent implements OnInit {
                 url = p.url["parent"] + "/" + pc + "/" + p.url["child"];
             }
         }
-        if (p.ajaxType === "get" && tag) {
+        if (p.ajaxType === 'get' && tag) {
             return this.apiService.get(url, params).toPromise();
         }
+        if (p.ajaxType === 'proc' && tag) {
+            return this.apiService.post(url, params).toPromise();
+        }
+
     }
 
     isString(obj) {

@@ -21,7 +21,10 @@ import {
 } from '@core/relative-Service/BsnTableStatus';
 import { Observable, Observer } from 'rxjs';
 import { CommonTools } from '@core/utility/common-tools';
-import { NzDropdownService, NzDropdownContextComponent, NzMenuItemDirective } from 'ng-zorro-antd';
+import { NzDropdownService, NzDropdownContextComponent, NzMenuItemDirective, NzModalService } from 'ng-zorro-antd';
+import { SettingsService, MenuService } from '@delon/theme';
+import { Router } from '@angular/router';
+import { ITokenService, DA_SERVICE_TOKEN } from '@delon/auth';
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'bsn-data-step',
@@ -77,7 +80,14 @@ export class BsnDataStepComponent extends CnComponentBase
         @Inject(BSN_COMPONENT_CASCADE)
         private cascade: Observer<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
-        private cascadeEvents: Observable<BsnComponentMessage>
+        private cascadeEvents: Observable<BsnComponentMessage>,
+        public settings: SettingsService,
+        private cacheService: CacheService,
+        private menuService: MenuService,
+        private apiService: ApiService,
+        private router: Router,
+        private modal: NzModalService,
+        @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     ) {
         super();
     }
@@ -377,6 +387,9 @@ export class BsnDataStepComponent extends CnComponentBase
                                     case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
                                         this.load();
                                         break;
+                                    case BSN_COMPONENT_CASCADE_MODES.LOGOUT:
+                                        this.logout();
+                                        break;
                                 }
                             }
                         });
@@ -544,5 +557,25 @@ export class BsnDataStepComponent extends CnComponentBase
         if (this._cascadeSubscription) {
             this._cascadeSubscription.unsubscribe();
         }
+    }
+
+    public logout() {
+        this.modal.confirm({
+            nzTitle: '确认要关闭本系统吗？',
+            nzContent: '关闭后将清空相关操作数据！',
+            nzOnOk: () => {
+                this.tokenService.clear();
+                this.cacheService.clear();
+                this.menuService.clear();
+                // console.log(this.tokenService.login_url);
+                // this.router.navigateByUrl(this.tokenService.login_url);
+                // new Promise((resolve, reject) => {
+                //     setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
+                this.router.navigateByUrl('/passport/ts-login').catch(() => {
+                    this.apiService.post('login_out');
+                });    
+                // }).catch(() => console.log('Oops errors!'));
+            }
+        });
     }
 }

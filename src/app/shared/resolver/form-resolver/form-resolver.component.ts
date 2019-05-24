@@ -396,7 +396,6 @@ export class FormResolverComponent extends CnFormBase
 
 
     public async saveForm_2(ajaxConfigs) {
-        debugger;
         let result;
         const method = ajaxConfigs[0].ajaxType;
         result = await this[method](ajaxConfigs[0]);

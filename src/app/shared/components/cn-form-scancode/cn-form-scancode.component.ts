@@ -66,8 +66,11 @@ export class CnFormScancodeComponent implements OnInit {
             if(this.config.ajaxConfig) {
                 if (this.config.ajaxConfig.ajaxType === 'proc') {
                     const backData = result.data.dataSet1 ? result.data.dataSet1 : [];
+                   //  console.log('backData:', backData);
                     if (backData.length > 0) {
-                        resultData['data'] = backData[0];
+                        const _data = { data: backData[0] };
+                       //  resultData['data'] = backData[0];
+                        resultData = _data;
                     }
     
                 } else {

@@ -179,9 +179,9 @@
                     </ng-template>
             </nz-card>
     </nz-content>
-    <nz-footer style="text-align: center; padding: 0px">
+    <nz-footer style="text-align: center; padding: 0px" *ngIf="config.toolbar">
         <nz-card>
-                <bsn-toolbar *ngIf="config.toolbar" [permissions]="permissions ? permissions : []" [config]="config.toolbar" [viewId]="config.viewId"></bsn-toolbar>
+                <bsn-toolbar  [permissions]="permissions ? permissions : []" [config]="config.toolbar" [viewId]="config.viewId"></bsn-toolbar>
         </nz-card>    
     </nz-footer>
 </nz-layout>

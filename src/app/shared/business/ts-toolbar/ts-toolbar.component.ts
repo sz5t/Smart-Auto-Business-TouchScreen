@@ -32,9 +32,11 @@ import {
             .table-operations-ts button{
                 margin-bottom: 10px;
                 padding-top: 30px;
-                padding-bottom: 30px;
-                padding-left: 50px;
-                padding-right: 50px;
+                padding-left:40px;
+                padding-right:40px;
+                padding-bottom: 50px;
+                font: weight 800;
+                font-size:1.5em;
             }
 
             .table-operations-ts [nz-icon] {

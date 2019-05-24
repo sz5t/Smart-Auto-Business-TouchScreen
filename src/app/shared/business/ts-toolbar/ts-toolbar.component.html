@@ -11,6 +11,7 @@
             </button>
         </span>
         <div class="toolbarGroup" *ngIf="toolbar.group">
+            <nz-card style="text-align: center; padding: 0px">
             <nz-button-group>
                 <button
                         [nzSize]="size ? size : 'default'"
@@ -23,6 +24,7 @@
                             <i nz-icon [type]="btn.icon" [theme]="btn.theme ? btn.theme : 'outline'"></i>{{btn.text}}
                     </button>
             </nz-button-group>
+            </nz-card>
         </div>
         <div class="toolbarGroup" *ngIf="toolbar.dropdown">
             <nz-dropdown *ngFor="let btn of toolbar.dropdown">

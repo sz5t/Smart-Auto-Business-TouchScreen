@@ -12,12 +12,16 @@
         </span>
         <div class="toolbarGroup" *ngIf="toolbar.group">
             <nz-button-group>
-                <button nzGhost [nzSize]="btn.size ? btn.size : 'default'" [nzType]="btn.style ? btn.style : 'default'"
-                    nz-button *ngFor="let btn of toolbar.group" (click)="toolbarAction(btn)" [attr.disabled]="btn.disabled"
-                    [nzBlock]="btn.isBlock" style="margin-left: 0px; padding-right:20px;padding-right:20px;margin-bottom: 0px">
-                    <i nz-icon [type]="btn.icon" class="btn-fontSize-ts" [theme]="btn.theme ? btn.theme : 'outline'"></i><span
-                        class="btn-fontSize-ts">{{btn.text}}</span>
-                </button>
+                <button
+                        [nzSize]="size ? size : 'default'"
+                        [nzType]="btn.style ? btn.style : 'default'"
+                        nz-button
+                        *ngFor="let btn of toolbar.group"
+                        (click)="toolbarAction(btn,$event)"
+                        [attr.disabled]="btn.disabled">
+                            <!-- <strong><i class="{{btn.icon}} {{btn.color}}"></i> {{btn.text}}</strong> -->
+                            <i nz-icon [type]="btn.icon" [theme]="btn.theme ? btn.theme : 'outline'"></i>{{btn.text}}
+                    </button>
             </nz-button-group>
         </div>
         <div class="toolbarGroup" *ngIf="toolbar.dropdown">

@@ -31,8 +31,10 @@ import {
 
             .table-operations-ts button{
                 margin-bottom: 10px;
-                padding-top: 10px;
-                padding-bottom: 10px;
+                padding-top: 30px;
+                padding-bottom: 30px;
+                padding-left: 50px;
+                padding-right: 50px;
             }
 
             .table-operations-ts [nz-icon] {
@@ -82,6 +84,7 @@ export class TsToolbarComponent implements OnInit, OnDestroy {
         this.permissions.forEach(item => {
             permissionMap.set(item.code, item); 
         });
+        debugger;
         if (this.toolbars && Array.isArray(this.toolbars)) {
             this.toolbars.forEach(item => {
                 if (item.group) {

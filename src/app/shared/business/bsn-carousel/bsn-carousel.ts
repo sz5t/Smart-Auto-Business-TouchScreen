@@ -30,10 +30,10 @@ import { NzCarouselComponent } from 'ng-zorro-antd';
     selector: 'bsn-carousel',
     template: `
   
-  <nz-card nzBordered="false" [nzBodyStyle]="config.style ? config.style: {}" [ngStyle]="{'width': config.width, 'background-color':'#ddd'}">
+  <nz-card nzBordered="false" [nzBodyStyle]="config.style ? config.style: {}">
   <nz-spin [nzSpinning]="isLoading" nzTip='加载中...'>
-    <nz-carousel #carousel [nzEffect]="'fade'" [nzAutoPlay]="config.autoPlay">
-        <div nz-carousel-content *ngFor="let img of imgList">
+    <nz-carousel #carousel [nzEffect]="'fade'" [nzAutoPlay]="config.autoPlay" [nzEnableSwipe]="config.enableSwipe" >
+        <div nz-carousel-content *ngFor="let img of imgList" >
             <img alt="{{img.alt}}" src="{{serverPath + img.src}}"/>
         </div>
     </nz-carousel>

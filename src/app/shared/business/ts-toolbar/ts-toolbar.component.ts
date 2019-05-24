@@ -31,7 +31,7 @@ import {
 
             .table-operations-ts button{
                 margin-bottom: 10px;
-                padding-top: 30px;
+                padding-top: 25px;
                 padding-left:40px;
                 padding-right:40px;
                 padding-bottom: 50px;

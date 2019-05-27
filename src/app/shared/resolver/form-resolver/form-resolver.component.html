@@ -1,6 +1,6 @@
 
 <nz-spin [nzSpinning]="formState === 'put' && isSpinning" [nzDelay]="300" nzTip='加载中...' style="position: fix;">
-    <bsn-toolbar [config]="config.toolbar" [viewId]="config.viewId" [permissions] = "permissions ? permissions : []" ></bsn-toolbar>
+    <bsn-toolbar *ngIf="config.toolbar" [config]="config.toolbar" [viewId]="config.viewId" [permissions] = "permissions ? permissions : []" ></bsn-toolbar>
     <nz-card [nzBodyStyle]="config.style ? config.style: {}" [nzTitle]="formTitle ? title : config.title" [nzBordered]="true">
         <form nz-form [nzLayout]="config.layout ? config.layout : 'horizontal'" [formGroup]="form">
             <div *ngIf="config.hasRowTitle;else noTitle">

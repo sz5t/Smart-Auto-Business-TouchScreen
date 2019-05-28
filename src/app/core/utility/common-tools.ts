@@ -139,7 +139,7 @@ export class CommonTools {
                             if (model.cacheValue) {
                                 const cache = model.cacheValue.getNone('userInfo');
                                 result[param['name']] =
-                                    cache.value[param['valueName']];
+                                    cache[param['valueName']];
                             }
                             break;
                         case BSN_PARAMETER_TYPE.CASCADE_VALUE:
@@ -193,19 +193,19 @@ export class CommonTools {
             case 'nin': // not in  如果是input 是这样取值，其他则是多选取值
                 strQ = strQ + '!in(' + inputValue + ')';
                 break;
-            case 'btn': // between  
+            case 'btn': // between
                 strQ = strQ + 'btn(' + inputValue + ')';
                 break;
-            case 'ge': // >=  
+            case 'ge': // >=
                 strQ = strQ + 'ge(' + inputValue + ')';
                 break;
-            case 'gt': // >  
+            case 'gt': // >
                 strQ = strQ + 'gt(' + inputValue + ')';
                 break;
-            case 'le': // <=  
+            case 'le': // <=
                 strQ = strQ + 'le(' + inputValue + ')';
                 break;
-            case 'lt': // <  
+            case 'lt': // <
                 strQ = strQ + 'lt(' + inputValue + ')';
                 break;
             default:

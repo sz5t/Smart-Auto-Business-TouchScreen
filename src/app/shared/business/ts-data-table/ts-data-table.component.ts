@@ -493,7 +493,6 @@ export class TsDataTableComponent extends CnComponentBase
      * @param option 按钮操作配置参数
      */
     private linkToPage(option, handleData) {
-        debugger;
         const params = CommonTools.parametersResolver({
             params: this.config.routeParams,
             // componentValue: this.loadData ? this.loadData : this.value,
@@ -4683,7 +4682,7 @@ export class TsDataTableComponent extends CnComponentBase
                 //     setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
                 this.router.navigateByUrl('/passport/ts-login').catch(() => {
                     this.apiResource.post('login_out');
-                });    
+                });
                 // }).catch(() => console.log('Oops errors!'));
             }
         });

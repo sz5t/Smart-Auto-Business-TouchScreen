@@ -529,7 +529,6 @@ export class TsDataTableComponent extends CnComponentBase
     }
 
     public load() {
-        debugger;
         this.changeConfig_new = {};
         // this._selectRow = {};
         // this.pageIndex = pageIndex;
@@ -2707,7 +2706,6 @@ export class TsDataTableComponent extends CnComponentBase
                 routerValue: this.cacheService
             });
         }
-        debugger;
         return params;
     }
     /**

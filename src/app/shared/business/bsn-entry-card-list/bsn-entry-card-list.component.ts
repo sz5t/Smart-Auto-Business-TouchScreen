@@ -125,7 +125,8 @@ export class BsnEntryCardListComponent extends CnComponentBase
             params: this.config.ajaxConfig.params,
             tempValue: this.tempValue,
             initValue: this.initValue,
-            cacheValue: this.cacheValue
+            cacheValue: this.cacheValue,
+            routerValue : this.cacheValue
         });
         return this._apiService
             .get(url, params).toPromise();

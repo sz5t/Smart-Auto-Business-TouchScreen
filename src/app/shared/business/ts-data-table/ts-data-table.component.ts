@@ -4689,7 +4689,7 @@ export class TsDataTableComponent extends CnComponentBase
                 //     setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
                 this.router.navigateByUrl('/passport/ts-login').catch(() => {
                     this.apiResource.post('login_out');
-                });    
+                });
                 // }).catch(() => console.log('Oops errors!'));
             }
         });

@@ -24,6 +24,7 @@ export class CnGridEditComponent implements OnInit {
    // console.log('变化列初始化：', this.value);
     // 此处做处理，动态简析条件
    // console.log('变化列配置', this.value.data, this.config.editor, this.rowData);
+    this.value.data =  this.rowData[this.value.name];
     this.edit_config = this.setCellFont(this.value.data, this.config.editor, this.rowData);
 
   }

@@ -408,19 +408,19 @@ export class TsDataTableComponent extends CnComponentBase
                         }
                     )
                 );
-                if (this.config.drawerDialog) {
-                    if (this.config.drawerDialog.drawerType === 'condition') {
-                        this.config.drawerDialog.drawerMapping.forEach(m => {
-                            if (this._selectRow[m['field']] && this._selectRow[m['field']] === m['value']) {
-                                const drawer = this.config.drawerDialog.drawers.find(d => d.name === m['name']);
-                                this.showDrawer(drawer);
-                                return;
-                            }
-                        });
-                    } else {
-                        this.showDrawer(this.config.drawerDialog.drawers[0]);
-                    }
-                }
+                // if (this.config.drawerDialog) {
+                //     if (this.config.drawerDialog.drawerType === 'condition' && this.config.drawerDialog.drawerMapping.length > 0) {
+                //         this.config.drawerDialog.drawerMapping.forEach(m => {
+                //             if (this._selectRow[m['field']] && this._selectRow[m['field']] === m['value']) {
+                //                 const drawer = this.config.drawerDialog.drawers.find(d => d.name === m['name']);
+                //                 this.showDrawer(drawer);
+                //                 return;
+                //             }
+                //         });
+                //     } else {
+                //         this.showDrawer(this.config.drawerDialog.drawers[0]);
+                //     }
+                // }
 
             });
         }
@@ -4533,6 +4533,7 @@ export class TsDataTableComponent extends CnComponentBase
     }
 
     public resolverOperation(handleData) {
+            debugger;
         if (this.config.operationMapping) {
             this.config.operationMapping.forEach(operation => {
                 if (handleData[operation['field']] && handleData[operation['field']] === operation['value']) {

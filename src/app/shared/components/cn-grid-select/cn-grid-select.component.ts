@@ -213,7 +213,7 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
     }
     selectedByLoaded() {
         let selected;
-        if (this.value && this.value["data"] !== undefined && this.value["data"] === 0) {
+        if (this.value && this.value["data"] !== undefined || this.value["data"] === 0) {
             this._options.forEach(element => {
                 if (element.value === this.value.data) {
                     selected = element;
@@ -236,6 +236,7 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
     valueChange(name?) {
         // 使用当前rowData['Id'] 作为当前编辑行的唯一标识
         // 所有接收数据的组件都已自己当前行为标识进行数据及联
+        // console.log('select value:',name);
         // dataItem
         if (name) {
             this.value.data = name.value;

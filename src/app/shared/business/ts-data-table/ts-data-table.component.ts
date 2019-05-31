@@ -438,6 +438,9 @@ export class TsDataTableComponent extends CnComponentBase
                         this.config.relations.forEach(relation => {
                             if (
                                 relation.relationViewId === cascadeEvent._viewId
+                                && cascadeEvent._mode ===BSN_COMPONENT_CASCADE_MODES[
+                                    relation.cascadeMode
+                                    ]
                             ) {
                                 // 获取当前设置的级联的模式
                                 const mode =
@@ -1123,7 +1126,7 @@ export class TsDataTableComponent extends CnComponentBase
 
     public valueChange(data) {
         // const index = this.dataList.findIndex(item => item.key === data.key);
-        console.log('值变化', data, 'this.editCache[data.key].data[data.name] :', this.editCache[data.key]);
+        //console.log('值变化', data, 'this.editCache[data.key].data[data.name] :', this.editCache[data.key]);
         let isValueChange = true;
         if (data.data === undefined) {
             data.data = null;
@@ -1131,7 +1134,7 @@ export class TsDataTableComponent extends CnComponentBase
         if (this.editCache[data.key].data[data.name] === data.data) {
             isValueChange = false;
         }
-        console.log('值变化比较', isValueChange, this.editCache[data.key].data[data.name], data.data);
+        //console.log('值变化比较', isValueChange, this.editCache[data.key].data[data.name], data.data);
         this.editCache[data.key].data[data.name] = data.data;
         this.editCache[data.key].data[data.name] = JSON.parse(
             JSON.stringify(this.editCache[data.key].data[data.name])

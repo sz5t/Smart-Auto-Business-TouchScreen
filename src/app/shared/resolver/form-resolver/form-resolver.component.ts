@@ -1416,7 +1416,6 @@ export class FormResolverComponent extends CnFormBase
                             }
                         });
                     }
-
                     this.cascade.next(
                         new BsnComponentMessage(
                             BSN_COMPONENT_CASCADE_MODES[element.cascadeMode],

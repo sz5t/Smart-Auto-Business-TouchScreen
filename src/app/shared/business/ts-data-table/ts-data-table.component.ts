@@ -493,7 +493,18 @@ export class TsDataTableComponent extends CnComponentBase
         }
     }
 
-
+    private emptyLoad() {
+        this._selectRow = {};
+        this.cascade.next(
+            new BsnComponentMessage(
+                BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
+                this.config.viewId,
+                {
+                    data: {}
+                }
+            )
+        );
+    }
     /**
      * 根据表单组件routeParams属性配置参数,执行页面跳转
      * @param option 按钮操作配置参数
@@ -555,77 +566,163 @@ export class TsDataTableComponent extends CnComponentBase
             const loadData = await this._load(url, params, this.config.ajaxConfig.ajaxType);
 
             if (loadData.isSuccess) {
-                let data;
+                let resData;
+
                 if (method === 'proc') {
-                    data = loadData.data.dataSet1 ? loadData.data.dataSet1 : [];
-                    this.dataList = data;
-                    this.dataList.forEach(d => {
-                        d['key'] = d[this.config.keyId]
-                            ? d[this.config.keyId]
-                            : 'Id';
-                    })
+                    resData = loadData.data.dataSet1 ? loadData.data.dataSet1 : [];
                 } else {
-                    data = loadData.data.rows;
-                    if (data) {
-                        // 设置聚焦ID
-                        // 默认第一行选中，如果操作后有focusId则聚焦ID为FocusId
-                        let focusId;
-                        if (loadData.FocusId) {
-                            focusId = loadData.FocusId;
-                        } else {
-                            loadData.data.rows.length > 0 &&
-                                (focusId = loadData.data.rows[0].Id);
-                        }
-                        if (loadData.data.rows.length > 0) {
-                            loadData.data.rows.forEach((row, index) => {
-                                row['key'] = row[this.config.keyId]
-                                    ? row[this.config.keyId]
-                                    : 'Id';
-                                if (this.is_Selectgrid) {
-                                    if (row.Id === focusId) {
-                                        !this.config.isDefaultNotSelected && this.selectRow(row);
-                                    }
-                                }
-                                if (loadData.data.page === 1) {
-                                    row['_serilize'] = index + 1;
-                                } else {
-                                    row['_serilize'] =
-                                        (loadData.data.page - 1) *
-                                        loadData.data.pageSize +
-                                        index +
-                                        1;
-                                }
-
-                                if (this.config.checkedMapping) {
-                                    this.config.checkedMapping.forEach(m => {
-                                        if (
-                                            row[m.name] &&
-                                            row[m.name] === m.value
-                                        ) {
-                                            row['checked'] = true;
-                                        }
-                                    });
-                                }
-                            });
-                        } else {
-                            this._selectRow = {};
-                        }
-
-                        this._updateEditCacheByLoad(loadData.data.rows);
-                        this.dataList = loadData.data.rows;
-                        this.total = loadData.data.total;
-                        if (this.is_Search) {
-                            this.createSearchRow();
-                        }
-                    } else {
-                        this._updateEditCacheByLoad([]);
-                        this.dataList = loadData.data;
-                        this.total = 0;
-                        if (this.is_Search) {
-                            this.createSearchRow();
-                        }
-                    }
+                    resData = loadData.data.rows;
                 }
+
+                if (resData) {
+                    let focusId;
+                    if (loadData.data.focusedId) {
+                        focusId = loadData.data.focusedId[0];
+                    } else {
+                        const slcId = this._selectRow['key'];
+                        if (slcId) {
+                            if (resData.length > 0 &&
+                                resData.filter(s => s[this.config.keyId] === slcId).length > 0
+                            ) {
+                                focusId = slcId;
+                            } else {
+                                resData.length > 0 &&
+                                    (focusId = resData[0].Id);
+                            }
+                        } else {
+                            resData.length > 0 &&
+                                (focusId = resData[0].Id);
+                        }
+
+                    }
+                    if (resData.length > 0) {
+                        this.dataList = resData;
+                        resData.forEach((row, index) => {
+                            row['key'] = row[this.config.keyId]
+                                ? row[this.config.keyId]
+                                : 'Id';
+                            if (this.is_Selectgrid) {
+                                if (row.Id === focusId) {
+                                    if (this.editCache[row['key']]) {
+                                        this.editCache[row['key']]['edit'] = false;
+                                    }
+                                    this.selectRow(row);
+                                }
+                            }
+                            if (loadData.data.page === 1) {
+                                row['_serilize'] = index + 1;
+                            } else {
+                                row['_serilize'] =
+                                    (loadData.data.page - 1) *
+                                    loadData.data.pageSize +
+                                    index +
+                                    1;
+                            }
+
+                            if (this.config.checkedMapping) {
+                                this.config.checkedMapping.forEach(m => {
+                                    if (
+                                        row[m.name] &&
+                                        row[m.name] === m.value
+                                    ) {
+                                        row['checked'] = true;
+                                    }
+                                });
+                            }
+                        });
+                    } else {
+                        this.dataList = [];
+                        this._selectRow = {};
+                        this.emptyLoad();
+                    }
+
+                    this._updateEditCacheByLoad(resData);
+                    // this.dataList = loadData.data.rows;
+                    this.total = loadData.data.total;
+                    if (this.is_Search) {
+                        this.createSearchRow();
+                    }
+                } else {
+                    this._updateEditCacheByLoad([]);
+                    this.dataList = loadData.data;
+                    this.total = 0;
+                    if (this.is_Search) {
+                        this.createSearchRow();
+                    }
+                    this.emptyLoad();
+                }
+
+                // let data;
+                // if (method === 'proc') {
+                //     data = loadData.data.dataSet1 ? loadData.data.dataSet1 : [];
+                //     this.dataList = data;
+                //     this.dataList.forEach(d => {
+                //         d['key'] = d[this.config.keyId]
+                //             ? d[this.config.keyId]
+                //             : 'Id';
+                //     })
+                // } else {
+                //     data = loadData.data.rows;
+                //     if (data) {
+                //         // 设置聚焦ID
+                //         // 默认第一行选中，如果操作后有focusId则聚焦ID为FocusId
+                //         let focusId;
+                //         if (loadData.FocusId) {
+                //             focusId = loadData.FocusId;
+                //         } else {
+                //             loadData.data.rows.length > 0 &&
+                //                 (focusId = loadData.data.rows[0].Id);
+                //         }
+                //         if (loadData.data.rows.length > 0) {
+                //             loadData.data.rows.forEach((row, index) => {
+                //                 row['key'] = row[this.config.keyId]
+                //                     ? row[this.config.keyId]
+                //                     : 'Id';
+                //                 if (this.is_Selectgrid) {
+                //                     if (row.Id === focusId) {
+                //                         !this.config.isDefaultNotSelected && this.selectRow(row);
+                //                     }
+                //                 }
+                //                 if (loadData.data.page === 1) {
+                //                     row['_serilize'] = index + 1;
+                //                 } else {
+                //                     row['_serilize'] =
+                //                         (loadData.data.page - 1) *
+                //                         loadData.data.pageSize +
+                //                         index +
+                //                         1;
+                //                 }
+
+                //                 if (this.config.checkedMapping) {
+                //                     this.config.checkedMapping.forEach(m => {
+                //                         if (
+                //                             row[m.name] &&
+                //                             row[m.name] === m.value
+                //                         ) {
+                //                             row['checked'] = true;
+                //                         }
+                //                     });
+                //                 }
+                //             });
+                //         } else {
+                //             this._selectRow = {};
+                //         }
+
+                //         this._updateEditCacheByLoad(loadData.data.rows);
+                //         this.dataList = loadData.data.rows;
+                //         this.total = loadData.data.total;
+                //         if (this.is_Search) {
+                //             this.createSearchRow();
+                //         }
+                //     } else {
+                //         this._updateEditCacheByLoad([]);
+                //         this.dataList = loadData.data;
+                //         this.total = 0;
+                //         if (this.is_Search) {
+                //             this.createSearchRow();
+                //         }
+                //     }
+                // }
             } else {
                 this._updateEditCacheByLoad([]);
                 this.dataList = [];

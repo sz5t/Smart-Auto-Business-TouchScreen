@@ -1936,6 +1936,7 @@ export class TsDataTableComponent extends CnComponentBase
         const footer = [];
         this._http.getLocalData(dialog.layoutName).subscribe(data => {
             const selectedRow = this._selectRow ? this._selectRow : {};
+            this._getCheckItemsId();
             const tmpValue = this.tempValue ? this.tempValue : {};
             const modal = this.baseModal.create({
                 nzTitle: dialog.title,

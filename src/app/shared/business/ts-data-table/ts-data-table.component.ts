@@ -4533,7 +4533,6 @@ export class TsDataTableComponent extends CnComponentBase
     }
 
     public resolverOperation(handleData) {
-            debugger;
         if (this.config.operationMapping) {
             this.config.operationMapping.forEach(operation => {
                 if (handleData[operation['field']] && handleData[operation['field']] === operation['value']) {

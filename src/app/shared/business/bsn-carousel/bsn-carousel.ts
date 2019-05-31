@@ -33,7 +33,7 @@ import { NzCarouselComponent } from 'ng-zorro-antd';
   <nz-card nzBordered="false" [nzBodyStyle]="config.style ? config.style: {}">
   <nz-spin [nzSpinning]="isLoading" nzTip='加载中...'>
     <nz-carousel #carousel [nzEffect]="'fade'" [nzAutoPlay]="config.autoPlay" [nzEnableSwipe]="config.enableSwipe" >
-        <div nz-carousel-content *ngFor="let img of imgList" >
+        <div nz-carousel-content *ngFor="let img of imgList">
             <img alt="{{img.alt}}" src="{{serverPath + img.src}}"/>
         </div>
     </nz-carousel>
@@ -76,7 +76,7 @@ export class BsnCarouselComponent extends CnComponentBase
 
     public ngOnInit() {
         if (this.initData) {
-            this.initValue = this.initValue;
+            this.initValue = this.initData;
         }
         this.resolverRelation();
         if (this.config.componentType.own) {
@@ -93,9 +93,11 @@ export class BsnCarouselComponent extends CnComponentBase
                     const imgItem = {};
                     this.config.dataMapping.forEach(element => {
                         if (element['field'] === 'urlPath') {
-                            imgItem[element['name']] = (d[element['field']]).replace('/^\\/$', function(s) {
-                                 return s = '/';
-                            });                    
+                            if(d[element['field']]){
+                                imgItem[element['name']] = (d[element['field']]).replace('/^\\/$', function(s) {
+                                    return s = '/';
+                               });  
+                            }              
                         } else {
                             imgItem[element['name']] = d[element['field']];                    
                         }

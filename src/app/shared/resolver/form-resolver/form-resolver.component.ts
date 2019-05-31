@@ -72,6 +72,10 @@ import { Router } from '@angular/router';
             line-height:0px;
         }
 
+        :host ::ng-deep .ant-form-item-label > label::after {
+            content:'';
+        }
+
     `]
 })
 export class FormResolverComponent extends CnFormBase

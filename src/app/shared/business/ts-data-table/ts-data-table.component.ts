@@ -1954,6 +1954,7 @@ export class TsDataTableComponent extends CnComponentBase
                     const button = {};
                     button['label'] = btn.text;
                     button['type'] = btn.type ? btn.type : 'default';
+                    button['size'] = btn.size ? btn.size : 'default';
                     button['show'] = true;
                     button['onClick'] = componentInstance => {
                         if (btn['name'] === 'save') {

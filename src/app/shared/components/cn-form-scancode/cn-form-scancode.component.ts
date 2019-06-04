@@ -4,7 +4,10 @@ import {
     Inject,
     Input,
     Output,
-    EventEmitter
+    EventEmitter,
+    ViewChild,
+    ElementRef,
+    AfterViewInit
 } from "@angular/core";
 import {
     BSN_COMPONENT_MODES,
@@ -21,25 +24,30 @@ import { FormGroup } from "@angular/forms";
     templateUrl: "./cn-form-scancode.component.html",
     styleUrls: ["./cn-form-scancode.component.css"]
 })
-export class CnFormScancodeComponent implements OnInit {
+export class CnFormScancodeComponent implements OnInit, AfterViewInit {
     @Input()
-    config;
+    public config;
     @Input()
     value;
     @Input()
-    bsnData;
+    public bsnData;
     @Input()
-    rowData;
+    public rowData;
     @Input()
-    dataSet;
-    formGroup: FormGroup;
+    public dataSet;
+    public formGroup: FormGroup;
     // @Output() updateValue = new EventEmitter();
     @Output()
-    updateValue = new EventEmitter();
-    _options = [];
-    cascadeValue = {};
-    resultData;
-    _value;
+    public updateValue = new EventEmitter();
+@ViewChild('scanInput') public scanInput: ElementRef <any>;
+
+
+    public _options = [];
+    public cascadeValue = {};
+    public resultData;
+    public _value;
+    public isScan = true;
+    public oldvalue = null;
     constructor(
         @Inject(BSN_COMPONENT_MODES)
         private stateEvents: Observable<BsnComponentMessage>,
@@ -50,10 +58,15 @@ export class CnFormScancodeComponent implements OnInit {
         private apiService: ApiService
     ) { }
 
-    ngOnInit() { }
-    isScan = true;
-    oldvalue = null;
-    async onKeyPress(e) {
+    public ngOnInit() { }
+    public ngAfterViewInit() {
+
+       this. scanInput.nativeElement.focus();
+       this. scanInput.nativeElement.select();
+    }
+
+
+    public async onKeyPress(e) {
         // console.log('onKeyPress', e);
         if (e.code === "Enter") {
             this.isScan = false;
@@ -72,14 +85,14 @@ export class CnFormScancodeComponent implements OnInit {
                        //  resultData['data'] = backData[0];
                         resultData = _data;
                     }
-    
+
                 } else {
                     resultData = result;
                 }
             } else {
                 resultData = result;
             }
-           
+
             // this.cascade.next(
             //   new BsnComponentMessage(
             //     BSN_COMPONENT_CASCADE_MODES.Scan_Code_ROW,
@@ -110,7 +123,7 @@ export class CnFormScancodeComponent implements OnInit {
         }
     }
 
-    async asyncLoad(p?, componentValue?, type?) {
+    public async asyncLoad(p?, componentValue?, type?) {
         if (!p) {
             return [];
         }
@@ -179,12 +192,12 @@ export class CnFormScancodeComponent implements OnInit {
 
     }
 
-    isString(obj) {
+    public isString(obj) {
         // 判断对象是否是字符串
         return Object.prototype.toString.call(obj) === "[object String]";
     }
 
-    valueChange(name?, dataItem?) {
+    public valueChange(name?, dataItem?) {
         console.log("valueChange", name);
         const backValue = { name: this.config.name, value: name };
         if (dataItem) {

@@ -1945,7 +1945,7 @@ export class TsDataTableComponent extends CnComponentBase
                 nzComponentParams: {
                     permissions: this.permissions,
                     config: data,
-                    initData: { ...tmpValue, ...selectedRow }
+                    initData: { ...tmpValue, ...selectedRow,...this.initValue }
                 },
                 nzFooter: footer
             });

@@ -29,12 +29,12 @@ import { NzCarouselComponent } from 'ng-zorro-antd';
     // tslint:disable-next-line:component-selector
     selector: 'bsn-carousel',
     template: `
-  
+    
   <nz-card nzBordered="false" [nzBodyStyle]="config.style ? config.style: {}">
   <nz-spin [nzSpinning]="isLoading" nzTip='加载中...'>
     <nz-carousel #carousel [nzEffect]="'fade'" [nzAutoPlay]="config.autoPlay" [nzEnableSwipe]="config.enableSwipe" >
         <div nz-carousel-content *ngFor="let img of imgList">
-            <img alt="{{img.alt}}" src="{{serverPath + img.src}}"/>
+            <img class="image" alt="{{img.alt}}" src="{{serverPath + img.src}}"/>
         </div>
     </nz-carousel>
     </nz-spin>
@@ -79,14 +79,39 @@ export class BsnCarouselComponent extends CnComponentBase
             this.initValue = this.initData;
         }
         this.resolverRelation();
-        if (this.config.componentType.own) {
-            this.load();
-        }
     }
 
-    public load() {
+    public async load() {
         this.imgList = [];
-        this.get().then(response => {
+        // this.get().then(response => {
+        //     if (response.isSuccess) {
+        //         // 构建数据源
+        //         response.data.forEach(d => {
+        //             const imgItem = {};
+        //             this.config.dataMapping.forEach(element => {
+        //                 if (element['field'] === 'urlPath') {
+        //                     if(d[element['field']]){
+        //                         imgItem[element['name']] = (d[element['field']]).replace('/^\\/$', function(s) {
+        //                             return s = '/';
+        //                        });  
+        //                     }              
+        //                 } else {
+        //                     imgItem[element['name']] = d[element['field']];                    
+        //                 }
+                        
+        //             });
+        //             this.imgList.push(imgItem);
+        //         });
+               
+        //         setTimeout(() => {
+        //             this.isLoading = false;
+        //         })
+        //         // this.carousel.activeIndex = 0;
+        //         this.carousel.goTo(0);
+        //     }
+        // });
+        (async () => {
+            const response = await this.get();
             if (response.isSuccess) {
                 // 构建数据源
                 response.data.forEach(d => {
@@ -105,13 +130,15 @@ export class BsnCarouselComponent extends CnComponentBase
                     });
                     this.imgList.push(imgItem);
                 });
-                setTimeout(() => {
-                    this.isLoading = false;
-                })
+               
+           
+                this.isLoading = false;
+              
                 // this.carousel.activeIndex = 0;
                 this.carousel.goTo(0);
             }
-        });
+                window.setTimeout(() => {this.showImage();},1000);
+        })(); 
         
     }
 
@@ -182,8 +209,9 @@ export class BsnCarouselComponent extends CnComponentBase
     }
 
     public ngAfterViewInit() {
-        
-        
+        if (this.config.componentType.own) {
+            this.load();
+        }
     }
 
     public ngOnDestroy() {
@@ -192,6 +220,16 @@ export class BsnCarouselComponent extends CnComponentBase
         }
         if (this._cascadeSubscription) {
             this._cascadeSubscription.unsubscribe();
+        }
+    }
+
+    /**
+     * showImage
+     */
+    public  showImage() {
+        var elements = document.querySelectorAll( '.image' );
+        if(elements.length>0){
+            Intense( elements );
         }
     }
 }

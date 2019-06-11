@@ -39,6 +39,7 @@ import { BeforeOperation } from '../before-operation.base';
 import { isArray } from 'util';
 import { SettingsService, MenuService } from '@delon/theme';
 import { ITokenService, DA_SERVICE_TOKEN } from '@delon/auth';
+import { create } from 'domain';
 const component: { [type: string]: Type<any> } = {
     layout: LayoutResolverComponent,
     form: CnFormWindowResolverComponent,
@@ -1938,6 +1939,9 @@ export class TsDataTableComponent extends CnComponentBase
             const selectedRow = this._selectRow ? this._selectRow : {};
             this._getCheckItemsId();
             const tmpValue = this.tempValue ? this.tempValue : {};
+            const initCheckedIds = this.initValue['_checkedIds'] ? this.initValue['_checkedIds'] : null;
+            const tempCheckedIds = tmpValue['_checkedIds'] ? tmpValue['_checkedIds'] : null;
+            const checkedIds = {initCheckedIds: initCheckedIds , tempCheckedIds: tempCheckedIds};
             const modal = this.baseModal.create({
                 nzTitle: dialog.title,
                 nzWidth: dialog.width,
@@ -1945,7 +1949,7 @@ export class TsDataTableComponent extends CnComponentBase
                 nzComponentParams: {
                     permissions: this.permissions,
                     config: data,
-                    initData: { ...tmpValue, ...selectedRow,...this.initValue }
+                    initData: { ...this.initValue, ...tmpValue, ...selectedRow, ...checkedIds}
                 },
                 nzFooter: footer
             });
@@ -4717,7 +4721,7 @@ export class TsDataTableComponent extends CnComponentBase
     // 行内删除
     public deleteRowOnSelected(key) {
         const row = this.dataList.filter(item => item.key === key)[0];
-        // console.log('删除行', row);
+        // console.log('删除行', row, this.config.events);
         if (this.config.events) {
             const index = this.config.events.findIndex(item => item['onTrigger'] === 'deleteRow');
             let c_eventConfig = {};
@@ -4726,7 +4730,6 @@ export class TsDataTableComponent extends CnComponentBase
             } else {
                 return true;
             }
-
             const isField = true; // 列变化触发
             // 首先适配类别、字段，不满足的时候 看是否存在default 若存在 取default
             if (isField) {
@@ -4738,7 +4741,7 @@ export class TsDataTableComponent extends CnComponentBase
                 });
             }
         }
-        console.log('行内删除', key);
+        // console.log('行内删除', key);
         // 注意，末页删除需要将数据页数上移
 
 

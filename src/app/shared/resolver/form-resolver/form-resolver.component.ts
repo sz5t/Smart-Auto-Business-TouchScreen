@@ -130,6 +130,8 @@ export class FormResolverComponent extends CnFormBase
             if (this.config.componentType) {
                 if (!this.config.componentType.child) {
                     this.load();
+                } else if (this.config.componentType.own === true) {
+                    this.load();
                 }
             } else {
                 this.load();

@@ -9,7 +9,7 @@
         [nzSuffix]="suffixTemplate"
         [nzAddOnAfter]="suffixButton"
         [nzPrefixIcon]="config.perfix"
-       
+
         >
         <input nz-input
                type="{{config.inputType}}"
@@ -31,7 +31,7 @@
     </nz-form-explain>
 </nz-form-control>
     <ng-template #addOnBeforeTemplate>
-        <nz-select [ngModel]="select">
+        <nz-select [ngModel]="select" (ngModelChange)="changeEquiment($event)">
             <ng-container *ngFor="let option of selectoptions">
                 <nz-option [nzLabel]="option.name" [nzValue]="option.value"></nz-option>
             </ng-container>

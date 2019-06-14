@@ -35,6 +35,7 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
     public rowData;
     @Input()
     public dataSet;
+    @Input() public initValue;
     public formGroup: FormGroup;
     // @Output() updateValue = new EventEmitter();
     @Output()
@@ -58,7 +59,9 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
         private apiService: ApiService
     ) { }
 
-    public ngOnInit() { }
+    public ngOnInit() {
+
+    }
     public ngAfterViewInit() {
 
        this. scanInput.nativeElement.focus();
@@ -124,6 +127,7 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
     }
 
     public async asyncLoad(p?, componentValue?, type?) {
+       // console.log('asyncLoad--->initValue', this.initValue);
         if (!p) {
             return [];
         }
@@ -162,6 +166,8 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
                     params[param.name] = this._value;
                 } else if (param.type === "cascadeValue") {
                     params[param.name] = this.cascadeValue[param.valueName];
+                } else if (param.type === 'initValue') {
+                    params[param.name] = this.initValue[param.valueName];
                 }
             });
             if (this.isString(p.url)) {
@@ -177,6 +183,8 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
                         pc = this.bsnData[param.valueName];
                     } else if (param.type === "scanCodeValue") {
                         pc = this._value;
+                    } else if (param.type === 'initValue') {
+                        pc = this.initValue[param.valueName];
                     }
                 });
 

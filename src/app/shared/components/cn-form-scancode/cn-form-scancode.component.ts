@@ -40,7 +40,7 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
     // @Output() updateValue = new EventEmitter();
     @Output()
     public updateValue = new EventEmitter();
-@ViewChild('scanInput') public scanInput: ElementRef <any>;
+    @ViewChild('scanInput') public scanInput: ElementRef<any>;
 
 
     public _options = [];
@@ -49,6 +49,7 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
     public _value;
     public isScan = true;
     public oldvalue = null;
+    public isload = true;
     constructor(
         @Inject(BSN_COMPONENT_MODES)
         private stateEvents: Observable<BsnComponentMessage>,
@@ -64,8 +65,8 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
     }
     public ngAfterViewInit() {
 
-       this. scanInput.nativeElement.focus();
-       this. scanInput.nativeElement.select();
+        this.scanInput.nativeElement.focus();
+        this.scanInput.nativeElement.select();
     }
 
 
@@ -74,18 +75,18 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
         if (e.code === "Enter") {
             this.isScan = false;
             this.oldvalue = this._value;
-            console.log("huiche", this._value);
+            // console.log("huiche", this._value);
             let resultData;
             const result = await this.asyncLoad(
                 this.config.ajaxConfig ? this.config.ajaxConfig : null
             );
-            if(this.config.ajaxConfig) {
+            if (this.config.ajaxConfig) {
                 if (this.config.ajaxConfig.ajaxType === 'proc') {
                     const backData = result.data.dataSet1 ? result.data.dataSet1 : [];
-                   //  console.log('backData:', backData);
+                    //  console.log('backData:', backData);
                     if (backData.length > 0) {
                         const _data = { data: backData[0] };
-                       //  resultData['data'] = backData[0];
+                        //  resultData['data'] = backData[0];
                         resultData = _data;
                     }
 
@@ -127,7 +128,7 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
     }
 
     public async asyncLoad(p?, componentValue?, type?) {
-       // console.log('asyncLoad--->initValue', this.initValue);
+        // console.log('asyncLoad--->initValue', this.initValue);
         if (!p) {
             return [];
         }
@@ -206,11 +207,49 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
     }
 
     public valueChange(name?, dataItem?) {
-        console.log("valueChange", name);
+        // console.log("valueChange", name);
         const backValue = { name: this.config.name, value: name };
         if (dataItem) {
             backValue["dataItem"] = dataItem;
         }
         this.updateValue.emit(backValue);
     }
+
+
+    /**
+     * initLoadValue 加载初值
+     */
+    public async initLoadValue(v) {
+        if (v && this.config.initLoadValue) {
+            if (this.isload) {
+                this.isload = false;
+                this.isScan = false;
+                this.oldvalue = this._value;
+                let resultData;
+                const result = await this.asyncLoad(
+                    this.config.ajaxConfig ? this.config.ajaxConfig : null
+                );
+                if (this.config.ajaxConfig) {
+                    if (this.config.ajaxConfig.ajaxType === 'proc') {
+                        const backData = result.data.dataSet1 ? result.data.dataSet1 : [];
+                        //  console.log('backData:', backData);
+                        if (backData.length > 0) {
+                            const _data = { data: backData[0] };
+                            //  resultData['data'] = backData[0];
+                            resultData = _data;
+                        }
+
+                    } else {
+                        resultData = result;
+                    }
+                } else {
+                    resultData = result;
+                }
+                this.valueChange(this._value, resultData.data);
+            }
+        }
+
+
+    }
+
 }

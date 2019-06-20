@@ -366,12 +366,12 @@ export class TsDataTableComponent extends CnComponentBase
                         break;
                     case BSN_EXECUTE_ACTION.EXECUTE_CHECKED_ID_LINK:
                         const itemIds = this._getCheckItemsId();
-                        this.cacheValue.set('routerValue',itemIds);
+                        this.cacheValue.set('routerValue', itemIds);
                         this.linkToPage(option, itemIds);
                         return;
                     case BSN_EXECUTE_ACTION.EXECUTE_SELECTED_LINK:
                         const itemId = this._getSelectedItem();
-                        this.cacheValue.set('routerValue',itemId);
+                        this.cacheValue.set('routerValue', itemId);
                         this.linkToPage(option, itemId);
                         return;
                     case BSN_COMPONENT_MODES.LINK:
@@ -379,7 +379,7 @@ export class TsDataTableComponent extends CnComponentBase
                         return;
                     case BSN_COMPONENT_MODES.EXECUTE_SELECTED_LINK:
                     const item = this._getSelectedItem();
-                    this.cacheValue.set('routerValue',item);
+                    this.cacheValue.set('routerValue', item);
                           this.linkToPage(option, item);
                         return;
                     case BSN_COMPONENT_MODES.LOGIN_OUT:
@@ -436,10 +436,10 @@ export class TsDataTableComponent extends CnComponentBase
                         this.config.relations &&
                         this.config.relations.length > 0
                     ) {
-                        this.config.relations.forEach(relation => {
+                        this.config.relations.forEach( relation => {
                             if (
                                 relation.relationViewId === cascadeEvent._viewId
-                                && cascadeEvent._mode ===BSN_COMPONENT_CASCADE_MODES[
+                                && cascadeEvent._mode === BSN_COMPONENT_CASCADE_MODES[
                                     relation.cascadeMode
                                     ]
                             ) {
@@ -1224,7 +1224,7 @@ export class TsDataTableComponent extends CnComponentBase
 
     public valueChange(data) {
         // const index = this.dataList.findIndex(item => item.key === data.key);
-        //console.log('值变化', data, 'this.editCache[data.key].data[data.name] :', this.editCache[data.key]);
+        // console.log('值变化', data, 'this.editCache[data.key].data[data.name] :', this.editCache[data.key]);
         let isValueChange = true;
         if (data.data === undefined) {
             data.data = null;
@@ -1232,7 +1232,7 @@ export class TsDataTableComponent extends CnComponentBase
         if (this.editCache[data.key].data[data.name] === data.data) {
             isValueChange = false;
         }
-        //console.log('值变化比较', isValueChange, this.editCache[data.key].data[data.name], data.data);
+        // console.log('值变化比较', isValueChange, this.editCache[data.key].data[data.name], data.data);
         this.editCache[data.key].data[data.name] = data.data;
         this.editCache[data.key].data[data.name] = JSON.parse(
             JSON.stringify(this.editCache[data.key].data[data.name])

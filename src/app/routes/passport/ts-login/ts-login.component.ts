@@ -122,7 +122,7 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
                         that.cacheService.set('userInfo', user.data);
                         const token: ITokenModel = { token: user.data.token };
                         that.tokenService.set(token); // 后续projectId需要进行动态获取
-                        //let url = user.data.modules[0].link;
+                        // let url = user.data.modules[0].link;
                         let url = '/ts/entry';
                         that.router.navigate([`${url}`]);
                     } else {

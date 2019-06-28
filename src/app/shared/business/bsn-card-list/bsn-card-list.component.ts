@@ -696,4 +696,6 @@ export class BsnCardListComponent extends CnComponentBase
             }
         });
     }
+
+    
 }

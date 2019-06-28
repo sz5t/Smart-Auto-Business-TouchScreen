@@ -68,7 +68,7 @@ export class CnGridEditComponent implements OnInit {
 
   // 值返回
   public valueChange(name?) {
-    // console.log('变化列返回：', this.value);
+     //console.log('变化列返回：', name);
 
     // this.value.data = name;
     this.updateValue.emit(name);

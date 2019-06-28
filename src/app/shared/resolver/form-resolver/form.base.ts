@@ -224,8 +224,17 @@ export class CnFormBase extends CnComponentBase {
         return params;
     }
 
-    public buildUrl(urlConfig) {
+    public buildUrl(urlConfig, urlobj?) {
         let url;
+        if (urlobj) {
+            const ip = CommonTools.parametersResolver({
+                params: urlobj.params,
+                tempValue: this.tempValue,
+                initValue: this.initValue,
+                cacheValue: this.cacheValue,
+            });
+            url = 'http://' + ip['IP'] + ':' + ip['sort'] + '/' + urlConfig ;
+        } else {
         if (CommonTools.isString(urlConfig)) {
             url = urlConfig;
         } else {
@@ -236,7 +245,7 @@ export class CnFormBase extends CnComponentBase {
                 cacheValue: this.cacheValue
             });
             url = `${urlConfig.url['parent']}/${pc}/${urlConfig.url['child']}`;
-        }
+        }}
         return url;
     }
 

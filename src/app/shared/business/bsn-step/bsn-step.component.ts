@@ -501,7 +501,6 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
             cacheValue: this.cacheValue,
             item: data
         });
-
     }
 
 

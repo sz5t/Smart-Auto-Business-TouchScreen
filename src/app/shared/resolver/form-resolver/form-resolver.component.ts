@@ -373,7 +373,12 @@ export class FormResolverComponent extends CnFormBase
             setTimeout(() => {
                 this.isSpinning = true;
             })
-            const url = this.buildUrl(this.config.ajaxConfig.url);
+            let url: string;
+            if (this.config.ajaxConfig.urlobj) {
+                url = this.buildUrl(this.config.ajaxConfig.url, this.config.ajaxConfig.urlobj)
+            } else {
+                url = this.buildUrl(this.config.ajaxConfig.url, '');
+            } 
             const params = this.buildParameter(this.config.ajaxConfig.params);
             this.execute(url, this.config.ajaxConfig.ajaxType , params).then(result => {
                 let res;
@@ -382,7 +387,7 @@ export class FormResolverComponent extends CnFormBase
                 } else {
                     res = result.data;
                 }
-
+                this.loadData = res;
                 if (res) {
                     this.setFormValue(res);
                     // 给主键赋值
@@ -429,12 +434,40 @@ export class FormResolverComponent extends CnFormBase
     }
 
     /**
+     * 发送接口数据
+     * @param getConfig 数据访问配置
+     */
+    private async get(getConfig) {
+        let result = true;
+        let url: string ;
+        if (getConfig.urlobj) {
+            url = this.buildUrl(getConfig.url, getConfig.urlobj);
+        } else {
+            url = this.buildUrl(getConfig.url, '');
+        }
+        const newValue = this.GetComponentValue();
+        const params = this.buildParameter(getConfig.params);
+        if (params && !params['Id']) {
+            this.message.warning('编辑数据的Id不存在，无法进行更新！');
+            return;
+        } else {
+             this.execute(url, getConfig.ajaxType, params).then(result => {});
+        }
+        return result;
+    }
+
+    /**
      * 新增数据
      * @param postConfig 数据访问配置
      */
     private async post(postConfig) {
         let result = true;
-        const url = this.buildUrl(postConfig.url);
+        let url: string ;
+        if (postConfig.urlobj) {
+            url = this.buildUrl(postConfig.url, postConfig.urlobj);
+        } else {
+            url = this.buildUrl(postConfig.url, '');
+        }
         const newValue = this.GetComponentValue();
         const params = this.buildParameter(postConfig.params);
         const res = await this.execute(url, postConfig.ajaxType, params);
@@ -457,7 +490,12 @@ export class FormResolverComponent extends CnFormBase
      */
     private async put(putConfig) {
         let result = true;
-        const url = this.buildUrl(putConfig.url);
+        let url: string ;
+        if (putConfig.urlobj) {
+            url = this.buildUrl(putConfig.url, putConfig.urlobj);
+        } else {
+            url = this.buildUrl(putConfig.url, '');
+        }
         const newValue = this.GetComponentValue();
         const params = this.buildParameter(putConfig.params);
         if (params && !params['Id']) {

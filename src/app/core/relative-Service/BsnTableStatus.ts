@@ -57,8 +57,7 @@ export const BSN_PARAMETER_TYPE = {
     INIT_VALUE: 'initValue',
     CACHE_VALUE: 'cacheValue',
     CASCADE_VALUE: 'cascadeValue',
-    RETURN_VALUE: 'returnValue',
-    ROUTER_VALUE: 'routerValue'
+    RETURN_VALUE: 'returnValue'
 };
 
 export const BSN_EXECUTE_ACTION = {

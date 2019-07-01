@@ -365,22 +365,18 @@ export class TsDataTableComponent extends CnComponentBase
                         break;
                     case BSN_EXECUTE_ACTION.EXECUTE_CHECKED_ID_LINK:
                         const itemIds = this._getCheckItemsId();
-                        this.cacheValue.set('routerValue',itemIds);
                         this.linkToPage(option, itemIds);
                         return;
                     case BSN_EXECUTE_ACTION.EXECUTE_SELECTED_LINK:
                         const itemId = this._getSelectedItem();
-                        this.cacheValue.set('routerValue',itemId);
                         this.linkToPage(option, itemId);
                         return;
                     case BSN_COMPONENT_MODES.LINK:
                         this.linkToPage(option, '');
                         return;
                     case BSN_COMPONENT_MODES.EXECUTE_SELECTED_LINK:
-                        const item = this._getSelectedItem();
-                        this.cacheValue.set('routerValue',item);
-                        console.log(this.cacheValue.getNone('routerValue'));
-                        this.linkToPage(option, item);
+                    const item = this._getSelectedItem();
+                          this.linkToPage(option, item);
                         return;
                     case BSN_COMPONENT_MODES.LOGIN_OUT:
                         this.logout();
@@ -497,13 +493,13 @@ export class TsDataTableComponent extends CnComponentBase
      * @param option 按钮操作配置参数
      */
     private linkToPage(option, handleData) {
+        debugger;
         const params = CommonTools.parametersResolver({
             params: this.config.routeParams,
             // componentValue: this.loadData ? this.loadData : this.value,
             tempValue: this.tempValue,
             initValue: this.initValue,
             cacheValue: this.cacheValue,
-            routerValue : this.cacheValue,
             item: handleData
         });
          // 判断跳转页面是否为根据跳转跳转不同页面
@@ -2703,11 +2699,9 @@ export class TsDataTableComponent extends CnComponentBase
                 tempValue: this.tempValue,
                 initValue: this.initValue,
                 cacheValue: this.cacheService,
-                cascadeValue: this.cascadeValue,
-                routerValue: this.cacheService
+                cascadeValue: this.cascadeValue
             });
         }
-        debugger;
         return params;
     }
     /**

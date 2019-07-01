@@ -8,6 +8,7 @@ export interface ParametersResolverModel {
     cacheValue?;
     cascadeValue?;
     returnValue?;
+    routerValue?;
 }
 export class CommonTools {
     public static uuID(w) {
@@ -139,7 +140,7 @@ export class CommonTools {
                             if (model.cacheValue) {
                                 const cache = model.cacheValue.getNone('userInfo');
                                 result[param['name']] =
-                                    cache.value[param['valueName']];
+                                    cache[param['valueName']];
                             }
                             break;
                         case BSN_PARAMETER_TYPE.CASCADE_VALUE:
@@ -154,7 +155,13 @@ export class CommonTools {
                                     model.returnValue[param['valueName']];
                             }
                             break;
-
+                        case BSN_PARAMETER_TYPE.ROUTER_VALUE:
+                            if (model.cacheValue) {
+                                const cache = model.cacheValue.getNone('routerValue');
+                                result[param['name']] =
+                                    cache[param['valueName']];
+                            }
+                            break;
                     }
                 }
             });

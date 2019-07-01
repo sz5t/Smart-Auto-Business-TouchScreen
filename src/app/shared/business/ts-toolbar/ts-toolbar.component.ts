@@ -86,7 +86,6 @@ export class TsToolbarComponent implements OnInit, OnDestroy {
         this.permissions.forEach(item => {
             permissionMap.set(item.code, item); 
         });
-        debugger;
         if (this.toolbars && Array.isArray(this.toolbars)) {
             this.toolbars.forEach(item => {
                 if (item.group) {

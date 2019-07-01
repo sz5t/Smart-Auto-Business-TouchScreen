@@ -25,7 +25,7 @@ import {
             }*/
 
             .table-operations-ts .ant-btn-group {
-                
+
                 margin-bottom: 2px;
             }
 
@@ -72,9 +72,9 @@ export class TsToolbarComponent implements OnInit, OnDestroy {
                 this.toolbars = this.config.tsToolbar;
             }
         }
-        
+
         // if (this.config.toolbar) {
-            
+
         // } else {
         //     this.toolbars = this.config;
         // }
@@ -84,9 +84,8 @@ export class TsToolbarComponent implements OnInit, OnDestroy {
     public getPermissions() {
         const permissionMap = new Map();
         this.permissions.forEach(item => {
-            permissionMap.set(item.code, item); 
+            permissionMap.set(item.code, item);
         });
-        debugger;
         if (this.toolbars && Array.isArray(this.toolbars)) {
             this.toolbars.forEach(item => {
                 if (item.group) {

@@ -73,7 +73,6 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
     }
 
     public async loadReport() {
-
         const url = [];
         const d_params = this.buildParameter(this.config.ajaxConfig.params);
         const inline = this.config.inline;

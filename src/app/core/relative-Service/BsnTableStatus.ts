@@ -23,7 +23,8 @@ export const BSN_COMPONENT_MODES = {
     LINK: 'link',
     EXECUTE_SELECTED_LINK: 'link_selected_item',
     LOGIN_OUT: 'login_out',
-    WORK_CENTER:'work_center',
+    WORK_CENTER: 'work_center',
+    AUTO_PLAY: 'auto_play',
     
     // tree
     ADD_NODE: 'addNode',
@@ -57,7 +58,8 @@ export const BSN_PARAMETER_TYPE = {
     INIT_VALUE: 'initValue',
     CACHE_VALUE: 'cacheValue',
     CASCADE_VALUE: 'cascadeValue',
-    RETURN_VALUE: 'returnValue'
+    RETURN_VALUE: 'returnValue',
+    ROUTER_VALUE: 'routerValue'
 };
 
 export const BSN_EXECUTE_ACTION = {

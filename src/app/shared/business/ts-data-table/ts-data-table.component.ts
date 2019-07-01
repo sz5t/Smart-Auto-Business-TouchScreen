@@ -39,6 +39,9 @@ import { BeforeOperation } from '../before-operation.base';
 import { isArray } from 'util';
 import { SettingsService, MenuService } from '@delon/theme';
 import { ITokenService, DA_SERVICE_TOKEN } from '@delon/auth';
+import { create } from 'domain';
+import { timeout } from 'q';
+import { setTimeout } from 'core-js';
 const component: { [type: string]: Type<any> } = {
     layout: LayoutResolverComponent,
     form: CnFormWindowResolverComponent,
@@ -73,9 +76,12 @@ export class TsDataTableComponent extends CnComponentBase
     @Output() public updateValue = new EventEmitter();
     public loading = false;
     public pageIndex = 1;
-    public pageSize = 10;
+    public pageSize = 5;
     public total = 1;
     public focusIds;
+    public autoPlaySwitch = true;
+    public temple = 0;
+    public pagetotal = 1;
 
     public allChecked = false;
     public indeterminate = false;
@@ -137,121 +143,263 @@ export class TsDataTableComponent extends CnComponentBase
         this.cacheValue = this.cacheService;
         this.baseDrawer = this.drawerService;
     }
+    public loadData = {
+        rows: [],
+        total: 0
+    };
 
     public async ngOnInit() {
         if (this.initData) {
             this.initValue = this.initData;
         }
-        if (this.config.select) {
-            this.config.select.forEach(selectItem => {
-                this.config.columns.forEach(columnItem => {
-                    if (columnItem.editor) {
-                        if (columnItem.editor.field === selectItem.name) {
-                            // if (selectItem.type === 'selectGrid') {
-                            columnItem.editor.options['select'] =
-                                selectItem.config;
-                            // }
-                        }
-                    }
+        if (this.config.ajaxproc) {
+            const url = this._buildURL(this.config.ajaxConfig.url);
+            const params = {
+                ...this._buildParameters(this.config.ajaxConfig.params),
+                // ...this._buildPaging(),
+                ...this._buildFilter(this.config.ajaxConfig.filter),
+                ...this._buildSort(),
+                ...this._buildColumnFilter(),
+                ...this._buildFocusId(),
+                ...this._buildSearch()
+            };
+
+            const aloadData = await this._load(url, params, 'proc');
+            if (aloadData && aloadData.status === 200 && aloadData.isSuccess) {
+                this.loadData.rows = aloadData.data.dataSet1;
+                const keyIdCode = this.config.keyId ? this.config.keyId : 'Id';
+                aloadData.data.dataSet1.forEach(element => {
+                    element['key'] = element[keyIdCode];
                 });
-            });
-        }
+            }
+            this.loadData.total = this.loadData.rows.length;
+            this.total = this.loadData.total;
+            console.log('this.loadData:', this.loadData);
+            if (this.config.select) {
+                this.config.select.forEach(selectItem => {
+                    this.config.columns.forEach(columnItem => {
+                        if (columnItem.editor) {
+                            if (columnItem.editor.field === selectItem.name) {
+                                // if (selectItem.type === 'selectGrid') {
+                                columnItem.editor.options['select'] =
+                                    selectItem.config;
+                                // }
+                            }
+                        }
+                    });
+                });
+            }
 
-        if (this.casadeData) {
-            for (const key in this.casadeData) {
-                // 临时变量的整理
-                if (key === 'cascadeValue') {
-                    for (const casekey in this.casadeData['cascadeValue']) {
-                        if (
-                            this.casadeData['cascadeValue'].hasOwnProperty(
-                                casekey
-                            )
-                        ) {
-                            this.cascadeValue[casekey] = this.casadeData[
-                                'cascadeValue'
-                            ][casekey];
+            if (this.casadeData) {
+                for (const key in this.casadeData) {
+                    // 临时变量的整理
+                    if (key === 'cascadeValue') {
+                        for (const casekey in this.casadeData['cascadeValue']) {
+                            if (
+                                this.casadeData['cascadeValue'].hasOwnProperty(
+                                    casekey
+                                )
+                            ) {
+                                this.cascadeValue[casekey] = this.casadeData[
+                                    'cascadeValue'
+                                ][casekey];
+                            }
                         }
                     }
                 }
             }
-        }
-        // 当前作为子组件出现 临时变量值
-        if (this.bsnData) {
-            for (const key in this.bsnData) {
-                if (this.bsnData.hasOwnProperty(key)) {
-                    this.tempValue[key] = this.bsnData[key];
+            // 当前作为子组件出现 临时变量值
+            if (this.bsnData) {
+                for (const key in this.bsnData) {
+                    if (this.bsnData.hasOwnProperty(key)) {
+                        this.tempValue[key] = this.bsnData[key];
+                    }
                 }
             }
-        }
-        // liu 测试动态表格
-        if (this.config.columnsAjax) {
-            this.loadDynamicColumns();
-        }
-        this.resolverRelation();
-
-        if (this.ref) {
-            for (const p in this.ref) {
-                this.tempValue[p] = this.ref[p];
+            this.resolverRelation();
+            if (this.initData) {
+                this.initValue = this.initData;
             }
-        }
-        if (this.config.dataSet) {
-            (async () => {
-                for (
-                    let i = 0, len = this.config.dataSet.length;
-                    i < len;
-                    i++
-                ) {
-                    const url = this._buildURL(
-                        this.config.dataSet[i].ajaxConfig.url
-                    );
-                    const params = this._buildParameters(
-                        this.config.dataSet[i].ajaxConfig.params
-                    );
-                    const data = await this.get(url, params);
-                    if (data.isSuccess) {
-                        if (this.config.dataSet[i].fields) {
-                            const dataSetObjs = [];
-                            data.data.map(d => {
-                                const setObj = {};
-                                this.config.dataSet[i].fields.forEach(
-                                    (fieldItem, index) => {
-                                        if (d[fieldItem.field]) {
-                                            setObj[fieldItem.name] =
-                                                d[fieldItem.field];
+            if (this.ref) {
+                for (const p in this.ref) {
+                    this.tempValue[p] = this.ref[p];
+                }
+            }
+            if (this.cacheService) {
+                this.cacheValue = this.cacheService;
+            }
+            if (this.config.dataSet) {
+                (async () => {
+                    for (
+                        let i = 0, len = this.config.dataSet.length;
+                        i < len;
+                        i++
+                    ) {
+                        const urlset = this._buildURL(
+                            this.config.dataSet[i].ajaxConfig.url
+                        );
+                        const paramsset = this._buildParameters(
+                            this.config.dataSet[i].ajaxConfig.params
+                        );
+                        const data = await this.get(urlset, paramsset);
+                        if (data.isSuccess) {
+                            if (this.config.dataSet[i].fields) {
+                                const dataSetObjs = [];
+                                data.data.map(d => {
+                                    const setObj = {};
+                                    this.config.dataSet[i].fields.forEach(
+                                        (fieldItem, index) => {
+                                            if (d[fieldItem.field]) {
+                                                setObj[fieldItem.name] =
+                                                    d[fieldItem.field];
+                                            }
                                         }
-                                    }
-                                );
-                                dataSetObjs.push(setObj);
-                            });
-                            this.dataSet[
-                                this.config.dataSet[i].name
-                            ] = dataSetObjs;
-                        } else {
-                            this.dataSet[this.config.dataSet[i].name] =
-                                data.data;
+                                    );
+                                    dataSetObjs.push(setObj);
+                                });
+                                this.dataSet[
+                                    this.config.dataSet[i].name
+                                ] = dataSetObjs;
+                            } else {
+                                this.dataSet[this.config.dataSet[i].name] =
+                                    data.data;
+                            }
+                        }
+                    }
+                })();
+            }
+            // liu 20181022 特殊处理行定位
+            if (this.config.isSelectGrid) {
+                this.is_Selectgrid = false;
+            }
+            if (this.config.selectGridValueName) {
+                this.selectGridValueName = this.config.selectGridValueName;
+            }
+
+            this.pageSize = this.config.pageSize
+                ? this.config.pageSize
+                : this.pageSize;
+            if (this.config.componentType) {
+                if (!this.config.componentType.child) {
+                    this.loadbypage();
+                } else if (this.config.componentType.own === true) {
+                    this.loadbypage();
+                }
+            } else {
+                this.loadbypage();
+            }
+
+            // 初始化级联
+            this.caseLoad();
+        } else {
+            if (this.config.select) {
+                this.config.select.forEach(selectItem => {
+                    this.config.columns.forEach(columnItem => {
+                        if (columnItem.editor) {
+                            if (columnItem.editor.field === selectItem.name) {
+                                // if (selectItem.type === 'selectGrid') {
+                                columnItem.editor.options['select'] =
+                                    selectItem.config;
+                                // }
+                            }
+                        }
+                    });
+                });
+            }
+
+            if (this.casadeData) {
+                for (const key in this.casadeData) {
+                    // 临时变量的整理
+                    if (key === 'cascadeValue') {
+                        for (const casekey in this.casadeData['cascadeValue']) {
+                            if (
+                                this.casadeData['cascadeValue'].hasOwnProperty(
+                                    casekey
+                                )
+                            ) {
+                                this.cascadeValue[casekey] = this.casadeData[
+                                    'cascadeValue'
+                                ][casekey];
+                            }
                         }
                     }
                 }
-            })();
+            }
+            // 当前作为子组件出现 临时变量值
+            if (this.bsnData) {
+                for (const key in this.bsnData) {
+                    if (this.bsnData.hasOwnProperty(key)) {
+                        this.tempValue[key] = this.bsnData[key];
+                    }
+                }
+            }
+            // liu 测试动态表格
+            if (this.config.columnsAjax) {
+                this.loadDynamicColumns();
+            }
+            this.resolverRelation();
+
+            if (this.ref) {
+                for (const p in this.ref) {
+                    this.tempValue[p] = this.ref[p];
+                }
+            }
+            if (this.config.dataSet) {
+                (async () => {
+                    for (
+                        let i = 0, len = this.config.dataSet.length;
+                        i < len;
+                        i++
+                    ) {
+                        const url = this._buildURL(
+                            this.config.dataSet[i].ajaxConfig.url
+                        );
+                        const params = this._buildParameters(
+                            this.config.dataSet[i].ajaxConfig.params
+                        );
+                        const data = await this.get(url, params);
+                        if (data.isSuccess) {
+                            if (this.config.dataSet[i].fields) {
+                                const dataSetObjs = [];
+                                data.data.map(d => {
+                                    const setObj = {};
+                                    this.config.dataSet[i].fields.forEach(
+                                        (fieldItem, index) => {
+                                            if (d[fieldItem.field]) {
+                                                setObj[fieldItem.name] =
+                                                    d[fieldItem.field];
+                                            }
+                                        }
+                                    );
+                                    dataSetObjs.push(setObj);
+                                });
+                                this.dataSet[
+                                    this.config.dataSet[i].name
+                                ] = dataSetObjs;
+                            } else {
+                                this.dataSet[this.config.dataSet[i].name] =
+                                    data.data;
+                            }
+                        }
+                    }
+                })();
+            }
+            // liu 20181022 特殊处理行定位
+            if (this.config.isSelectGrid) {
+                this.is_Selectgrid = false;
+            }
+            if (this.config.selectGridValueName) {
+                this.selectGridValueName = this.config.selectGridValueName;
+            }
+
+            this.pageSize = this.config.pageSize
+                ? this.config.pageSize
+                : this.pageSize;
         }
-        // liu 20181022 特殊处理行定位
-        if (this.config.isSelectGrid) {
-            this.is_Selectgrid = false;
-        }
-        if (this.config.selectGridValueName) {
-            this.selectGridValueName = this.config.selectGridValueName;
-        }
-
-        this.pageSize = this.config.pageSize
-            ? this.config.pageSize
-            : this.pageSize;
-
-
-
-
     }
 
     public async ngAfterViewInit() {
+        if (!this.config.ajaxproc) {
         if (this.config.componentType) {
             if (!this.config.componentType.child) {
                 this.load();
@@ -277,7 +425,7 @@ export class TsDataTableComponent extends CnComponentBase
         });
         //  初始化 事件 liu 20181226
         this.GetToolbarEvents();
-    }
+    }}
     private resolverRelation() {
         // 注册按钮状态触发接收器
         this._statusSubscription = this.stateEvents.subscribe(updateState => {
@@ -365,24 +513,30 @@ export class TsDataTableComponent extends CnComponentBase
                         break;
                     case BSN_EXECUTE_ACTION.EXECUTE_CHECKED_ID_LINK:
                         const itemIds = this._getCheckItemsId();
+                        this.cacheValue.set('routerValue', itemIds);
                         this.linkToPage(option, itemIds);
                         return;
                     case BSN_EXECUTE_ACTION.EXECUTE_SELECTED_LINK:
                         const itemId = this._getSelectedItem();
+                        this.cacheValue.set('routerValue', itemId);
                         this.linkToPage(option, itemId);
                         return;
                     case BSN_COMPONENT_MODES.LINK:
                         this.linkToPage(option, '');
                         return;
                     case BSN_COMPONENT_MODES.EXECUTE_SELECTED_LINK:
-                    const item = this._getSelectedItem();
-                          this.linkToPage(option, item);
+                        const item = this._getSelectedItem();
+                        this.cacheValue.set('routerValue', item);
+                        this.linkToPage(option, item);
                         return;
                     case BSN_COMPONENT_MODES.LOGIN_OUT:
                         this.logout();
                         return;
                     case BSN_COMPONENT_MODES.WORK_CENTER:
                         this.linkToCenter(option);
+                        return;
+                    case BSN_COMPONENT_MODES.AUTO_PLAY:
+                        this.startAutoPlay();
                         return;
                 }
             }
@@ -405,19 +559,19 @@ export class TsDataTableComponent extends CnComponentBase
                         }
                     )
                 );
-                if (this.config.drawerDialog) {
-                    if (this.config.drawerDialog.drawerType === 'condition') {
-                        this.config.drawerDialog.drawerMapping.forEach(m => {
-                            if (this._selectRow[m['field']] && this._selectRow[m['field']] === m['value']) {
-                                const drawer = this.config.drawerDialog.drawers.find(d => d.name === m['name']);
-                                this.showDrawer(drawer);
-                                return;
-                            }
-                        });
-                    } else {
-                        this.showDrawer(this.config.drawerDialog.drawers[0]);
-                    }
-                }
+                // if (this.config.drawerDialog) {
+                //     if (this.config.drawerDialog.drawerType === 'condition' && this.config.drawerDialog.drawerMapping.length > 0) {
+                //         this.config.drawerDialog.drawerMapping.forEach(m => {
+                //             if (this._selectRow[m['field']] && this._selectRow[m['field']] === m['value']) {
+                //                 const drawer = this.config.drawerDialog.drawers.find(d => d.name === m['name']);
+                //                 this.showDrawer(drawer);
+                //                 return;
+                //             }
+                //         });
+                //     } else {
+                //         this.showDrawer(this.config.drawerDialog.drawers[0]);
+                //     }
+                // }
 
             });
         }
@@ -435,6 +589,9 @@ export class TsDataTableComponent extends CnComponentBase
                         this.config.relations.forEach(relation => {
                             if (
                                 relation.relationViewId === cascadeEvent._viewId
+                                && cascadeEvent._mode === BSN_COMPONENT_CASCADE_MODES[
+                                relation.cascadeMode
+                                ]
                             ) {
                                 // 获取当前设置的级联的模式
                                 const mode =
@@ -487,30 +644,41 @@ export class TsDataTableComponent extends CnComponentBase
         }
     }
 
-
+    private emptyLoad() {
+        this._selectRow = {};
+        this.cascade.next(
+            new BsnComponentMessage(
+                BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
+                this.config.viewId,
+                {
+                    data: {}
+                }
+            )
+        );
+    }
     /**
      * 根据表单组件routeParams属性配置参数,执行页面跳转
      * @param option 按钮操作配置参数
      */
     private linkToPage(option, handleData) {
-        debugger;
         const params = CommonTools.parametersResolver({
             params: this.config.routeParams,
             // componentValue: this.loadData ? this.loadData : this.value,
             tempValue: this.tempValue,
             initValue: this.initValue,
             cacheValue: this.cacheValue,
+            routerValue: this.cacheValue,
             item: handleData
         });
-         // 判断跳转页面是否为根据跳转跳转不同页面
-         if (Array.isArray(option.link)) {
+        // 判断跳转页面是否为根据跳转跳转不同页面
+        if (Array.isArray(option.link)) {
             option.link.forEach(elem => {
                 if (handleData[elem.field] && (handleData[elem.field] === elem.value)) {
-                    this.router.navigate([elem.linkName], {queryParams: params});
+                    this.router.navigate([elem.linkName], { queryParams: params });
                 }
             });
         } else {
-            this.router.navigate([option.link], {queryParams: params});
+            this.router.navigate([option.link], { queryParams: params });
         }
     }
 
@@ -522,8 +690,49 @@ export class TsDataTableComponent extends CnComponentBase
             initValue: this.initValue,
             cacheValue: this.cacheValue
         });
-        this.router.navigate(['/ts/entry'], {queryParams: params});
+        this.router.navigate(['/ts/entry'], { queryParams: params });
     }
+
+    public pageIndexPlan() {
+        if (this.pageIndex > 1) {
+            const p_pindex = ((this.pageIndex - 1) * this.pageSize);
+            if (this.loadData.total <= p_pindex) {
+                this.pageIndex = this.pageIndex - 1;
+                this.loadbypage();
+            } else {
+                this.loadbypage();
+            }
+        }
+    }
+    public loadbypage() {
+        if (typeof this.pageIndex !== 'undefined') {
+            this.pageIndex = this.pageIndex || 1;
+        }
+        // 当前页无数据则退回到上一页
+        if (this.pageIndex > 1) {
+            const p_pindex = ((this.pageIndex - 1) * this.pageSize);
+            if (this.loadData.total <= p_pindex) {
+                this.pageIndex = this.pageIndex - 1;
+                this.pageIndexPlan();
+            }
+        }
+
+        const pagedata = [];
+        let j = 0;
+        for (let i = 0; i < this.pageSize; i++) {
+            j = ((this.pageIndex - 1) * this.pageSize) + i;
+            if (j < this.loadData.total) {
+                pagedata.push(this.loadData.rows[j]);
+            }
+        }
+        this._updateEditCacheByLoad(pagedata);
+        this.dataList = pagedata;
+
+
+        console.log('load', this.pageIndex, this.pageSize);
+    }
+
+
 
     public load() {
         this.changeConfig_new = {};
@@ -549,77 +758,170 @@ export class TsDataTableComponent extends CnComponentBase
             const loadData = await this._load(url, params, this.config.ajaxConfig.ajaxType);
 
             if (loadData.isSuccess) {
-                let data;
+                let resData;
+
                 if (method === 'proc') {
-                    data = loadData.data.dataSet1 ? loadData.data.dataSet1 : [];
-                    this.dataList = data;
-                    this.dataList.forEach(d => {
-                        d['key'] = d[this.config.keyId]
-                            ? d[this.config.keyId]
-                            : 'Id';
-                    })
+                    resData = loadData.data.dataSet1 ? loadData.data.dataSet1 : [];
                 } else {
-                    data = loadData.data.rows;
-                    if (data) {
-                        // 设置聚焦ID
-                        // 默认第一行选中，如果操作后有focusId则聚焦ID为FocusId
-                        let focusId;
-                        if (loadData.FocusId) {
-                            focusId = loadData.FocusId;
-                        } else {
-                            loadData.data.rows.length > 0 &&
-                                (focusId = loadData.data.rows[0].Id);
-                        }
-                        if (loadData.data.rows.length > 0) {
-                            loadData.data.rows.forEach((row, index) => {
-                                row['key'] = row[this.config.keyId]
-                                    ? row[this.config.keyId]
-                                    : 'Id';
-                                if (this.is_Selectgrid) {
-                                    if (row.Id === focusId) {
-                                        !this.config.isDefaultNotSelected && this.selectRow(row);
-                                    }
-                                }
-                                if (loadData.data.page === 1) {
-                                    row['_serilize'] = index + 1;
-                                } else {
-                                    row['_serilize'] =
-                                        (loadData.data.page - 1) *
-                                        loadData.data.pageSize +
-                                        index +
-                                        1;
-                                }
-
-                                if (this.config.checkedMapping) {
-                                    this.config.checkedMapping.forEach(m => {
-                                        if (
-                                            row[m.name] &&
-                                            row[m.name] === m.value
-                                        ) {
-                                            row['checked'] = true;
-                                        }
-                                    });
-                                }
-                            });
-                        } else {
-                            this._selectRow = {};
-                        }
-
-                        this._updateEditCacheByLoad(loadData.data.rows);
-                        this.dataList = loadData.data.rows;
-                        this.total = loadData.data.total;
-                        if (this.is_Search) {
-                            this.createSearchRow();
-                        }
-                    } else {
-                        this._updateEditCacheByLoad([]);
-                        this.dataList = loadData.data;
-                        this.total = 0;
-                        if (this.is_Search) {
-                            this.createSearchRow();
-                        }
-                    }
+                    resData = loadData.data.rows;
                 }
+                if (resData) {
+                    let focusId;
+                    if (loadData.data.focusedId) {
+                        focusId = loadData.data.focusedId[0];
+                    } else {
+                        const slcId = this._selectRow['key'];
+                        if (slcId) {
+                            if (resData.length > 0 &&
+                                resData.filter(s => s[this.config.keyId] === slcId).length > 0
+                            ) {
+                                focusId = slcId;
+                            } else {
+                                resData.length > 0 &&
+                                    (focusId = resData[0].Id);
+                            }
+                        } else {
+                            resData.length > 0 &&
+                                (focusId = resData[0].Id);
+                        }
+
+                    }
+                    if (resData.length > 0) {
+                        this.dataList = resData;
+                        resData.forEach((row, index) => {
+                            row['key'] = row[this.config.keyId]
+                                ? row[this.config.keyId]
+                                : 'Id';
+                            if (this.is_Selectgrid) {
+                                if (row.Id === focusId) {
+                                    if (this.editCache[row['key']]) {
+                                        this.editCache[row['key']]['edit'] = false;
+                                    }
+                                    this.selectRow(row);
+                                }
+                            }
+                            // if (loadData.data.page) {
+                            if (loadData.data.page === 1) {
+                                row['_serilize'] = index + 1;
+                            } else {
+                                row['_serilize'] =
+                                    (loadData.data.page - 1) *
+                                    loadData.data.pageSize +
+                                    index +
+                                    1;
+                            }
+                            // if (index >= this.config.pageSize) {
+                            //     loadData.data.page = loadData.data.page + 1;
+                            //     row['_serilize'] = index - this.config.pageSize + 1;
+                            // }
+                            // } else {
+                            //     loadData.data.page = 1;
+                            //     row['_serilize'] = index + 1;
+                            // }
+
+                            if (this.config.checkedMapping) {
+                                this.config.checkedMapping.forEach(m => {
+                                    if (
+                                        row[m.name] &&
+                                        row[m.name] === m.value
+                                    ) {
+                                        row['checked'] = true;
+                                    }
+                                });
+                            }
+                        });
+                    } else {
+                        this.dataList = [];
+                        this._selectRow = {};
+                        this.emptyLoad();
+                    }
+                    this._updateEditCacheByLoad(resData);
+                    // this.dataList = loadData.data.rows;
+                    this.total = loadData.data.total;
+                    if (this.is_Search) {
+                        this.createSearchRow();
+                    }
+                } else {
+                    this._updateEditCacheByLoad([]);
+                    this.dataList = loadData.data;
+                    this.total = 0;
+                    if (this.is_Search) {
+                        this.createSearchRow();
+                    }
+                    this.emptyLoad();
+                }
+
+                // let data;
+                // if (method === 'proc') {
+                //     data = loadData.data.dataSet1 ? loadData.data.dataSet1 : [];
+                //     this.dataList = data;
+                //     this.dataList.forEach(d => {
+                //         d['key'] = d[this.config.keyId]
+                //             ? d[this.config.keyId]
+                //             : 'Id';
+                //     })
+                // } else {
+                //     data = loadData.data.rows;
+                //     if (data) {
+                //         // 设置聚焦ID
+                //         // 默认第一行选中，如果操作后有focusId则聚焦ID为FocusId
+                //         let focusId;
+                //         if (loadData.FocusId) {
+                //             focusId = loadData.FocusId;
+                //         } else {
+                //             loadData.data.rows.length > 0 &&
+                //                 (focusId = loadData.data.rows[0].Id);
+                //         }
+                //         if (loadData.data.rows.length > 0) {
+                //             loadData.data.rows.forEach((row, index) => {
+                //                 row['key'] = row[this.config.keyId]
+                //                     ? row[this.config.keyId]
+                //                     : 'Id';
+                //                 if (this.is_Selectgrid) {
+                //                     if (row.Id === focusId) {
+                //                         !this.config.isDefaultNotSelected && this.selectRow(row);
+                //                     }
+                //                 }
+                //                 if (loadData.data.page === 1) {
+                //                     row['_serilize'] = index + 1;
+                //                 } else {
+                //                     row['_serilize'] =
+                //                         (loadData.data.page - 1) *
+                //                         loadData.data.pageSize +
+                //                         index +
+                //                         1;
+                //                 }
+
+                //                 if (this.config.checkedMapping) {
+                //                     this.config.checkedMapping.forEach(m => {
+                //                         if (
+                //                             row[m.name] &&
+                //                             row[m.name] === m.value
+                //                         ) {
+                //                             row['checked'] = true;
+                //                         }
+                //                     });
+                //                 }
+                //             });
+                //         } else {
+                //             this._selectRow = {};
+                //         }
+
+                //         this._updateEditCacheByLoad(loadData.data.rows);
+                //         this.dataList = loadData.data.rows;
+                //         this.total = loadData.data.total;
+                //         if (this.is_Search) {
+                //             this.createSearchRow();
+                //         }
+                //     } else {
+                //         this._updateEditCacheByLoad([]);
+                //         this.dataList = loadData.data;
+                //         this.total = 0;
+                //         if (this.is_Search) {
+                //             this.createSearchRow();
+                //         }
+                //     }
+                // }
             } else {
                 this._updateEditCacheByLoad([]);
                 this.dataList = [];
@@ -644,6 +946,33 @@ export class TsDataTableComponent extends CnComponentBase
                 this.loading = false;
             });
         })();
+        this.pagetotal = Math.ceil(this.total / this.pageSize);
+        if (!this.autoPlaySwitch) {
+            this.temple = this.pageIndex;
+        }
+        if (this.config.autoPlay && this.autoPlaySwitch) {
+            setTimeout(() => {
+                if (this.pageIndex >= this.pagetotal) {
+                    this.pageIndex = 1;
+                } else {
+                    this.pageIndex = this.pageIndex + 1;
+                }
+                this.load();
+            }, this.config.timeInterval)
+        }
+    }
+
+    // 开启或关闭自动轮播
+    public startAutoPlay() {
+        if (this.autoPlaySwitch) {
+            this.autoPlaySwitch = false;
+        } else {
+            this.autoPlaySwitch = true;
+        }
+        this.pageIndex = this.temple;
+        setTimeout(() => {
+            this.load();
+        }, this.config.timeInterval);
     }
 
     // 获取 文本值，当前选中行数据
@@ -1120,7 +1449,7 @@ export class TsDataTableComponent extends CnComponentBase
 
     public valueChange(data) {
         // const index = this.dataList.findIndex(item => item.key === data.key);
-        console.log('值变化', data, 'this.editCache[data.key].data[data.name] :', this.editCache[data.key]);
+        // console.log('值变化', data, 'this.editCache[data.key].data[data.name] :', this.editCache[data.key]);
         let isValueChange = true;
         if (data.data === undefined) {
             data.data = null;
@@ -1128,7 +1457,7 @@ export class TsDataTableComponent extends CnComponentBase
         if (this.editCache[data.key].data[data.name] === data.data) {
             isValueChange = false;
         }
-        console.log('值变化比较', isValueChange, this.editCache[data.key].data[data.name], data.data);
+        // console.log('值变化比较', isValueChange, this.editCache[data.key].data[data.name], data.data);
         this.editCache[data.key].data[data.name] = data.data;
         this.editCache[data.key].data[data.name] = JSON.parse(
             JSON.stringify(this.editCache[data.key].data[data.name])
@@ -1833,7 +2162,11 @@ export class TsDataTableComponent extends CnComponentBase
         const footer = [];
         this._http.getLocalData(dialog.layoutName).subscribe(data => {
             const selectedRow = this._selectRow ? this._selectRow : {};
+            this._getCheckItemsId();
             const tmpValue = this.tempValue ? this.tempValue : {};
+            const initCheckedIds = this.initValue['_checkedIds'] ? this.initValue['_checkedIds'] : null;
+            const tempCheckedIds = tmpValue['_checkedIds'] ? tmpValue['_checkedIds'] : null;
+            const checkedIds = { initCheckedIds: initCheckedIds, tempCheckedIds: tempCheckedIds };
             const modal = this.baseModal.create({
                 nzTitle: dialog.title,
                 nzWidth: dialog.width,
@@ -1841,7 +2174,7 @@ export class TsDataTableComponent extends CnComponentBase
                 nzComponentParams: {
                     permissions: this.permissions,
                     config: data,
-                    initData: { ...tmpValue, ...selectedRow }
+                    initData: { ...this.initValue, ...tmpValue, ...selectedRow, ...checkedIds }
                 },
                 nzFooter: footer
             });
@@ -1850,6 +2183,7 @@ export class TsDataTableComponent extends CnComponentBase
                     const button = {};
                     button['label'] = btn.text;
                     button['type'] = btn.type ? btn.type : 'default';
+                    button['size'] = btn.size ? btn.size : 'default';
                     button['show'] = true;
                     button['onClick'] = componentInstance => {
                         if (btn['name'] === 'save') {
@@ -1990,7 +2324,7 @@ export class TsDataTableComponent extends CnComponentBase
                 case BSN_EXECUTE_ACTION.EXECUTE_EDIT_ROW:
                     // 获取保存状态的数据
                     handleData = this._getEditedRows();
-                   // console.log('简析参数1838 ', handleData);
+                    // console.log('简析参数1838 ', handleData);
                     msg = '编辑数据保存成功';
                     if (handleData && handleData.length <= 0) {
                         return;
@@ -1999,7 +2333,7 @@ export class TsDataTableComponent extends CnComponentBase
                 case BSN_EXECUTE_ACTION.EXECUTE_EDIT_SELECTED_ROW:
                     // 获取保存状态的数据
                     handleData = this.EditSelectedRow;
-                   // console.log('简析参数1838 ', handleData);
+                    // console.log('简析参数1838 ', handleData);
                     msg = '编辑数据保存成功';
                     if (handleData && handleData.length <= 0) {
                         return;
@@ -2502,6 +2836,7 @@ export class TsDataTableComponent extends CnComponentBase
         this._selectRow = {};
     }
 
+    // 表格的轮播 20190625
     public searchData(reset: boolean = false) {
         if (reset) {
             this.pageIndex = 1;
@@ -2601,7 +2936,7 @@ export class TsDataTableComponent extends CnComponentBase
         this.editCache[key].data = JSON.parse(
             JSON.stringify(this.dataList[index])
         );
-       // console.log('取消行数据', this.editCache[key].data);
+        // console.log('取消行数据', this.editCache[key].data);
     }
     /**
      * 保存编辑状态的数据
@@ -2699,7 +3034,8 @@ export class TsDataTableComponent extends CnComponentBase
                 tempValue: this.tempValue,
                 initValue: this.initValue,
                 cacheValue: this.cacheService,
-                cascadeValue: this.cascadeValue
+                cascadeValue: this.cascadeValue,
+                routerValue: this.cacheService
             });
         }
         return params;
@@ -3402,8 +3738,7 @@ export class TsDataTableComponent extends CnComponentBase
                 // endregion: 解析对象结束
             });
         // endregion： 解析结束
-
-        // console.log("级联配置简析", this.cascadeList);
+        // console.log('级联配置简析', this.cascadeList);
     }
 
     public isEmptyObject(e) {
@@ -4611,7 +4946,7 @@ export class TsDataTableComponent extends CnComponentBase
     // 行内删除
     public deleteRowOnSelected(key) {
         const row = this.dataList.filter(item => item.key === key)[0];
-        // console.log('删除行', row);
+        // console.log('删除行', row, this.config.events);
         if (this.config.events) {
             const index = this.config.events.findIndex(item => item['onTrigger'] === 'deleteRow');
             let c_eventConfig = {};
@@ -4620,7 +4955,6 @@ export class TsDataTableComponent extends CnComponentBase
             } else {
                 return true;
             }
-
             const isField = true; // 列变化触发
             // 首先适配类别、字段，不满足的时候 看是否存在default 若存在 取default
             if (isField) {
@@ -4632,7 +4966,7 @@ export class TsDataTableComponent extends CnComponentBase
                 });
             }
         }
-        console.log('行内删除', key);
+        // console.log('行内删除', key);
         // 注意，末页删除需要将数据页数上移
 
 
@@ -4683,7 +5017,7 @@ export class TsDataTableComponent extends CnComponentBase
                 //     setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
                 this.router.navigateByUrl('/passport/ts-login').catch(() => {
                     this.apiResource.post('login_out');
-                });    
+                });
                 // }).catch(() => console.log('Oops errors!'));
             }
         });

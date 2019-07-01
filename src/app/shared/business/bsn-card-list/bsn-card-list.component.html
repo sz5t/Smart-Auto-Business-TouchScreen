@@ -5,7 +5,7 @@
             <div nz-col [nzSpan]="12" class="text-right">
                     
             </div>
-            <div nz-col [nzSpan]="12" class="text-right">
+            <div nz-col [nzSpan]="12" class="text-right" *ngIf= "config.selectionSwitch">
                     <span><nz-badge nzStatus="processing" nzText="已派工"></nz-badge></span>
                     <nz-divider nzType="vertical"></nz-divider>
                     <span><nz-switch [(ngModel)]="switchAll" (ngModelChange)="switch()" nzCheckedChildren="全部选择" nzUnCheckedChildren="取消选择"></nz-switch></span>

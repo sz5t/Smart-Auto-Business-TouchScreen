@@ -72,6 +72,10 @@ import { Router } from '@angular/router';
             line-height:0px;
         }
 
+        :host ::ng-deep .ant-form-item-label > label::after {
+            content:'';
+        }
+
     `]
 })
 export class FormResolverComponent extends CnFormBase
@@ -125,6 +129,8 @@ export class FormResolverComponent extends CnFormBase
         if (this.config.ajaxConfig) {
             if (this.config.componentType) {
                 if (!this.config.componentType.child) {
+                    this.load();
+                } else if (this.config.componentType.own === true) {
                     this.load();
                 }
             } else {
@@ -282,55 +288,55 @@ export class FormResolverComponent extends CnFormBase
             this.config.componentType &&
             this.config.componentType.child === true
         ) {
-        this.cascadeSubscriptions = this.cascadeEvents.subscribe(
-            cascadeEvent => {
-                // 解析子表消息配置
-                if (
-                    this.config.relations &&
-                    this.config.relations.length > 0
-                ) {
-                    this.config.relations.forEach(relation => {
-                        if (
-                            relation.relationViewId === cascadeEvent._viewId
-                        ) {
-                            // 获取当前设置的级联的模式
-                            const mode =
-                                BSN_COMPONENT_CASCADE_MODES[
-                                relation.cascadeMode
-                                ];
-                            // 获取传递的消息数据
-                            const option = cascadeEvent.option;
-                            // 解析参数
+            this.cascadeSubscriptions = this.cascadeEvents.subscribe(
+                cascadeEvent => {
+                    // 解析子表消息配置
+                    if (
+                        this.config.relations &&
+                        this.config.relations.length > 0
+                    ) {
+                        this.config.relations.forEach(relation => {
                             if (
-                                relation.params &&
-                                relation.params.length > 0
+                                relation.relationViewId === cascadeEvent._viewId
                             ) {
-                                relation.params.forEach(param => {
-                                    if (!this.tempValue) {
-                                        this.tempValue = {};
-                                    }
-                                    this.tempValue[param['cid']] =
-                                        option.data[param['pid']];
-                                });
+                                // 获取当前设置的级联的模式
+                                const mode =
+                                    BSN_COMPONENT_CASCADE_MODES[
+                                    relation.cascadeMode
+                                    ];
+                                // 获取传递的消息数据
+                                const option = cascadeEvent.option;
+                                // 解析参数
+                                if (
+                                    relation.params &&
+                                    relation.params.length > 0
+                                ) {
+                                    relation.params.forEach(param => {
+                                        if (!this.tempValue) {
+                                            this.tempValue = {};
+                                        }
+                                        this.tempValue[param['cid']] =
+                                            option.data[param['pid']];
+                                    });
+                                }
+                                // 匹配及联模式
+                                switch (mode) {
+                                    case BSN_COMPONENT_CASCADE_MODES.REFRESH:
+                                        this.load();
+                                        break;
+                                    case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
+                                        this.load();
+                                        break;
+                                    case BSN_COMPONENT_CASCADE_MODES.CHECKED_ROWS:
+                                        break;
+                                    case BSN_COMPONENT_CASCADE_MODES.SELECTED_ROW:
+                                        break;
+                                }
                             }
-                            // 匹配及联模式
-                            switch (mode) {
-                                case BSN_COMPONENT_CASCADE_MODES.REFRESH:
-                                    this.load();
-                                    break;
-                                case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
-                                    this.load();
-                                    break;
-                                case BSN_COMPONENT_CASCADE_MODES.CHECKED_ROWS:
-                                    break;
-                                case BSN_COMPONENT_CASCADE_MODES.SELECTED_ROW:
-                                    break;
-                            }
-                        }
-                    });
+                        });
+                    }
                 }
-            }
-        );
+            );
         }
     }
 
@@ -367,19 +373,30 @@ export class FormResolverComponent extends CnFormBase
             setTimeout(() => {
                 this.isSpinning = true;
             })
-            const url = this.buildUrl(this.config.ajaxConfig.url);
+            let url: string;
+            if (this.config.ajaxConfig.urlobj) {
+                url = this.buildUrl(this.config.ajaxConfig.url, this.config.ajaxConfig.urlobj)
+            } else {
+                url = this.buildUrl(this.config.ajaxConfig.url, '');
+            }
             const params = this.buildParameter(this.config.ajaxConfig.params);
-            this.execute(url, 'getById', params).then(result => {
-                if (result.data) {
-                    this.setFormValue(result.data);
-                    this.loadData = result.data;
+            this.execute(url, this.config.ajaxConfig.ajaxType , params).then(result => {
+                let res;
+                if (Array.isArray(result.data)) {
+                    res = result.data[0]
+                } else {
+                    res = result.data;
+                }
+                this.loadData = res;
+                if (res) {
+                    this.setFormValue(res);
                     // 给主键赋值
                     if (this.config.keyId) {
                         this.tempValue['_id'] =
-                            result.data[this.config.keyId];
+                        res[this.config.keyId];
                     } else {
-                        if (result.data['Id']) {
-                            this.tempValue['_id'] = result.data['Id'];
+                        if (res['Id']) {
+                            this.tempValue['_id'] = res['Id'];
                         }
                     }
                 } else {
@@ -417,12 +434,45 @@ export class FormResolverComponent extends CnFormBase
     }
 
     /**
+     * 发送接口数据
+     * @param getConfig 数据访问配置
+     */
+    private async get(getConfig) {
+        let result = true;
+        let url: string ;
+        if (getConfig.urlobj) {
+            url = this.buildUrl(getConfig.url, getConfig.urlobj);
+        } else {
+            url = this.buildUrl(getConfig.url, '');
+        }
+        const newValue = this.GetComponentValue();
+        const params = this.buildParameter(getConfig.params);
+        const script = document.createElement('script');
+        script.setAttribute('type', 'text/javascript');
+        let requestString = '';
+        for(let p in params) {
+            if(params.hasOwnProperty(p) && p !== undefined) {
+                requestString += p + '=' + params[p] + '&';
+            }
+        }
+        script.src = url + '?' + requestString;
+        document.body.appendChild(script);
+        // this.execute(url, getConfig.ajaxType, params).then( result => {});
+        // return result;
+    }
+
+    /**
      * 新增数据
      * @param postConfig 数据访问配置
      */
     private async post(postConfig) {
         let result = true;
-        const url = this.buildUrl(postConfig.url);
+        let url: string ;
+        if (postConfig.urlobj) {
+            url = this.buildUrl(postConfig.url, postConfig.urlobj);
+        } else {
+            url = this.buildUrl(postConfig.url, '');
+        }
         const newValue = this.GetComponentValue();
         const params = this.buildParameter(postConfig.params);
         const res = await this.execute(url, postConfig.ajaxType, params);
@@ -445,7 +495,12 @@ export class FormResolverComponent extends CnFormBase
      */
     private async put(putConfig) {
         let result = true;
-        const url = this.buildUrl(putConfig.url);
+        let url: string ;
+        if (putConfig.urlobj) {
+            url = this.buildUrl(putConfig.url, putConfig.urlobj);
+        } else {
+            url = this.buildUrl(putConfig.url, '');
+        }
         const newValue = this.GetComponentValue();
         const params = this.buildParameter(putConfig.params);
         if (params && !params['Id']) {
@@ -964,12 +1019,20 @@ export class FormResolverComponent extends CnFormBase
                                 item.data.relation_data.option;
                         }
                         if (item.data.type === 'link') {
-                            // 跳转交互 20190522 liu 
+                            // 跳转交互 20190522 liu
                             this.cascadeList[c.name][cobj.cascadeName][
                                 'link'
                             ] = item.data.link_data.option;
                             valueTypeItem['link'] =
                                 item.data.link_data.option;
+                        }
+                        if (item.data.type === 'message') {
+                            // 异步消息提醒 20190604 liu
+                            this.cascadeList[c.name][cobj.cascadeName][
+                                'message'
+                            ] = item.data.message_data.option;
+                            valueTypeItem['message'] =
+                                item.data.message_data.option;
                         }
                         valueType.push(valueTypeItem);
                     });
@@ -1325,9 +1388,21 @@ export class FormResolverComponent extends CnFormBase
                                             }
                                         }
                                         if (caseItem['type'] === 'link') {
-                                            console.log('扫码跳转：', caseItem['link']);
+                                          //  console.log('扫码跳转：', caseItem['link']);
                                             if (caseItem['link']) {
                                                 this.linkToPages(caseItem['link'], data['dataItem'] ? data['dataItem'] : {});
+                                            }
+                                        }
+                                        if (caseItem['type'] === 'message') {
+                                           // console.log('返回信息：', caseItem['message']);
+                                            if (caseItem['message']) {
+                                                this.showMessage(caseItem['message'], data['dataItem'] ? data['dataItem'] : {});
+                                            }
+                                        }
+                                        if (caseItem['type'] === 'relation') {
+                                           // console.log('消息信息：', caseItem['relation']);
+                                            if (caseItem['relation']) {
+                                                this.valueChangeRelation(caseItem['relation'], data['dataItem'] ? data['dataItem'] : {}, data);
                                             }
                                         }
                                     }
@@ -1412,7 +1487,6 @@ export class FormResolverComponent extends CnFormBase
                             }
                         });
                     }
-
                     this.cascade.next(
                         new BsnComponentMessage(
                             BSN_COMPONENT_CASCADE_MODES[element.cascadeMode],
@@ -1639,6 +1713,106 @@ export class FormResolverComponent extends CnFormBase
         });
         this.router.navigate([option.linkName], { queryParams: params });
     }
+
+
+    /**
+     * 根据表单组件配置参数,执行消息展示
+
+     */
+    private showMessage(option, componentValue?) {
+
+       // console.log('showMessage', option, componentValue);
+        let messageStr = '';
+        if (option.valueName) {
+            messageStr = componentValue[option.valueName];
+        } else {
+            messageStr = option.value ? option.value : '';
+        }
+
+        if (option.messageType) {
+            if (option.messageType === 'warning') {
+                this.message.warning(messageStr);
+            }
+            if (option.messageType === 'success') {
+                this.message.success(messageStr);
+            }
+            if (option.messageType === 'info') {
+                this.message.info(messageStr);
+            }
+
+        } else {
+            this.message.info(messageStr);
+        }
+
+
+    }
+
+    private valueChangeRelation(option, componentValue?, data?) {
+
+       // console.log('valueChangeRelation', option, componentValue);
+        const sendData = this.value;
+        sendData[data.name] = data.value;
+       const cascadeRelation = option;
+        if (cascadeRelation) {
+            cascadeRelation.forEach(element => {
+                if (element.name === data.name) {
+                    if (element.cascadeField) {
+                        element.cascadeField.forEach(feild => {
+                            if (!feild['type']) {
+                                if (data[feild.valueName]) {
+                                    sendData[feild.name] =
+                                        data[feild.valueName];
+                                }
+                            } else {
+                                if (feild['type'] === 'selectObject') {
+                                    if (data[feild.valueName]) {
+                                        sendData[feild.name] =
+                                            data[feild.valueName];
+                                    }
+                                } else if (
+                                    feild['type'] === 'tempValueObject'
+                                ) {
+                                    sendData[feild.name] = this.tempValue;
+                                } else if (feild['type'] === 'tempValue') {
+                                    if (this.tempValue[feild.valueName]) {
+                                        sendData[feild.name] = this.tempValue[
+                                            feild.valueName
+                                        ];
+                                    }
+                                } else if (
+                                    feild['type'] === 'initValueObject'
+                                ) {
+                                    sendData[feild.name] = this.initValue;
+                                } else if (feild['type'] === 'initValue') {
+                                    if (this.initValue[feild.valueName]) {
+                                        sendData[feild.name] = this.initValue[
+                                            feild.valueName
+                                        ];
+                                    }
+                                } else if (feild['type'] === 'value') {
+                                    sendData[feild.name] = feild.value;
+                                }
+                            }
+                        });
+                    }
+                    this.cascade.next(
+                        new BsnComponentMessage(
+                            BSN_COMPONENT_CASCADE_MODES[element.cascadeMode],
+                            this.config.viewId,
+                            {
+                                data: sendData
+                            }
+                        )
+                    );
+                }
+            });
+        }
+
+
+    }
+
+
+
     // 【20181126】 针对级联编辑状态目前问题处理
     // 原来的结构不合理，在于变化的检测均是完全修改配置
     // 现在调整为，将级联包装成对象，给小组件，小组件自行完成

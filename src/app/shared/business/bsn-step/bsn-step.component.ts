@@ -16,7 +16,8 @@ import {
     BSN_COMPONENT_MODES,
     BsnComponentMessage,
     BSN_EXECUTE_ACTION,
-    BSN_COMPONENT_CASCADE_MODES
+    BSN_COMPONENT_CASCADE_MODES,
+    BSN_OUTPOUT_PARAMETER_TYPE
 } from '@core/relative-Service/BsnTableStatus';
 import { ApiService } from '@core/utility/api-service';
 import { NzMessageService, NzModalService } from 'ng-zorro-antd';
@@ -271,7 +272,7 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
     // 完成最后操作
     public done() {
         const ajaxConfig = this.config.finishAjaxConfig[0];
-        this.handleAjax(ajaxConfig);
+        this.handleAjax(ajaxConfig, this.config.finishAjaxConfig);
         this._current = this.config.steps.length - 1;
         this.changeContent();
     }
@@ -291,12 +292,12 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
     public handleCurrent() {    
         // this.config.nextAjaxConfig;
         const ajaxConfig = this.config.nextAjaxConfig[this._current];
-        this.handleAjax(ajaxConfig);
+        this.handleAjax(ajaxConfig, this.config.nextAjaxConfig);
     }
 
-    private handleAjax(ajaxConfig) {
-        if (ajaxConfig) {
-            const {url, ajaxType, params, link, action} = ajaxConfig;
+    private handleAjax(c, ajaxConfig) {
+        if (c) {
+            const {url, ajaxType, params, link, action} = c;
             let paramsData;
             switch (action) {
                 case BSN_EXECUTE_ACTION.EXECUTE_SELECTED:
@@ -314,15 +315,183 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
                     return;
             }
 
-            this.apiResource[ajaxType](url, paramsData).subscribe(result => {
-                if (result.isSuccess) {
-                    console.log(`current ${this._current} is success`);
+            this.apiResource[ajaxType](url, paramsData).subscribe(response => {
+                if (c.outputParams) {
+                    this.outputParametersResolver(
+                        c,
+                        response,
+                        ajaxConfig,
+                        () => {
+                            // this.load();
+                        }
+                    );
+                } else {
+                    // 没有输出参数，进行默认处理
+                    this.showAjaxMessage(response, response.message, () => {
+                        // this.load();
+                    });
                 }
             }, error => {
                 console.log(error);
             });
         }
     }
+
+     /**
+     * 数据访问返回消息处理
+     * @param result
+     * @param message
+     * @param callback
+     */
+    public showAjaxMessage(result, message?, callback?) {
+        const rs: { success: boolean; msg: string[] } = {
+            success: true,
+            msg: []
+        };
+        if (result && Array.isArray(result)) {
+            result.forEach(res => {
+                rs['success'] = rs['success'] && res.isSuccess;
+                if (!res.isSuccess) {
+                    rs.msg.push(res.message);
+                }
+            });
+            if (rs.success) {
+                this.baseMessage.success(message);
+                if (callback) {
+                    callback();
+                }
+            } else {
+                this.baseMessage.error(rs.msg.join('<br/>'));
+            }
+        } else {
+            if (result.isSuccess) {
+                this.baseMessage.success(message);
+                if (callback) {
+                    callback();
+                }
+            } else {
+                this.baseMessage.error(result.message);
+            }
+        }
+        // setTimeout(() => {
+        //     this.isLoading = false;
+        // });
+    }
+
+    /**
+    *
+    * @param outputParams
+    * @param response
+    * @param callback
+    * @returns {Array}
+    * @private
+    * 1、输出参数的配置中，消息类型的参数只能设置一次
+    * 2、值类型的结果可以设置多个
+    * 3、表类型的返回结果可以设置多个
+    */
+   public outputParametersResolver(c, response, ajaxConfig, callback) {
+    const result = false;
+    if (response.isSuccess) {
+
+        const msg =
+            c.outputParams[
+            c.outputParams.findIndex(
+                m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.MESSAGE
+            )
+            ];
+        const value =
+            c.outputParams[
+            c.outputParams.findIndex(
+                m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.VALUE
+            )
+            ];
+        const table =
+            c.outputParams[
+            c.outputParams.findIndex(
+                m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.TABLE
+            )
+            ];
+        const msgObj = msg
+            ? response.data[msg.name].split(':')
+            : null;
+        const valueObj = response.data ? response.data : {};
+        // const tableObj = response.data[table.name] ? response.data[table.name] : [];
+        if (msgObj && msgObj.length > 1) {
+            const messageType = msgObj[0];
+            let options;
+            switch (messageType) {
+                case 'info':
+                    options = {
+                        nzTitle: '提示',
+                        nzWidth: '350px',
+                        nzContent: msgObj[1]
+                    };
+                    this.baseModal[messageType](options);
+                    break;
+                case 'error':
+                    options = {
+                        nzTitle: '提示',
+                        nzWidth: '350px',
+                        nzContent: msgObj[1]
+                    };
+                    this.baseModal[messageType](options);
+                    break;
+                case 'confirm':
+                    options = {
+                        nzTitle: '提示',
+                        nzContent: msgObj[1],
+                        nzOnOk: () => {
+                            // 是否继续后续操作，根据返回状态结果
+                            const childrenConfig = ajaxConfig.filter(
+                                f => f.parentName && f.parentName === c.name
+                            );
+                            //  目前紧支持一次执行一个分之步骤
+                            this.handleAjax(childrenConfig[0], ajaxConfig);
+                            // childrenConfig &&
+                            //     childrenConfig.map(currentAjax => {
+                            //         this.getAjaxConfig(
+                            //             currentAjax,
+                            //             ajaxConfig,
+                            //             callback
+                            //         );
+                            //     });
+                        },
+                        nzOnCancel: () => { }
+                    };
+                    this.baseModal[messageType](options);
+                    break;
+                case 'warning':
+                    options = {
+                        nzTitle: '提示',
+                        nzWidth: '350px',
+                        nzContent: msgObj[1]
+                    };
+                    this.baseModal[messageType](options);
+                    break;
+                case 'success':
+                    options = {
+                        nzTitle: '',
+                        nzWidth: '350px',
+                        nzContent: msgObj[1]
+                    };
+                    this.baseMessage.success(msgObj[1]);
+                    callback && callback();
+                    break;
+            }
+        }
+        if (valueObj) {
+            this.returnValue = valueObj;
+            const childrenConfig = ajaxConfig.filter(
+                f => f.parentName && f.parentName === c.name
+            );
+            //  目前紧支持一次执行一个分之步骤
+            this.handleAjax(childrenConfig[0], ajaxConfig);
+        }
+
+    } else {
+        this.baseMessage.error('操作异常：', response.message);
+    }
+}
 
     private buildParamsters(param, data) {
         return CommonTools.parametersResolver({
@@ -332,8 +501,8 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
             cacheValue: this.cacheValue,
             item: data
         });
-
     }
+
 
     private buildBatchParameters(paramCfg) {
         let params;

@@ -168,7 +168,7 @@ export class CnFormBase extends CnComponentBase {
     public initControls(formConfig) {
         const controls = [];
         if(formConfig) {
-            
+
             formConfig.map(formItem => {
                 const items = formItem.controls.filter(({ type }) => {
                     return type !== 'button' && type !== 'submit';
@@ -176,7 +176,7 @@ export class CnFormBase extends CnComponentBase {
                 controls.push(...items);
             });
         }
-        
+
         return controls;
     }
     // 处理参数 liu
@@ -224,8 +224,17 @@ export class CnFormBase extends CnComponentBase {
         return params;
     }
 
-    public buildUrl(urlConfig) {
+    public buildUrl(urlConfig, urlobj?) {
         let url;
+        if (urlobj) {
+            const ip = CommonTools.parametersResolver({
+                params: urlobj.params,
+                tempValue: this.tempValue,
+                initValue: this.initValue,
+                cacheValue: this.cacheValue,
+            });
+            url = 'http://' + ip['IP'] + ':' + ip['sort'] + '/' + urlConfig ;
+        } else {
         if (CommonTools.isString(urlConfig)) {
             url = urlConfig;
         } else {
@@ -236,7 +245,7 @@ export class CnFormBase extends CnComponentBase {
                 cacheValue: this.cacheValue
             });
             url = `${urlConfig.url['parent']}/${pc}/${urlConfig.url['child']}`;
-        }
+        }}
         return url;
     }
 
@@ -348,7 +357,7 @@ export class CnFormBase extends CnComponentBase {
                 //         callback && callback();
                 //     }
                 // }
-            } 
+            }
             // else {
             //     this.baseMessage.error(
             //         '存储过程返回结果异常：未获得输出的消息内容'
@@ -365,7 +374,7 @@ export class CnFormBase extends CnComponentBase {
                 } else {
                     callback();
                 }
-                
+
             }
 
         } else {
@@ -505,8 +514,8 @@ export class CnFormBase extends CnComponentBase {
         //         case 'post':
         //         msg = '';
         //         break;
-        //         case 'put': 
-        //         break;   
+        //         case 'put':
+        //         break;
         //     }
         //     this.baseMessage.warning('配置异常,无法执行请求!');
         // }

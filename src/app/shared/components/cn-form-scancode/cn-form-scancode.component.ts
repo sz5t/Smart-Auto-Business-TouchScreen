@@ -4,7 +4,10 @@ import {
     Inject,
     Input,
     Output,
-    EventEmitter
+    EventEmitter,
+    ViewChild,
+    ElementRef,
+    AfterViewInit
 } from "@angular/core";
 import {
     BSN_COMPONENT_MODES,
@@ -21,25 +24,32 @@ import { FormGroup } from "@angular/forms";
     templateUrl: "./cn-form-scancode.component.html",
     styleUrls: ["./cn-form-scancode.component.css"]
 })
-export class CnFormScancodeComponent implements OnInit {
+export class CnFormScancodeComponent implements OnInit, AfterViewInit {
     @Input()
-    config;
+    public config;
     @Input()
     value;
     @Input()
-    bsnData;
+    public bsnData;
     @Input()
-    rowData;
+    public rowData;
     @Input()
-    dataSet;
-    formGroup: FormGroup;
+    public dataSet;
+    @Input() public initValue;
+    public formGroup: FormGroup;
     // @Output() updateValue = new EventEmitter();
     @Output()
-    updateValue = new EventEmitter();
-    _options = [];
-    cascadeValue = {};
-    resultData;
-    _value;
+    public updateValue = new EventEmitter();
+    @ViewChild('scanInput') public scanInput: ElementRef<any>;
+
+
+    public _options = [];
+    public cascadeValue = {};
+    public resultData;
+    public _value;
+    public isScan = true;
+    public oldvalue = null;
+    public isload = true;
     constructor(
         @Inject(BSN_COMPONENT_MODES)
         private stateEvents: Observable<BsnComponentMessage>,
@@ -50,36 +60,43 @@ export class CnFormScancodeComponent implements OnInit {
         private apiService: ApiService
     ) { }
 
-    ngOnInit() { }
-    isScan = true;
-    oldvalue = null;
-    async onKeyPress(e) {
+    public ngOnInit() {
+
+    }
+    public ngAfterViewInit() {
+
+        this.scanInput.nativeElement.focus();
+        this.scanInput.nativeElement.select();
+    }
+
+
+    public async onKeyPress(e) {
         // console.log('onKeyPress', e);
         if (e.code === "Enter") {
             this.isScan = false;
             this.oldvalue = this._value;
-            console.log("huiche", this._value);
+            // console.log("huiche", this._value);
             let resultData;
             const result = await this.asyncLoad(
                 this.config.ajaxConfig ? this.config.ajaxConfig : null
             );
-            if(this.config.ajaxConfig) {
+            if (this.config.ajaxConfig) {
                 if (this.config.ajaxConfig.ajaxType === 'proc') {
                     const backData = result.data.dataSet1 ? result.data.dataSet1 : [];
-                   //  console.log('backData:', backData);
+                    //  console.log('backData:', backData);
                     if (backData.length > 0) {
                         const _data = { data: backData[0] };
-                       //  resultData['data'] = backData[0];
+                        //  resultData['data'] = backData[0];
                         resultData = _data;
                     }
-    
+
                 } else {
                     resultData = result;
                 }
             } else {
                 resultData = result;
             }
-           
+
             // this.cascade.next(
             //   new BsnComponentMessage(
             //     BSN_COMPONENT_CASCADE_MODES.Scan_Code_ROW,
@@ -110,7 +127,8 @@ export class CnFormScancodeComponent implements OnInit {
         }
     }
 
-    async asyncLoad(p?, componentValue?, type?) {
+    public async asyncLoad(p?, componentValue?, type?) {
+        // console.log('asyncLoad--->initValue', this.initValue);
         if (!p) {
             return [];
         }
@@ -149,6 +167,8 @@ export class CnFormScancodeComponent implements OnInit {
                     params[param.name] = this._value;
                 } else if (param.type === "cascadeValue") {
                     params[param.name] = this.cascadeValue[param.valueName];
+                } else if (param.type === 'initValue') {
+                    params[param.name] = this.initValue[param.valueName];
                 }
             });
             if (this.isString(p.url)) {
@@ -164,6 +184,8 @@ export class CnFormScancodeComponent implements OnInit {
                         pc = this.bsnData[param.valueName];
                     } else if (param.type === "scanCodeValue") {
                         pc = this._value;
+                    } else if (param.type === 'initValue') {
+                        pc = this.initValue[param.valueName];
                     }
                 });
 
@@ -179,17 +201,55 @@ export class CnFormScancodeComponent implements OnInit {
 
     }
 
-    isString(obj) {
+    public isString(obj) {
         // 判断对象是否是字符串
         return Object.prototype.toString.call(obj) === "[object String]";
     }
 
-    valueChange(name?, dataItem?) {
-        console.log("valueChange", name);
+    public valueChange(name?, dataItem?) {
+        // console.log("valueChange", name);
         const backValue = { name: this.config.name, value: name };
         if (dataItem) {
             backValue["dataItem"] = dataItem;
         }
         this.updateValue.emit(backValue);
     }
+
+
+    /**
+     * initLoadValue 加载初值
+     */
+    public async initLoadValue(v) {
+        if (v && this.config.initLoadValue) {
+            if (this.isload) {
+                this.isload = false;
+                this.isScan = false;
+                this.oldvalue = this._value;
+                let resultData;
+                const result = await this.asyncLoad(
+                    this.config.ajaxConfig ? this.config.ajaxConfig : null
+                );
+                if (this.config.ajaxConfig) {
+                    if (this.config.ajaxConfig.ajaxType === 'proc') {
+                        const backData = result.data.dataSet1 ? result.data.dataSet1 : [];
+                        //  console.log('backData:', backData);
+                        if (backData.length > 0) {
+                            const _data = { data: backData[0] };
+                            //  resultData['data'] = backData[0];
+                            resultData = _data;
+                        }
+
+                    } else {
+                        resultData = result;
+                    }
+                } else {
+                    resultData = result;
+                }
+                this.valueChange(this._value, resultData.data);
+            }
+        }
+
+
+    }
+
 }

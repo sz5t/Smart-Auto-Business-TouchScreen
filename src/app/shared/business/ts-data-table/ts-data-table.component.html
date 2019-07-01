@@ -2,9 +2,9 @@
     <nz-content>
             <nz-card [nzBordered]="true" [nzBodyStyle]="config.bodyStyle?config.bodyStyle:{height: '500px'}">
                     <nz-table #nzTable [nzData]="dataList" [nzSize]="config.size" [nzFrontPagination]="false" [nzShowSizeChanger]="true" [nzTotal]="total"
-                    [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize" [nzShowTotal]="totals" [nzPageSizeOptions]="config.pageSizeOptions"
+                    [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize" [nzShowTotal]="total" [nzPageSizeOptions]="config.pageSizeOptions ? config.pageSizeOptions :[]"
                     [nzLoading]="loading" (nzPageIndexChange)="searchData()" (nzPageSizeChange)="searchData(true)" [nzTitle]="this.config.title ? title : false"
-                     [nzNoResult]="noResult" [nzLoadingDelay]="50" [nzScroll]="config.scroll ? config.scroll : {}">
+                     [nzNoResult]="noResult"  [nzLoadingDelay]="50" [nzScroll]="config.scroll ? config.scroll : {}">
                     
                     <thead (nzSortChange)="sort($event)" nzSingleSort>
                         <tr (contextmenu)="contextMenu($event,contextTemplate)">
@@ -24,7 +24,6 @@
                                         <span *ngIf="!col.button">{{col.title}}</span>
                                         <button *ngIf="col.button" nz-button nzType="primary" nzBlock (click)="titleToolbarAction(col)">{{col.title}}</button>
                                     </ng-container>
-                    
                                 </th>
                             </ng-template>
                         </tr>
@@ -92,7 +91,7 @@
                                 <tr (click)="selectRow(data, $event)" [ngClass]="{selectedRow:data.selected}">
                     
                                     <ng-container *ngIf="config.checkedConfig">
-                                        <td *ngIf="config.showCheckBox" [(nzChecked)]="data.checked" (nzCheckedChange)="refChecked($event)" [ngClass]="['text-center']">
+                                        <td *ngIf="config.showCheckBox" [(nzChecked)]="data.checked"  (nzCheckedChange)="refChecked($event)" [ngClass]="['text-center']">
                                             <!-- [nzShowCheckbox]="config.showCheckBox" _serilize  nzCheckedChildren="data[config.columns[0].field]" nzUnCheckedChildren="data[config.columns[0].field]" -->
                                             <nz-switch [ngModel]="data.checked" [nzSize]="large" [nzCheckedChildren]="checkedTemplate" (ngModelChange)="swichChecked(data)" [nzUnCheckedChildren]="unCheckedTemplate"></nz-switch>
                                             <ng-template #checkedTemplate>{{data[config.checkedConfig.feild]}}</ng-template>
@@ -104,8 +103,8 @@
                                         </td>
                                     </ng-container>
                     
-                                    <ng-template ngFor let-col [ngForOf]="config.columns">
-                                        <td *ngIf="!col.hidden" [ngClass]="[col.formatter ? setCellFont(data[col.field], col.formatter,data):'',col.fieldAlign ? col.fieldAlign : '']">
+                                    <ng-template ngFor let-col [ngForOf]="config.columns" >
+                                        <td *ngIf="!col.hidden"  [ngClass]="[col.formatter ? setCellFont(data[col.field],col.formatter,data):'',col.fieldAlign ? col.fieldAlign : '']">
                                             <ng-container *ngIf="col.editor">
                                                 <ng-container *ngIf="!col.type">
                                                     <div *ngIf="!editCache[data.key]['edit']">
@@ -145,13 +144,13 @@
                                                     </div>
                                                 </ng-container>
                                             </ng-container>
-                    
                                         </td>
                                     </ng-template>
                                 </tr>
                             </ng-container>
                         </ng-template>
                     </tbody>
+                    
                     <ng-template #title>
                         {{config.title ? config.title : ''}}
                         <!-- <span style="float:right">已选择<strong class="text-primary"> {{checkedCount}}</strong> 项</span>&nbsp; -->
@@ -159,14 +158,15 @@
                     <!--<ng-template #footer>-->
                     <!--&nbsp;-->
                     <!--</ng-template> -->
-                    <ng-template #totals let-total>
+                    <nz-switch *ngIf = "config.autpPlaySwitch" [ngModel]="true" nzCheckedChildren="开始滚动" nzUnCheckedChildren="暂停滚动" (ngModelChange)="startAutoPlay()" ></nz-switch>
+                    <ng-template #totals let-total *ngIf = "config.pagination">
                         共 {{total}} 条
                     </ng-template>
-                    <ng-template #noResult>
+                    <ng-template #noResult *ngIf = "config.pagination">
                         未查询到任何数据...
                     </ng-template>
                     </nz-table>
-                    <ng-template #contextTemplate>
+                    <ng-template #contextTemplate *ngIf = "config.pagination">
                         <!-- <cn-bsn-tree-menu [config]="menus" [dropdown]="dropdown"></cn-bsn-tree-menu> -->
                         <ul nz-menu nzInDropDown *ngFor="let group of menus">
                             <li *ngFor="let btn of group" nz-menu-item (click)="selectMenu(btn, group)">

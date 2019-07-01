@@ -280,7 +280,8 @@ export class BsnDetailListComponent extends CnComponentBase
                     params: this.config.ajaxConfig.params,
                     tempValue: this.tempValue,
                     initValue: this.initValue,
-                    cacheValue: this._cacheService
+                    cacheValue: this._cacheService,
+                    routerValue: this._cacheService
                 })
             )
             .toPromise();

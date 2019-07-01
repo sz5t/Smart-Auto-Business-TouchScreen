@@ -96,7 +96,7 @@ export class BsnCardListComponent extends CnComponentBase
             tempValue: this.tempValue,
             initValue: this.initValue,
             cacheValue: this.cacheValue.getNone('userInfo')
-                ? this.cacheValue.getNone('userInfo').value
+                ? this.cacheValue.getNone('userInfo')
                 : {},
             apiResource: this.apiResource
         });
@@ -563,7 +563,8 @@ export class BsnCardListComponent extends CnComponentBase
             componentValue: option.data ? option.data : {},
             tempValue: this.tempValue,
             initValue: this.initValue,
-            cacheValue: this.cacheValue
+            cacheValue: this.cacheValue,
+            routerValue: this.cacheValue
         });
         this.router.navigate([option.link], {queryParams: params});
     }
@@ -605,7 +606,8 @@ export class BsnCardListComponent extends CnComponentBase
             params: this.config.ajaxConfig.params,
             tempValue: this.tempValue,
             initValue: this.initValue,
-            cacheValue: this.cacheValue
+            cacheValue: this.cacheValue,
+            routerValue: this.cacheValue
         });
         return this._apiService
             .get(url, params).toPromise();
@@ -694,4 +696,6 @@ export class BsnCardListComponent extends CnComponentBase
             }
         });
     }
+
+    
 }

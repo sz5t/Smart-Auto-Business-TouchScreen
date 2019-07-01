@@ -9,13 +9,14 @@
             [nzSize]="'default'"
             [nzSuffix]="suffixTemplate"
             [nzPrefixIcon]="config.perfix">
-            <input nz-input #ceshi
+            <input nz-input #scanInput
                          type="{{config.inputType}}"
                          formControlName="{{config.name}}"
                          [nzSize]="config.size"
                          placeholder="{{config.placeholder}}"
                          disabled="{{config.disabled}}"
                          [(ngModel)]="_value" (keyup)="onKeyPress($event)"
+                          (ngModelChange)="initLoadValue($event)"
                          />
     </nz-input-group>
     <nz-form-extra *ngIf="config.explain">{{config.explain}}</nz-form-extra>

@@ -66,13 +66,19 @@ export class CnFormInputSensorComponent implements OnInit {
 
     this.selectoptions = await this.load(ajaxConfig);
     this.select = this.selectoptions[0].value;
+    this.getData(this.select);
   }
+
+
 
   public valueChange(name?) {
     const backValue = { name: this.config.name, value: name };
     this.updateValue.emit(backValue);
   }
 
+  public changeEquiment(select) {
+    this.getData(select);
+  }
 
   public onKeyPress(e?, type?) {
     if (e.code === 'Enter') {
@@ -92,34 +98,38 @@ export class CnFormInputSensorComponent implements OnInit {
     this.valueChange(this.model);
   }
 
-  public getData() {
+  public getData(select) {
     const that = this;
     let wsconfig;
     this.selectoptions.forEach(element => {
-      if (element['value'] === this.select) {
+      console.log(element);
+      if (element['value'] === select) {
+        console.log('select', select)
         wsconfig = element['wsconfig'];
+        const ws = new WebSocket(wsconfig);
+        ws.onopen = () => {
+          console.log('send message');
+          ws.send('ReadData1');
+        }
+        ws.onmessage = (evt) => {
+          const data: string = evt.data;
+          console.log('已经接收到数据', data);
+          // 获取第一组数据
+
+          // 获取温度
+          if (that.config.valueFrom && that.config.valueFrom === 't') {
+            this.model = data.split(';')[2].split('=')[1];
+          } else if (this.config.valueFrom && this.config.valueFrom === 'h') { // 获取湿度
+            this.model = data.split(';')[1].split('=')[1];
+          }
+
+        }
+        ws.onclose = () => {
+          console.log('连接已经关闭');
+        }
       }
     });
-    const ws = new WebSocket(wsconfig);
-    ws.onopen = () =>  {
-      ws.send('get');
-    }
-    ws.onmessage = (evt) => {
-      const data: string = evt.data;
-      console.log('已经接收到数据', data);
-     // 获取第一组数据
 
-     // 获取温度
-      if (that.config.valueFrom && that.config.valueFrom === 't') {
-        this.model = data.split(';')[2].split('=')[1];
-      } else if (this.config.valueFrom && this.config.valueFrom === 'h') { // 获取湿度
-        this.model = data.split(';')[1].split('=')[1];
-      }
-
-    }
-    ws.onclose = () =>{
-      console.log('连接已经关闭');
-    }
   }
 
   public isString(obj) {

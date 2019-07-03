@@ -77,7 +77,7 @@ export class TsDataTableComponent extends CnComponentBase
     public loading = false;
     public pageIndex = 1;
     public pageSize = 5;
-    public total = 1;
+    public total = 0;
     public focusIds;
     public autoPlaySwitch = true;
     public temple = 0;
@@ -153,6 +153,7 @@ export class TsDataTableComponent extends CnComponentBase
             this.initValue = this.initData;
         }
         if (this.config.ajaxproc) {
+            console.log('111');
             const url = this._buildURL(this.config.ajaxConfig.url);
             const params = {
                 ...this._buildParameters(this.config.ajaxConfig.params),
@@ -281,11 +282,14 @@ export class TsDataTableComponent extends CnComponentBase
                 : this.pageSize;
             if (this.config.componentType) {
                 if (!this.config.componentType.child) {
+                    console.log('111');
                     this.loadbypage();
                 } else if (this.config.componentType.own === true) {
+                    console.log('222');
                     this.loadbypage();
                 }
             } else {
+                console.log('333');
                 this.loadbypage();
             }
 
@@ -2836,12 +2840,19 @@ export class TsDataTableComponent extends CnComponentBase
         this._selectRow = {};
     }
 
-    // 表格的轮播 20190625
+    // 表格的静态分页 20190703
     public searchData(reset: boolean = false) {
-        if (reset) {
+        if (this.config.ajaxproc) {
+            if (reset) {
+                this.pageIndex = 1
+                this.loadbypage();
+            } else {
+                this.loadbypage();
+            }
+        } else if (reset) {
             this.pageIndex = 1;
-        }
-        this.load();
+            this.load();
+        } 
     }
 
     public sort(sort: { key: string; value: string }) {

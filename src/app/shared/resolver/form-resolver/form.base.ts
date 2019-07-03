@@ -167,8 +167,7 @@ export class CnFormBase extends CnComponentBase {
 
     public initControls(formConfig) {
         const controls = [];
-        if(formConfig) {
-            
+        if (formConfig) {
             formConfig.map(formItem => {
                 const items = formItem.controls.filter(({ type }) => {
                     return type !== 'button' && type !== 'submit';
@@ -176,7 +175,6 @@ export class CnFormBase extends CnComponentBase {
                 controls.push(...items);
             });
         }
-        
         return controls;
     }
     // 处理参数 liu
@@ -374,7 +372,6 @@ export class CnFormBase extends CnComponentBase {
                 } else {
                     callback();
                 }
-                
             }
 
         } else {

@@ -21,7 +21,7 @@
   <div class="steps-action" style="position:fixed;width: 100%">
     <div nz-col nzSpan="24">
       <nz-button-group>
-          <button (click)="backTo()" nz-button><i nz-icon type="rollback"></i> 返回</button>    
+          <button *ngIf="config.rollback" (click)="backTo()" nz-button><i nz-icon type="rollback"></i> 返回</button>    
           <button nzSize="default" nz-button nzType="default" (click)="pre()" *ngIf="_current > 0">
             <span><i nz-icon type="arrow-left"></i> 上一步</span>
           </button>

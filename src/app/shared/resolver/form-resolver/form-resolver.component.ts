@@ -447,14 +447,18 @@ export class FormResolverComponent extends CnFormBase
         }
         const newValue = this.GetComponentValue();
         const params = this.buildParameter(getConfig.params);
-        if (params && !params['Id']) {
-            this.message.warning('编辑数据的Id不存在，无法进行更新！');
-            return;
-        } else {
-             this.execute(url, getConfig.ajaxType, params).then(result => {});
-        }
-        return result;
-    }
+        const script = document.createElement('script');
+        script.setAttribute('type', 'text/javascript');
+        let requestString = '';
+        for (let p in params) {
+            if (params.hasOwnProperty(p) && p !== undefined) {
+                requestString += p + '=' + params[p] + '&';
+            }
+        script.src = url + '?' + requestString;
+        document.body.appendChild(script);
+        // this.execute(url, getConfig.ajaxType, params).then( result => {});
+        // return result;
+    }}
 
     /**
      * 新增数据

@@ -378,9 +378,9 @@ export class FormResolverComponent extends CnFormBase
                 url = this.buildUrl(this.config.ajaxConfig.url, this.config.ajaxConfig.urlobj)
             } else {
                 url = this.buildUrl(this.config.ajaxConfig.url, '');
-            } 
+            }
             const params = this.buildParameter(this.config.ajaxConfig.params);
-            this.execute(url, this.config.ajaxConfig.ajaxType , params).then(result => {
+            this.execute(url, this.config.ajaxConfig.ajaxType, params).then(result => {
                 let res;
                 if (Array.isArray(result.data)) {
                     res = result.data[0]
@@ -393,7 +393,7 @@ export class FormResolverComponent extends CnFormBase
                     // 给主键赋值
                     if (this.config.keyId) {
                         this.tempValue['_id'] =
-                        res[this.config.keyId];
+                            res[this.config.keyId];
                     } else {
                         if (res['Id']) {
                             this.tempValue['_id'] = res['Id'];
@@ -439,7 +439,7 @@ export class FormResolverComponent extends CnFormBase
      */
     private async get(getConfig) {
         let result = true;
-        let url: string ;
+        let url: string;
         if (getConfig.urlobj) {
             url = this.buildUrl(getConfig.url, getConfig.urlobj);
         } else {
@@ -447,18 +447,24 @@ export class FormResolverComponent extends CnFormBase
         }
         const newValue = this.GetComponentValue();
         const params = this.buildParameter(getConfig.params);
+        if (document.getElementById('tag1')) {
+            let tag = document.getElementById('tag1');
+            tag.parentNode.removeChild(tag);
+        }
         const script = document.createElement('script');
         script.setAttribute('type', 'text/javascript');
+        script.setAttribute('id', 'tag1');
         let requestString = '';
         for (let p in params) {
             if (params.hasOwnProperty(p) && p !== undefined) {
                 requestString += p + '=' + params[p] + '&';
             }
-        script.src = url + '?' + requestString;
+            script.src = url + '?' + requestString;
+        }
         document.body.appendChild(script);
         // this.execute(url, getConfig.ajaxType, params).then( result => {});
         // return result;
-    }}
+    }
 
     /**
      * 新增数据
@@ -466,7 +472,7 @@ export class FormResolverComponent extends CnFormBase
      */
     private async post(postConfig) {
         let result = true;
-        let url: string ;
+        let url: string;
         if (postConfig.urlobj) {
             url = this.buildUrl(postConfig.url, postConfig.urlobj);
         } else {
@@ -494,7 +500,7 @@ export class FormResolverComponent extends CnFormBase
      */
     private async put(putConfig) {
         let result = true;
-        let url: string ;
+        let url: string;
         if (putConfig.urlobj) {
             url = this.buildUrl(putConfig.url, putConfig.urlobj);
         } else {
@@ -1387,19 +1393,19 @@ export class FormResolverComponent extends CnFormBase
                                             }
                                         }
                                         if (caseItem['type'] === 'link') {
-                                          //  console.log('扫码跳转：', caseItem['link']);
+                                            //  console.log('扫码跳转：', caseItem['link']);
                                             if (caseItem['link']) {
                                                 this.linkToPages(caseItem['link'], data['dataItem'] ? data['dataItem'] : {});
                                             }
                                         }
                                         if (caseItem['type'] === 'message') {
-                                           // console.log('返回信息：', caseItem['message']);
+                                            // console.log('返回信息：', caseItem['message']);
                                             if (caseItem['message']) {
                                                 this.showMessage(caseItem['message'], data['dataItem'] ? data['dataItem'] : {});
                                             }
                                         }
                                         if (caseItem['type'] === 'relation') {
-                                           // console.log('消息信息：', caseItem['relation']);
+                                            // console.log('消息信息：', caseItem['relation']);
                                             if (caseItem['relation']) {
                                                 this.valueChangeRelation(caseItem['relation'], data['dataItem'] ? data['dataItem'] : {}, data);
                                             }
@@ -1720,7 +1726,7 @@ export class FormResolverComponent extends CnFormBase
      */
     private showMessage(option, componentValue?) {
 
-       // console.log('showMessage', option, componentValue);
+        // console.log('showMessage', option, componentValue);
         let messageStr = '';
         if (option.valueName) {
             messageStr = componentValue[option.valueName];
@@ -1748,10 +1754,10 @@ export class FormResolverComponent extends CnFormBase
 
     private valueChangeRelation(option, componentValue?, data?) {
 
-       // console.log('valueChangeRelation', option, componentValue);
+        // console.log('valueChangeRelation', option, componentValue);
         const sendData = this.value;
         sendData[data.name] = data.value;
-       const cascadeRelation = option;
+        const cascadeRelation = option;
         if (cascadeRelation) {
             cascadeRelation.forEach(element => {
                 if (element.name === data.name) {

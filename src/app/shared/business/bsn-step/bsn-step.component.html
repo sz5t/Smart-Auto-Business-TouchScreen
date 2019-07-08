@@ -30,7 +30,7 @@
           </button>
           <button nz-button nzType="primary" (click)="done()"> 
               <!-- *ngIf="_current === config.steps.length" -->
-              <span><i nz-icon type="save"></i> 完成</span>
+              <span><i nz-icon type="save" *ngIf="config.finish"></i> 完成</span>
             </button>
       </nz-button-group>
     </div>

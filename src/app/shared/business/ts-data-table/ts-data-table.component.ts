@@ -2182,6 +2182,7 @@ export class TsDataTableComponent extends CnComponentBase
                 nzComponentParams: {
                     permissions: this.permissions,
                     config: data,
+                    dialog: dialog,
                     initData: { ...this.initValue, ...tmpValue, ...selectedRow, ...checkedIds }
                 },
                 nzFooter: footer
@@ -3049,6 +3050,7 @@ export class TsDataTableComponent extends CnComponentBase
                 tempValue: this.tempValue,
                 initValue: this.initValue,
                 cacheValue: this.cacheService,
+                cardValue: this.cacheService,
                 cascadeValue: this.cascadeValue,
                 routerValue: this.cacheService
             });

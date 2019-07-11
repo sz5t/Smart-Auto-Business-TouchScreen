@@ -113,6 +113,8 @@ import { CnFormInputSensorComponent } from './components/cn-form-input-sensor/cn
 import { CnFormElectronicScaleComponent } from '@shared/components/cn-form-electronic-scale/cn-form-electronic-scale.component';
 import { BsnScreenShotComponent } from './business/bsn-screen-shot/bsn-screen-shot.component';
 import { SafeUrlPipe } from '@core/pipe/safe-url.pipe';
+import { BsnShowImageComponent } from './business/bsn-show-image/bsn-show-image.component';
+import { BsnInlineCardSwipeComponent } from './business/bsn-inline-card-swipe/bsn-inline-card-swipe.component';
 
 
 const THIRDMODULES = [
@@ -218,7 +220,9 @@ const COMPONENTS = [
     CnFormInputSensorComponent,
     CnFormElectronicScaleComponent,
     BsnScreenShotComponent,
-    BsnEntryCardListComponent
+    BsnEntryCardListComponent,
+    BsnShowImageComponent,
+    BsnInlineCardSwipeComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,

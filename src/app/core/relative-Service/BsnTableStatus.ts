@@ -57,6 +57,7 @@ export const BSN_PARAMETER_TYPE = {
     CHECKED_ID: 'checkedId',
     INIT_VALUE: 'initValue',
     CACHE_VALUE: 'cacheValue',
+    CARD_VALUE: 'cardValue',
     CASCADE_VALUE: 'cascadeValue',
     RETURN_VALUE: 'returnValue',
     ROUTER_VALUE: 'routerValue'

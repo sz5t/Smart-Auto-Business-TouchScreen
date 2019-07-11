@@ -6,6 +6,7 @@ export interface ParametersResolverModel {
     componentValue?;
     initValue?;
     cacheValue?;
+    cardValue?;
     cascadeValue?;
     returnValue?;
     routerValue?;
@@ -141,6 +142,13 @@ export class CommonTools {
                                 const cache = model.cacheValue.getNone('userInfo');
                                 result[param['name']] =
                                     cache[param['valueName']];
+                            }
+                            break;
+                        case BSN_PARAMETER_TYPE.CARD_VALUE:
+                            if (model.cardValue) {
+                                const card = model.cardValue.getNone('cardInfo');
+                                result[param['name']] =
+                                    card[param['valueName']];
                             }
                             break;
                         case BSN_PARAMETER_TYPE.CASCADE_VALUE:

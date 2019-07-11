@@ -41,6 +41,8 @@ import { BsnAsyncTreeTableComponent } from '@shared/business/bsn-treeTable/bsn-t
 import { TsToolbarComponent } from '@shared/business/ts-toolbar/ts-toolbar.component';
 import { BsnScreenShotComponent } from '@shared/business/bsn-screen-shot/bsn-screen-shot.component';
 import { BsnReportComponent } from '@shared/business/bsn-report/bsn-report.component';
+import { BsnShowImageComponent } from '@shared/business/bsn-show-image/bsn-show-image.component';
+import { BsnInlineCardSwipeComponent } from '@shared/business/bsn-inline-card-swipe/bsn-inline-card-swipe.component';
 const components: { [type: string]: Type<any> } = {
     code_edit: CnCodeEditComponent,
     bsnTable: BsnTableComponent,
@@ -67,7 +69,9 @@ const components: { [type: string]: Type<any> } = {
     bsnTagSelect: BsnTagSelectComponent,
     bsnTag: BsnTagComponent,
     bsnScreenShot: BsnScreenShotComponent,
-    bsnReport: BsnReportComponent
+    bsnReport: BsnReportComponent,
+    bsnShowImage: BsnShowImageComponent,
+    bsnInlineswipe: BsnInlineCardSwipeComponent
 };
 @Component({
     // tslint:disable-next-line:component-selector

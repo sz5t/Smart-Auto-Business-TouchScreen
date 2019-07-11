@@ -30,7 +30,6 @@ import { NzCarouselComponent } from 'ng-zorro-antd';
     selector: 'bsn-carousel',
     template: `
     
-  <nz-card nzBordered="false">
   <nz-spin [nzSpinning]="isLoading" nzTip='加载中...'>
     <nz-carousel #carousel [nzEffect]="'fade'" [nzAutoPlay]="config.autoPlay" [nzEnableSwipe]="config.enableSwipe" >
         <div nz-carousel-content *ngFor="let img of imgList">
@@ -38,7 +37,6 @@ import { NzCarouselComponent } from 'ng-zorro-antd';
         </div>
     </nz-carousel>
     </nz-spin>
-    </nz-card>
     
     
   
@@ -130,8 +128,6 @@ export class BsnCarouselComponent extends CnComponentBase
                     });
                     this.imgList.push(imgItem);
                 });
-
-
                 this.isLoading = false;
 
                 // this.carousel.activeIndex = 0;

@@ -98,7 +98,6 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public async  ngAfterViewInit() {
-
         const that = this;
         const clientIp = await this.loadClientIP();
         this.ajax.params[1]['value'] = clientIp;

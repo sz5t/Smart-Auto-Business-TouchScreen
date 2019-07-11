@@ -149,11 +149,14 @@ export class TsDataTableComponent extends CnComponentBase
     };
 
     public async ngOnInit() {
+        this.showprocdata();
+    }
+
+    public async showprocdata() {
         if (this.initData) {
             this.initValue = this.initData;
         }
         if (this.config.ajaxproc) {
-            console.log('111');
             const url = this._buildURL(this.config.ajaxConfig.url);
             const params = {
                 ...this._buildParameters(this.config.ajaxConfig.params),
@@ -216,6 +219,11 @@ export class TsDataTableComponent extends CnComponentBase
                         this.tempValue[key] = this.bsnData[key];
                     }
                 }
+            }
+            
+            // liu 测试动态表格
+            if (this.config.columnsAjax) {
+                this.loadDynamicColumns();
             }
             this.resolverRelation();
             if (this.initData) {
@@ -282,14 +290,11 @@ export class TsDataTableComponent extends CnComponentBase
                 : this.pageSize;
             if (this.config.componentType) {
                 if (!this.config.componentType.child) {
-                    console.log('111');
                     this.loadbypage();
                 } else if (this.config.componentType.own === true) {
-                    console.log('222');
                     this.loadbypage();
                 }
             } else {
-                console.log('333');
                 this.loadbypage();
             }
 
@@ -400,6 +405,7 @@ export class TsDataTableComponent extends CnComponentBase
                 ? this.config.pageSize
                 : this.pageSize;
         }
+
     }
 
     public async ngAfterViewInit() {
@@ -708,6 +714,7 @@ export class TsDataTableComponent extends CnComponentBase
             }
         }
     }
+
     public loadbypage() {
         if (typeof this.pageIndex !== 'undefined') {
             this.pageIndex = this.pageIndex || 1;
@@ -731,9 +738,6 @@ export class TsDataTableComponent extends CnComponentBase
         }
         this._updateEditCacheByLoad(pagedata);
         this.dataList = pagedata;
-
-
-        console.log('load', this.pageIndex, this.pageSize);
     }
 
 
@@ -766,6 +770,7 @@ export class TsDataTableComponent extends CnComponentBase
 
                 if (method === 'proc') {
                     resData = loadData.data.dataSet1 ? loadData.data.dataSet1 : [];
+                    this.loadbypage();
                 } else {
                     resData = loadData.data.rows;
                 }
@@ -944,7 +949,6 @@ export class TsDataTableComponent extends CnComponentBase
             // this.dataList.forEach(row => {
             //     this._startEdit(row['key'].toString());
             // });
-
 
             setTimeout(() => {
                 this.loading = false;
@@ -3346,7 +3350,10 @@ export class TsDataTableComponent extends CnComponentBase
                 config: dialog.ajaxConfig,
                 refObj: obj
             },
-            nzFooter: footer
+            nzFooter: footer,
+            nzOnOk: () => {
+                new Promise(resolve => (setTimeout(resolve, 0)));
+              } 
         });
     }
     /**
@@ -3427,7 +3434,11 @@ export class TsDataTableComponent extends CnComponentBase
             });
 
             drawer.afterClose.subscribe(() => {
-                this.load();
+                if (this.config.ajaxproc) {
+                    this.showprocdata();
+                } else {
+                    this.load();
+                }
 
             });
 
@@ -4863,7 +4874,12 @@ export class TsDataTableComponent extends CnComponentBase
                     if (eventConfig.type === 'default') {
                         const checkedItems = this._getCheckedItems();
                         this._getCheckItemsId();
-                        !this.beforeOperation.beforeItemsDataOperation(checkedItems) && this.resolverOperation(data);
+                        if (eventConfig.beforeOperation) {
+                            !this.beforeOperation.beforeItemsDataOperation(checkedItems) && 
+                            this.resolverOperation(data);
+                        } else {
+                            this.resolverOperation(data);
+                        }
                     }
                 });
             }

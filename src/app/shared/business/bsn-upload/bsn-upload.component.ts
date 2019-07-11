@@ -34,7 +34,7 @@ export class BsnUploadComponent implements OnInit, AfterViewInit {
     public uploading = false;
     public fileList: UploadFile[] = [];
     public uploadList = [];
-    public loading = false;
+    public loading = true;
     public securityLevel;
     public remark;
 

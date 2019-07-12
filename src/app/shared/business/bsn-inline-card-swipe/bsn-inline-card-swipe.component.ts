@@ -73,8 +73,8 @@ export class BsnInlineCardSwipeComponent implements OnInit, AfterViewInit, OnDes
     @Inject(DA_SERVICE_TOKEN) private tokenService: TokenService
   ) {
     modalSrv.closeAll();
-    this.tokenService.clear();
-    this.cacheService.clear();
+    // this.tokenService.clear();
+    // this.cacheService.clear();
     this.menuService.clear();
   }
 

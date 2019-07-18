@@ -10,6 +10,9 @@ import { SettingsService, TitleService, MenuService } from '@delon/theme';
 import { ReuseTabService } from '@delon/abc';
 import { SystemResource } from '@core/utility/system-resource';
 import { CommonTools } from '@core/utility/common-tools';
+import { CnComponentBase } from '@shared/components/cn-component-base';
+import { BSN_COMPONENT_CASCADE, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES } from '@core/relative-Service/BsnTableStatus';
+import { Observer } from 'rxjs';
 
 @Component({
   selector: 'bsn-inline-card-swipe',
@@ -17,7 +20,8 @@ import { CommonTools } from '@core/utility/common-tools';
   styleUrls: ['./bsn-inline-card-swipe.component.less'],
   providers: [SocialService]
 })
-export class BsnInlineCardSwipeComponent implements OnInit, AfterViewInit, OnDestroy {
+export class BsnInlineCardSwipeComponent extends CnComponentBase
+ implements OnInit, AfterViewInit, OnDestroy {
   @Input()
   public config;
   @Input()
@@ -27,13 +31,14 @@ export class BsnInlineCardSwipeComponent implements OnInit, AfterViewInit, OnDes
   @Input()
   public permissions;
   private form: FormGroup;
+  public _cardNo = {};
   private error = '';
   private errorApp = '';
   // 登录配置/解析系统的标识：0配置平台，1解析平台
   private loading = false;
   // 当前选择登录系统的配置项
   private _currentSystem;
-  private isCardLogin = true;
+  private isCardLogin = false;
   private ajax = {
     url: 'open/getEquipment',
     ajaxType: 'get',
@@ -57,21 +62,19 @@ export class BsnInlineCardSwipeComponent implements OnInit, AfterViewInit, OnDes
   };
 
   constructor(
-    private router: Router,
-    private httpClient: HttpClient,
     private cacheService: CacheService,
     private apiService: ApiService,
     public msg: NzMessageService,
     private modalSrv: NzModalService,
-    private settingsService: SettingsService,
-    private socialService: SocialService,
     private titleService: TitleService,
     private menuService: MenuService,
     @Optional()
     @Inject(ReuseTabService)
-    private reuseTabService: ReuseTabService,
+    @Inject(BSN_COMPONENT_CASCADE)
+    private cascade: Observer<BsnComponentMessage>,
     @Inject(DA_SERVICE_TOKEN) private tokenService: TokenService
   ) {
+    super();
     modalSrv.closeAll();
     // this.tokenService.clear();
     // this.cacheService.clear();
@@ -101,6 +104,7 @@ export class BsnInlineCardSwipeComponent implements OnInit, AfterViewInit, OnDes
       const received_msg = evt.data;
       console.log('数据已接收...', received_msg);
       that.cacheService.set('cardInfo', { cardNo: received_msg });
+      that.sendcardNo(received_msg);
       that.dialog.close();
     };
     ws.onclose = function () {
@@ -160,7 +164,8 @@ export class BsnInlineCardSwipeComponent implements OnInit, AfterViewInit, OnDes
     if (paramsConfig) {
       params = CommonTools.parametersResolver({
         params: paramsConfig,
-        cacheValue: this.cacheService
+        cacheValue: this.cacheService,
+        cardValue: this.cacheService
       });
     }
     return params;
@@ -173,6 +178,24 @@ export class BsnInlineCardSwipeComponent implements OnInit, AfterViewInit, OnDes
   public ngOnDestroy(): void {
 
   }
+  private sendcardNo(e) {
+  if (
+    this.config.componentType &&
+    this.config.componentType.parent === true
+) {
+    if (this.cacheService.has('cardInfo')) {
+      this.cascade.next(
+        new BsnComponentMessage(
+            BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
+            this.config.viewId,
+            {
+                data: {'_cardNo': e}
+            }
+        )
+    );
+    }
+        
+}}
 
 
 }

@@ -1,0 +1,35 @@
+<!-- <pre>{{imgList | json}}</pre>
+<div id="tsShopContainer">
+  <div id="tsImgS"><a href="{{serverPath + img.src}}" title="Images" class="MagicZoom" id="MagicZoom">
+	<img width="300px" height="300px" src="{{serverPath + img.src}}"/></a></div>
+	<div id="tsImgS"><a href="../../../../assets/img/01.jpg" title="Images" class="MagicZoom" id="MagicZoom">
+      <img width="300px" height="300px" src="../../../../assets/img/01.jpg"/></a></div>
+	<div id="tsPicContainer">
+		<div id="tsImgSArrL" (click)="tsScrollArrLeft()"></div>
+		<div id="tsImgSCon">
+			<ul *ngFor="let img of imgList; let i = index">
+				<li *ngIf="i === 0" (click)="showPic(i)" rel="MagicZoom" class="tsSelectImg"><img height="42" width="42" src="{{serverPath + img.src}}" attr.tsImgS="{{serverPath + img.src}}" /></li>
+				<li *ngIf="i !== 0" (click)="showPic(i)" rel="MagicZoom"><img height="42" width="42" src="{{serverPath + img.src}}" attr.tsImgS="{{serverPath + img.src}}" /></li>
+				
+			<ul>
+				<li (click)="showPic(0)" rel="MagicZoom" class="tsSelectImg"><img height="42" width="42" src="../../../../assets/img/01.jpg" tsImgS="../../../../assets/img/01.jpg" /></li>
+				<li (click)="showPic(1)" rel="MagicZoom"><img height="42" width="42" src="../../../../assets/img/02.jpg" tsImgS="../../../../assets/img/02.jpg" /></li>
+				<li (click)="showPic(2)" rel="MagicZoom"><img height="42" width="42" src="../../../../assets/img/03.jpg" tsImgS="../../../../assets/img/03.jpg" /></li>
+				<li (click)="showPic(3)" rel="MagicZoom"><img height="42" width="42" src="../../../../assets/img/04.jpg" tsImgS="../../../../assets/img/04.jpg" /></li>
+				<li (click)="showPic(4)" rel="MagicZoom"><img height="42" width="42" src="../../../../assets/img/05.jpg" tsImgS="../../../../assets/img/05.jpg" /></li>
+				<li (click)="showPic(5)" rel="MagicZoom"><img height="42" width="42" src="../../../../assets/img/06.jpg" tsImgS="../../../../assets/img/06.jpg" /></li>
+				<li (click)="showPic(6)" rel="MagicZoom"><img height="42" width="42" src="../../../../assets/img/07.jpg" tsImgS="../../../../assets/img/07.jpg" /></li>
+				<li (click)="showPic(7)" rel="MagicZoom"><img height="42" width="42" src="../../../../assets/img/08.jpg" tsImgS="../../../../assets/img/08.jpg" /></li>
+				<li (click)="showPic(8)" rel="MagicZoom"><img height="42" width="42" src="../../../../assets/img/09.jpg" tsImgS="../../../../assets/img/09.jpg" /></li>
+				<li (click)="showPic(9)" rel="MagicZoom"><img height="42" width="42" src="../../../../assets/img/10.gif" tsImgS="../../../../assets/img/10.gif" /></li>
+				<li (click)="showPic(10)" rel="MagicZoom"><img height="42" width="42" src="../../../../assets/img/11.gif" tsImgS="../../../../assets/img/11.gif" /></li>
+			   
+			</ul>
+		</div>
+		<div id="tsImgSArrR" (click)="tsScrollArrRight()"></div>
+	</div>
+	<img class="MagicZoomLoading" width="16" height="16" src="../../../../assets/img/loading.gif" alt="Loading..." />
+</div> -->
+
+<div  #showImage></div>
+<!-- <ng-template #showImage></ng-template> -->

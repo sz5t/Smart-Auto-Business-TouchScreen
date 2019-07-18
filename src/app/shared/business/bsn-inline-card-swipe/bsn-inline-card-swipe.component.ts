@@ -30,15 +30,7 @@ export class BsnInlineCardSwipeComponent extends CnComponentBase
   public dialog;
   @Input()
   public permissions;
-  private form: FormGroup;
   public _cardNo = {};
-  private error = '';
-  private errorApp = '';
-  // 登录配置/解析系统的标识：0配置平台，1解析平台
-  private loading = false;
-  // 当前选择登录系统的配置项
-  private _currentSystem;
-  private isCardLogin = false;
   private ajax = {
     url: 'open/getEquipment',
     ajaxType: 'get',
@@ -66,26 +58,18 @@ export class BsnInlineCardSwipeComponent extends CnComponentBase
     private apiService: ApiService,
     public msg: NzMessageService,
     private modalSrv: NzModalService,
-    private titleService: TitleService,
-    private menuService: MenuService,
-    @Optional()
-    @Inject(ReuseTabService)
     @Inject(BSN_COMPONENT_CASCADE)
-    private cascade: Observer<BsnComponentMessage>,
-    @Inject(DA_SERVICE_TOKEN) private tokenService: TokenService
+    private cascade: Observer<BsnComponentMessage>
   ) {
     super();
-    modalSrv.closeAll();
+    // modalSrv.closeAll();
     // this.tokenService.clear();
     // this.cacheService.clear();
-    this.menuService.clear();
+    // this.menuService.clear();
   }
 
   public ngOnInit(): void {
-    this.titleService.setTitle('SmartOne');
-    this.cacheService.set('AppName', 'SmartOne');
-
-    this.cacheService.set('currentConfig', SystemResource.settingSystem);
+    
   }
 
   public async  ngAfterViewInit() {
@@ -104,8 +88,15 @@ export class BsnInlineCardSwipeComponent extends CnComponentBase
       const received_msg = evt.data;
       console.log('数据已接收...', received_msg);
       that.cacheService.set('cardInfo', { cardNo: received_msg });
-      that.sendcardNo(received_msg);
-      that.dialog.close();
+      that.cascade.next(
+        new BsnComponentMessage(
+            BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
+            that.config.viewId,
+            {
+                data: {'_cardNo': received_msg}
+            }
+        )
+    );
     };
     ws.onclose = function () {
       // 关闭 websocket
@@ -171,9 +162,6 @@ export class BsnInlineCardSwipeComponent extends CnComponentBase
     return params;
   }
 
-  public showError(errmsg) {
-    this.errorApp = errmsg;
-  }
 
   public ngOnDestroy(): void {
 
@@ -184,15 +172,7 @@ export class BsnInlineCardSwipeComponent extends CnComponentBase
     this.config.componentType.parent === true
 ) {
     if (this.cacheService.has('cardInfo')) {
-      this.cascade.next(
-        new BsnComponentMessage(
-            BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
-            this.config.viewId,
-            {
-                data: {'_cardNo': e}
-            }
-        )
-    );
+      
     }
         
 }}

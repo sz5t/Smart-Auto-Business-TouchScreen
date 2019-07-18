@@ -41,7 +41,8 @@
                             "src/assets/vender/showndown/showdown.min.js",
                             "src/assets/vender/flv/flv.min.js",
                             "src/assets/vender/GridPP/grhtml5-6.6-min.js",
-                            "src/assets/vender/imageZoom/intense.js"
+                            "src/assets/vender/imageZoom/intense.js",
+                            "src/assets/vender/imageZoom/MagicZoom.js"
                         ]
                     },
                     "configurations": {

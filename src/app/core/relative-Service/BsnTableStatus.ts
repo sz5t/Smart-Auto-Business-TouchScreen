@@ -25,6 +25,7 @@ export const BSN_COMPONENT_MODES = {
     LOGIN_OUT: 'login_out',
     WORK_CENTER: 'work_center',
     AUTO_PLAY: 'auto_play',
+    CALL_INTERFACE: 'call_interface',
     
     // tree
     ADD_NODE: 'addNode',

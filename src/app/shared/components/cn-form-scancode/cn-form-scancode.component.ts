@@ -8,21 +8,21 @@ import {
     ViewChild,
     ElementRef,
     AfterViewInit
-} from "@angular/core";
+} from '@angular/core';
 import {
     BSN_COMPONENT_MODES,
     BsnComponentMessage,
     BSN_COMPONENT_CASCADE,
     BSN_COMPONENT_CASCADE_MODES
-} from "@core/relative-Service/BsnTableStatus";
-import { Observable, Observer } from "rxjs";
-import { ApiService } from "@core/utility/api-service";
-import { FormGroup } from "@angular/forms";
+} from '@core/relative-Service/BsnTableStatus';
+import { Observable, Observer } from 'rxjs';
+import { ApiService } from '@core/utility/api-service';
+import { FormGroup } from '@angular/forms';
 
 @Component({
-    selector: "cn-form-scancode,[cn-form-scancode]",
-    templateUrl: "./cn-form-scancode.component.html",
-    styleUrls: ["./cn-form-scancode.component.css"]
+    selector: 'cn-form-scancode,[cn-form-scancode]',
+    templateUrl: './cn-form-scancode.component.html',
+    styleUrls: ['./cn-form-scancode.component.css']
 })
 export class CnFormScancodeComponent implements OnInit, AfterViewInit {
     @Input()
@@ -72,14 +72,23 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
 
     public async onKeyPress(e) {
         // console.log('onKeyPress', e);
-        if (e.code === "Enter") {
+        if (e.code === 'Enter') {
             this.isScan = false;
             this.oldvalue = this._value;
             // console.log("huiche", this._value);
             let resultData;
+            let resultCard = {};
+            const cardresult = await this.asyncLoad(
+                this.config.cardConfig ? this.config.cardConfig : null
+            )
             const result = await this.asyncLoad(
                 this.config.ajaxConfig ? this.config.ajaxConfig : null
             );
+            if (this.config.cardConfig) {
+                for (let i = 0; i < cardresult.data.length; i++) {
+                    resultCard['field' + i] = cardresult.data[i];
+                }
+            }
             if (this.config.ajaxConfig) {
                 if (this.config.ajaxConfig.ajaxType === 'proc') {
                     const backData = result.data.dataSet1 ? result.data.dataSet1 : [];
@@ -88,13 +97,16 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
                         const _data = { data: backData[0] };
                         //  resultData['data'] = backData[0];
                         resultData = _data;
+                        resultData['resultCard'] = resultCard;
                     }
 
                 } else {
                     resultData = result;
+                    resultData['resultCard'] = resultCard;
                 }
             } else {
                 resultData = result;
+                resultData['resultCard'] = resultCard;
             }
 
             // this.cascade.next(
@@ -106,7 +118,7 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
             //     }
             //   )
             // );
-            this.valueChange(this._value, resultData.data);
+            this.valueChange(this._value, resultData);
             // this.cascade.next(
             //   new BsnComponentMessage(
             //     BSN_COMPONENT_CASCADE_MODES.Scan_Code_Locate_ROW,
@@ -138,9 +150,9 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
         let url;
         if (p) {
             p.params.forEach(param => {
-                if (param.type === "tempValue") {
+                if (param.type === 'tempValue') {
                     if (type) {
-                        if (type === "load") {
+                        if (type === 'load') {
                             if (this.bsnData[param.valueName]) {
                                 params[param.name] = this.bsnData[
                                     param.valueName
@@ -159,13 +171,13 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
                             params[param.name] = this.bsnData[param.valueName];
                         }
                     }
-                } else if (param.type === "value") {
+                } else if (param.type === 'value') {
                     params[param.name] = param.value;
-                } else if (param.type === "componentValue") {
+                } else if (param.type === 'componentValue') {
                     params[param.name] = componentValue[param.valueName];
-                } else if (param.type === "scanCodeValue") {
+                } else if (param.type === 'scanCodeValue') {
                     params[param.name] = this._value;
-                } else if (param.type === "cascadeValue") {
+                } else if (param.type === 'cascadeValue') {
                     params[param.name] = this.cascadeValue[param.valueName];
                 } else if (param.type === 'initValue') {
                     params[param.name] = this.initValue[param.valueName];
@@ -174,22 +186,22 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
             if (this.isString(p.url)) {
                 url = p.url;
             } else {
-                let pc = "null";
+                let pc = 'null';
                 p.url.params.forEach(param => {
-                    if (param["type"] === "value") {
+                    if (param['type'] === 'value') {
                         pc = param.value;
-                    } else if (param.type === "componentValue") {
+                    } else if (param.type === 'componentValue') {
                         pc = componentValue[param.valueName];
-                    } else if (param.type === "tempValue") {
+                    } else if (param.type === 'tempValue') {
                         pc = this.bsnData[param.valueName];
-                    } else if (param.type === "scanCodeValue") {
+                    } else if (param.type === 'scanCodeValue') {
                         pc = this._value;
                     } else if (param.type === 'initValue') {
                         pc = this.initValue[param.valueName];
                     }
                 });
 
-                url = p.url["parent"] + "/" + pc + "/" + p.url["child"];
+                url = p.url['parent'] + '/' + pc + '/' + p.url['child'];
             }
         }
         if (p.ajaxType === 'get' && tag) {
@@ -203,14 +215,15 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
 
     public isString(obj) {
         // 判断对象是否是字符串
-        return Object.prototype.toString.call(obj) === "[object String]";
+        return Object.prototype.toString.call(obj) === '[object String]';
     }
 
     public valueChange(name?, dataItem?) {
         // console.log("valueChange", name);
         const backValue = { name: this.config.name, value: name };
         if (dataItem) {
-            backValue["dataItem"] = dataItem;
+            backValue['dataItem'] = dataItem.data;
+            backValue['cardValue'] = dataItem.resultCard;
         }
         this.updateValue.emit(backValue);
     }
@@ -226,9 +239,18 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
                 this.isScan = false;
                 this.oldvalue = this._value;
                 let resultData;
+                let resultCard = {};
+                const cardresult = await this.asyncLoad(
+                    this.config.cardConfig ? this.config.cardConfig : null
+                )
                 const result = await this.asyncLoad(
                     this.config.ajaxConfig ? this.config.ajaxConfig : null
                 );
+                if (this.config.cardConfig) {
+                    for (let i = 0; i < cardresult.data.length; i++) {
+                        resultCard['field' + i] = cardresult.data[i];
+                    }
+                }
                 if (this.config.ajaxConfig) {
                     if (this.config.ajaxConfig.ajaxType === 'proc') {
                         const backData = result.data.dataSet1 ? result.data.dataSet1 : [];
@@ -237,19 +259,22 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
                             const _data = { data: backData[0] };
                             //  resultData['data'] = backData[0];
                             resultData = _data;
+                            resultData['resultCard'] = resultCard;
                         }
 
                     } else {
                         resultData = result;
+                        resultData['resultCard'] = resultCard;
                     }
                 } else {
                     resultData = result;
+                    resultData['resultCard'] = resultCard;
                 }
-                this.valueChange(this._value, resultData.data);
+                this.valueChange(this._value, resultData);
             }
         }
-
-
     }
+
+
 
 }

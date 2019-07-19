@@ -1407,6 +1407,13 @@ export class FormResolverComponent extends CnFormBase
                                         if (caseItem['type'] === 'relation') {
                                             // console.log('消息信息：', caseItem['relation']);
                                             if (caseItem['relation']) {
+                                                this.tempValue['cardId'] = data['cardValue']['field0']['Id'];
+                                                this.tempValue['barcode'] = data['cardValue']['field0']['barcode'];
+                                                this.tempValue['config'] = data['cardValue']['field0']['config'];
+                                                this.tempValue['tubeserialno'] = data['cardValue']['field0']['tubeserialno'];
+                                                this.tempValue['tubetype'] = data['cardValue']['field0']['tubetype'];
+                                                this.tempValue['workordersinglecodeid'] = data['cardValue']['field0']['workordersinglecodeid'];
+                                                console.log(this.tempValue);
                                                 this.valueChangeRelation(caseItem['relation'], data['dataItem'] ? data['dataItem'] : {}, data);
                                             }
                                         }

@@ -470,6 +470,8 @@ export class TsDataTableComponent extends CnComponentBase
                             ...this._getCheckedItems(),
                             ...this._getAddedRows()
                         ];
+                        console.log('_getCheckedItems', this._getCheckedItems());
+                        console.log('_getAddedRows', this._getEditedRows());
                         !this.beforeOperation.beforeItemsDataOperation(
                             option
                         ) && this.saveRow(option);
@@ -547,6 +549,9 @@ export class TsDataTableComponent extends CnComponentBase
                         return;
                     case BSN_COMPONENT_MODES.AUTO_PLAY:
                         this.startAutoPlay();
+                        return;
+                    case BSN_COMPONENT_MODES.CALL_INTERFACE:
+                        this.CallInterface(option);
                         return;
                 }
             }
@@ -764,7 +769,6 @@ export class TsDataTableComponent extends CnComponentBase
         (async () => {
             const method = this.config.ajaxConfig.ajaxType;
             const loadData = await this._load(url, params, this.config.ajaxConfig.ajaxType);
-
             if (loadData.isSuccess) {
                 let resData;
 
@@ -798,6 +802,8 @@ export class TsDataTableComponent extends CnComponentBase
                     if (resData.length > 0) {
                         this.dataList = resData;
                         resData.forEach((row, index) => {
+                            row['row_status'] = '',
+                            row['checked'] = false,
                             row['key'] = row[this.config.keyId]
                                 ? row[this.config.keyId]
                                 : 'Id';
@@ -1432,7 +1438,7 @@ export class TsDataTableComponent extends CnComponentBase
 
     public updateRow() {
         let checkedCount = 0;
-        this.dataList.forEach(item => {
+        this.dataList.map(item => {
             if (item.checked) {
                 if (item['row_status'] && item['row_status'] === 'adding') {
                 } else if (
@@ -1453,6 +1459,7 @@ export class TsDataTableComponent extends CnComponentBase
         if (checkedCount === 0) {
             this.baseMessage.info('请勾选数据记录后进行编辑');
         }
+        console.log('edit', this.dataList);
     }
 
     public valueChange(data) {
@@ -2261,6 +2268,7 @@ export class TsDataTableComponent extends CnComponentBase
     // 关于相关配置的问题需要进一步进行讨论
 
     private _resolveAjaxConfig(option) {
+        console.log('save', this.dataList);
         if (option.ajaxConfig && option.ajaxConfig.length > 0) {
             option.ajaxConfig.filter(c => !c.parentName).map(c => {
                 this._getAjaxConfig(c, option);
@@ -2341,9 +2349,9 @@ export class TsDataTableComponent extends CnComponentBase
                     break;
                 case BSN_EXECUTE_ACTION.EXECUTE_EDIT_SELECTED_ROW:
                     // 获取保存状态的数据
-                    handleData = this.EditSelectedRow;
+                    handleData = this._getSelectedItem();
                     // console.log('简析参数1838 ', handleData);
-                    msg = '编辑数据保存成功';
+                    msg = '操作完成';
                     if (handleData && handleData.length <= 0) {
                         return;
                     }
@@ -3047,6 +3055,7 @@ export class TsDataTableComponent extends CnComponentBase
         if (paramsConfig) {
             params = CommonTools.parametersResolver({
                 params: paramsConfig,
+                item: this._selectRow,
                 tempValue: this.tempValue,
                 initValue: this.initValue,
                 cacheValue: this.cacheService,
@@ -4786,7 +4795,6 @@ export class TsDataTableComponent extends CnComponentBase
     public swichChecked(d?) {
         const index = this.dataList.findIndex(item => item.key === d.key);
         this.dataList[index].checked = !d.checked;
-
         this.checkedCount = this.dataList.filter(w => w.checked).length;
         this.allChecked = this.checkedCount === this.dataList.length;
         this.indeterminate = this.allChecked ? false : this.checkedCount > 0;
@@ -5050,6 +5058,58 @@ export class TsDataTableComponent extends CnComponentBase
                 // }).catch(() => console.log('Oops errors!'));
             }
         });
+    }
+
+    public CallInterface(callConfig) {
+        let result = true;
+        let url: string;
+        if (callConfig.ajaxConfig[0].urlobj) {
+            url = this.buildUrl(callConfig.ajaxConfig[0].url, callConfig.ajaxConfig[0].urlobj);
+        } else {
+            url = this.buildUrl(callConfig.ajaxConfig[0].url, '');
+        }
+        const params = this._buildParameters(callConfig.ajaxConfig[0].params);
+        if (document.getElementById('tag1')) {
+            const tag = document.getElementById('tag1');
+            tag.parentNode.removeChild(tag);
+        }
+        const script = document.createElement('script');
+        script.setAttribute('type', 'text/javascript');
+        script.setAttribute('id', 'tag1');
+        let requestString = '';
+        for (let p in params) {
+            if (params.hasOwnProperty(p) && p !== undefined) {
+                requestString += p + '=' + params[p] + '&';
+            }
+            script.src = url + '?' + requestString;
+        }
+        document.body.appendChild(script);
+    }
+
+    public buildUrl(urlConfig, urlobj?) {
+        let url;
+        if (urlobj) {
+            const ip = CommonTools.parametersResolver({
+                params: urlobj.params,
+                item: this._selectRow,
+                tempValue: this.tempValue,
+                initValue: this.initValue,
+                cacheValue: this.cacheValue,
+            });
+            url = 'http://' + ip['IP'] + ':' + ip['sort'] + '/' + urlConfig ;
+        } else {
+        if (CommonTools.isString(urlConfig)) {
+            url = urlConfig;
+        } else {
+            const pc = CommonTools.parametersResolver({
+                params: urlConfig.params,
+                tempValue: this.tempValue,
+                initValue: this.initValue,
+                cacheValue: this.cacheValue
+            });
+            url = `${urlConfig.url['parent']}/${pc}/${urlConfig.url['child']}`;
+        }}
+        return url;
     }
 }
 

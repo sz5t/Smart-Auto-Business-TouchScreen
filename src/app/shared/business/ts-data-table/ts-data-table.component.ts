@@ -470,8 +470,6 @@ export class TsDataTableComponent extends CnComponentBase
                             ...this._getCheckedItems(),
                             ...this._getAddedRows()
                         ];
-                        console.log('_getCheckedItems', this._getCheckedItems());
-                        console.log('_getAddedRows', this._getEditedRows());
                         !this.beforeOperation.beforeItemsDataOperation(
                             option
                         ) && this.saveRow(option);
@@ -802,8 +800,6 @@ export class TsDataTableComponent extends CnComponentBase
                     if (resData.length > 0) {
                         this.dataList = resData;
                         resData.forEach((row, index) => {
-                            row['row_status'] = '',
-                            row['checked'] = false,
                             row['key'] = row[this.config.keyId]
                                 ? row[this.config.keyId]
                                 : 'Id';
@@ -945,7 +941,6 @@ export class TsDataTableComponent extends CnComponentBase
                     this.createSearchRow();
                 }
             }
-
             // liu
             if (!this.is_Selectgrid) {
                 this.setSelectRow();
@@ -960,6 +955,7 @@ export class TsDataTableComponent extends CnComponentBase
                 this.loading = false;
             });
         })();
+        console.log('load:', this.dataList);
         this.pagetotal = Math.ceil(this.total / this.pageSize);
         if (!this.autoPlaySwitch) {
             this.temple = this.pageIndex;
@@ -1095,7 +1091,6 @@ export class TsDataTableComponent extends CnComponentBase
     }
 
     public async saveRow(option) {
-        console.log('保存');
         const addRows = [];
         const updateRows = [];
         let isSuccess = false;
@@ -1177,6 +1172,7 @@ export class TsDataTableComponent extends CnComponentBase
                 const index = bar.group.findIndex(
                     item => item.name === 'saveRow'
                 );
+                console.log(index);
                 if (index !== -1) {
                     const postConfig = bar.group[index].ajaxConfig[method];
                     result = this._execute(rowsData, method, postConfig);
@@ -1463,6 +1459,7 @@ export class TsDataTableComponent extends CnComponentBase
     }
 
     public valueChange(data) {
+        console.log('data:', data);
         // const index = this.dataList.findIndex(item => item.key === data.key);
         // console.log('值变化', data, 'this.editCache[data.key].data[data.name] :', this.editCache[data.key]);
         let isValueChange = true;
@@ -1871,9 +1868,12 @@ export class TsDataTableComponent extends CnComponentBase
         // this.beforeOperation.handleOperationConditions([]);
 
         // 执行列事件
-        if (isValueChange) {
-            this.ExecEventByValueChange(data);
+        if (this.config.events) {
+            if (isValueChange) {
+                this.ExecEventByValueChange(data);
+            }
         }
+        
 
 
     }
@@ -1921,7 +1921,7 @@ export class TsDataTableComponent extends CnComponentBase
                 }
             ]
         }
-
+        console.log('ExecEventByValueChange');
         const vc_field = data.name;
         //  ts_saveEdit data.key
         const vc_rowdata = this.ts_getEditRow(data.key, data.name);
@@ -2759,10 +2759,12 @@ export class TsDataTableComponent extends CnComponentBase
             delete item['$type'];
 
             if (item['row_status'] === 'updating') {
-                item = JSON.parse(
+                const newitem = JSON.parse(
                     JSON.stringify(this.editCache[item.key].data)
                 );
-                updatedRows.push(item);
+                newitem['row_status'] = item['row_status'];
+                newitem['checked'] = item['checked'];
+                updatedRows.push(newitem);
             }
         });
         return updatedRows;
@@ -4798,6 +4800,7 @@ export class TsDataTableComponent extends CnComponentBase
         this.checkedCount = this.dataList.filter(w => w.checked).length;
         this.allChecked = this.checkedCount === this.dataList.length;
         this.indeterminate = this.allChecked ? false : this.checkedCount > 0;
+        console.log('datalist', this.dataList);
     }
 
     /**

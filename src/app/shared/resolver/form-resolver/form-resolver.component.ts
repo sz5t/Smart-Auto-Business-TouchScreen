@@ -447,21 +447,23 @@ export class FormResolverComponent extends CnFormBase
         }
         const newValue = this.GetComponentValue();
         const params = this.buildParameter(getConfig.params);
-        if (document.getElementById('tag1')) {
-            let tag = document.getElementById('tag1');
-            tag.parentNode.removeChild(tag);
-        }
-        const script = document.createElement('script');
-        script.setAttribute('type', 'text/javascript');
-        script.setAttribute('id', 'tag1');
-        let requestString = '';
-        for (let p in params) {
-            if (params.hasOwnProperty(p) && p !== undefined) {
-                requestString += p + '=' + params[p] + '&';
+        if (this.tempValue['cardId']) {
+            if (document.getElementById('tag1')) {
+                let tag = document.getElementById('tag1');
+                tag.parentNode.removeChild(tag);
             }
-            script.src = url + '?' + requestString;
+            const script = document.createElement('script');
+            script.setAttribute('type', 'text/javascript');
+            script.setAttribute('id', 'tag1');
+            let requestString = '';
+            for (let p in params) {
+                if (params.hasOwnProperty(p) && p !== undefined) {
+                    requestString += p + '=' + params[p] + '&';
+                }
+                script.src = url + '?' + requestString;
+            }
+            document.body.appendChild(script);
         }
-        document.body.appendChild(script);
         // this.execute(url, getConfig.ajaxType, params).then( result => {});
         // return result;
     }

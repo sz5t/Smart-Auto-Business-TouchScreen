@@ -71,7 +71,7 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
 
 
     public async onKeyPress(e) {
-        // console.log('onKeyPress', e);
+       // console.log('onKeyPress', e, '******',  this.isScan );
         if (e.code === 'Enter') {
             this.isScan = false;
             this.oldvalue = this._value;
@@ -129,11 +129,14 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
             //   )
             // );
         } else {
+
             if (!this.isScan) {
+
                 const newvalue = this._value;
-                this._value = newvalue.substring(
-                    this.oldvalue.length ? this.oldvalue.length : 0
-                );
+                    this._value = newvalue.substring(
+                        this.oldvalue.length ? this.oldvalue.length : 0
+                    );
+
                 this.isScan = true;
             }
         }
@@ -219,7 +222,6 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
     }
 
     public valueChange(name?, dataItem?) {
-        // console.log("valueChange", name);
         const backValue = { name: this.config.name, value: name };
         if (dataItem) {
             backValue['dataItem'] = dataItem.data;
@@ -233,6 +235,7 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
      * initLoadValue 加载初值
      */
     public async initLoadValue(v) {
+        // console.log(this.config, v);
         if (v && this.config.initLoadValue) {
             if (this.isload) {
                 this.isload = false;
@@ -270,8 +273,13 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
                     resultData = result;
                     resultData['resultCard'] = resultCard;
                 }
+               // this._value  = v;
                 this.valueChange(this._value, resultData);
+              // this.valueChange(v, resultData);
             }
+        } else {
+            if (v !== undefined)
+            this.isload = false;
         }
     }
 

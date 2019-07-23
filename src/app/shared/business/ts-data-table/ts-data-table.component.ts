@@ -178,7 +178,7 @@ export class TsDataTableComponent extends CnComponentBase
             }
             this.loadData.total = this.loadData.rows.length;
             this.total = this.loadData.total;
-            console.log('this.loadData:', this.loadData);
+            // console.log('this.loadData:', this.loadData);
             if (this.config.select) {
                 this.config.select.forEach(selectItem => {
                     this.config.columns.forEach(columnItem => {
@@ -220,7 +220,7 @@ export class TsDataTableComponent extends CnComponentBase
                     }
                 }
             }
-            
+
             // liu 测试动态表格
             if (this.config.columnsAjax) {
                 this.loadDynamicColumns();
@@ -410,32 +410,33 @@ export class TsDataTableComponent extends CnComponentBase
 
     public async ngAfterViewInit() {
         if (!this.config.ajaxproc) {
-        if (this.config.componentType) {
-            if (!this.config.componentType.child) {
-                this.load();
-            } else if (this.config.componentType.own === true) {
+            if (this.config.componentType) {
+                if (!this.config.componentType.child) {
+                    this.load();
+                } else if (this.config.componentType.own === true) {
+                    this.load();
+                }
+            } else {
                 this.load();
             }
-        } else {
-            this.load();
+            // 初始化级联
+            this.caseLoad();
+            // 初始化前置条件验证对象
+            this.beforeOperation = new BeforeOperation({
+                config: this.config,
+                message: this.baseMessage,
+                modal: this.baseModal,
+                tempValue: this.tempValue,
+                initValue: this.initValue,
+                cacheValue: this.cacheValue.getNone('userInfo')
+                    ? this.cacheValue.getNone('userInfo')
+                    : {},
+                apiResource: this.apiResource
+            });
+            //  初始化 事件 liu 20181226
+            this.GetToolbarEvents();
         }
-        // 初始化级联
-        this.caseLoad();
-        // 初始化前置条件验证对象
-        this.beforeOperation = new BeforeOperation({
-            config: this.config,
-            message: this.baseMessage,
-            modal: this.baseModal,
-            tempValue: this.tempValue,
-            initValue: this.initValue,
-            cacheValue: this.cacheValue.getNone('userInfo')
-                ? this.cacheValue.getNone('userInfo')
-                : {},
-            apiResource: this.apiResource
-        });
-        //  初始化 事件 liu 20181226
-        this.GetToolbarEvents();
-    }}
+    }
     private resolverRelation() {
         // 注册按钮状态触发接收器
         this._statusSubscription = this.stateEvents.subscribe(updateState => {
@@ -955,7 +956,7 @@ export class TsDataTableComponent extends CnComponentBase
                 this.loading = false;
             });
         })();
-        console.log('load:', this.dataList);
+        // console.log('load:', this.dataList);
         this.pagetotal = Math.ceil(this.total / this.pageSize);
         if (!this.autoPlaySwitch) {
             this.temple = this.pageIndex;
@@ -1075,7 +1076,7 @@ export class TsDataTableComponent extends CnComponentBase
             const loadData = await this._load(url, params, this.config.ajaxConfig.ajaxType);
             if (loadData && loadData.status === 200 && loadData.isSuccess) {
                 if (loadData.data && loadData.data.rows) {
-                    console.log('loadData.data', loadData.data);
+                    // console.log('loadData.data', loadData.data);
 
                     if (loadData.data.rows.length > 0) {
                         // loadData.data.rows.forEach((row, index) => {
@@ -1455,7 +1456,7 @@ export class TsDataTableComponent extends CnComponentBase
         if (checkedCount === 0) {
             this.baseMessage.info('请勾选数据记录后进行编辑');
         }
-        console.log('edit', this.dataList);
+        // console.log('edit', this.dataList);
     }
 
     public valueChange(data) {
@@ -1866,14 +1867,16 @@ export class TsDataTableComponent extends CnComponentBase
 
         //  开始解析 当前feild 的适配条件【重点】 参数 conditions  返回 true/false
         // this.beforeOperation.handleOperationConditions([]);
-
         // 执行列事件
+        // console.log('值变化比较', this.config.events)
         if (this.config.events) {
+            // console.log('值变化比较', isValueChange)
             if (isValueChange) {
                 this.ExecEventByValueChange(data);
             }
         }
-        
+
+
 
 
     }
@@ -1921,7 +1924,7 @@ export class TsDataTableComponent extends CnComponentBase
                 }
             ]
         }
-        console.log('ExecEventByValueChange');
+        // console.log('ExecEventByValueChange');
         const vc_field = data.name;
         //  ts_saveEdit data.key
         const vc_rowdata = this.ts_getEditRow(data.key, data.name);
@@ -1947,7 +1950,7 @@ export class TsDataTableComponent extends CnComponentBase
                     if (eventConfig.field === vc_field) {
                         isField = false;
                         // 调用 执行方法，方法
-                        this.ExecRowEvent(eventConfig.action);
+                        this.ExecRowEvent(eventConfig.action, vc_rowdata);
                         return true;
                     }
                 }
@@ -1956,7 +1959,7 @@ export class TsDataTableComponent extends CnComponentBase
                 c_eventConfig['onEvent'].forEach(eventConfig => {
                     // 无配置 的默认项
                     if (eventConfig.type === 'default') {
-                        this.ExecRowEvent(eventConfig.action);
+                        this.ExecRowEvent(eventConfig.action, vc_rowdata);
                     }
                 });
             }
@@ -2267,16 +2270,15 @@ export class TsDataTableComponent extends CnComponentBase
     // region 批量确认提交数据，未完成与服务端的批量测试功能
     // 关于相关配置的问题需要进一步进行讨论
 
-    private _resolveAjaxConfig(option) {
-        console.log('save', this.dataList);
+    private _resolveAjaxConfig(option, row?) {
         if (option.ajaxConfig && option.ajaxConfig.length > 0) {
             option.ajaxConfig.filter(c => !c.parentName).map(c => {
-                this._getAjaxConfig(c, option);
+                this._getAjaxConfig(c, option, row);
             });
         }
     }
 
-    private _getAjaxConfig(c, option) {
+    private _getAjaxConfig(c, option ,row?) {
         let msg;
         if (c.action) {
             let handleData;
@@ -2349,8 +2351,9 @@ export class TsDataTableComponent extends CnComponentBase
                     break;
                 case BSN_EXECUTE_ACTION.EXECUTE_EDIT_SELECTED_ROW:
                     // 获取保存状态的数据
-                    handleData = this._getSelectedItem();
-                    // console.log('简析参数1838 ', handleData);
+                    this._getSelectedItem();
+                    handleData = row;
+                    //  console.log('简析参数1838 ', handleData);
                     msg = '操作完成';
                     if (handleData && handleData.length <= 0) {
                         return;
@@ -2757,8 +2760,8 @@ export class TsDataTableComponent extends CnComponentBase
         const updatedRows = [];
         this.dataList.map(item => {
             delete item['$type'];
-
             if (item['row_status'] === 'updating') {
+                // console.log('edititem:', item);
                 const newitem = JSON.parse(
                     JSON.stringify(this.editCache[item.key].data)
                 );
@@ -2867,7 +2870,7 @@ export class TsDataTableComponent extends CnComponentBase
         } else if (reset) {
             this.pageIndex = 1;
             this.load();
-        } 
+        }
     }
 
     public sort(sort: { key: string; value: string }) {
@@ -3366,7 +3369,7 @@ export class TsDataTableComponent extends CnComponentBase
             nzFooter: footer,
             nzOnOk: () => {
                 new Promise(resolve => (setTimeout(resolve, 0)));
-              } 
+            }
         });
     }
     /**
@@ -4354,8 +4357,8 @@ export class TsDataTableComponent extends CnComponentBase
                 break;
             case BSN_COMPONENT_MODES.EXECUTE:
                 // 使用此方式注意、需要在按钮和ajaxConfig中都配置响应的action
-                // console.log('执行列3665：', option);
-                this._resolveAjaxConfig(option);
+                 console.log('执行列3665：', option);
+                this._resolveAjaxConfig(option, row);
                 break;
             case BSN_COMPONENT_MODES.WINDOW:
                 this.beforeOperation.operationItemData = this._selectRow;
@@ -4800,7 +4803,7 @@ export class TsDataTableComponent extends CnComponentBase
         this.checkedCount = this.dataList.filter(w => w.checked).length;
         this.allChecked = this.checkedCount === this.dataList.length;
         this.indeterminate = this.allChecked ? false : this.checkedCount > 0;
-        console.log('datalist', this.dataList);
+        // console.log('datalist', this.dataList);
     }
 
     /**
@@ -4850,7 +4853,7 @@ export class TsDataTableComponent extends CnComponentBase
  * @param data
  */
     public ExecEventByTitleClick(data?) {
-        console.log(data);
+        // console.log(data);
         const vc_field = data.name;
         //  ts_saveEdit data.key
         // const vc_rowdata = this.ts_getEditRow(data.key, data.name);
@@ -4888,8 +4891,8 @@ export class TsDataTableComponent extends CnComponentBase
                         const checkedItems = this._getCheckedItems();
                         this._getCheckItemsId();
                         if (eventConfig.beforeOperation) {
-                            !this.beforeOperation.beforeItemsDataOperation(checkedItems) && 
-                            this.resolverOperation(data);
+                            !this.beforeOperation.beforeItemsDataOperation(checkedItems) &&
+                                this.resolverOperation(data);
                         } else {
                             this.resolverOperation(data);
                         }
@@ -5099,19 +5102,20 @@ export class TsDataTableComponent extends CnComponentBase
                 initValue: this.initValue,
                 cacheValue: this.cacheValue,
             });
-            url = 'http://' + ip['IP'] + ':' + ip['sort'] + '/' + urlConfig ;
+            url = 'http://' + ip['IP'] + ':' + ip['sort'] + '/' + urlConfig;
         } else {
-        if (CommonTools.isString(urlConfig)) {
-            url = urlConfig;
-        } else {
-            const pc = CommonTools.parametersResolver({
-                params: urlConfig.params,
-                tempValue: this.tempValue,
-                initValue: this.initValue,
-                cacheValue: this.cacheValue
-            });
-            url = `${urlConfig.url['parent']}/${pc}/${urlConfig.url['child']}`;
-        }}
+            if (CommonTools.isString(urlConfig)) {
+                url = urlConfig;
+            } else {
+                const pc = CommonTools.parametersResolver({
+                    params: urlConfig.params,
+                    tempValue: this.tempValue,
+                    initValue: this.initValue,
+                    cacheValue: this.cacheValue
+                });
+                url = `${urlConfig.url['parent']}/${pc}/${urlConfig.url['child']}`;
+            }
+        }
         return url;
     }
 }

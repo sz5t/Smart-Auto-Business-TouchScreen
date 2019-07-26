@@ -433,9 +433,9 @@ export class TsDataTableComponent extends CnComponentBase
                     : {},
                 apiResource: this.apiResource
             });
-            //  初始化 事件 liu 20181226
-            this.GetToolbarEvents();
         }
+        //  初始化 事件 liu 20181226
+        this.GetToolbarEvents();
     }
     private resolverRelation() {
         // 注册按钮状态触发接收器
@@ -1460,7 +1460,7 @@ export class TsDataTableComponent extends CnComponentBase
     }
 
     public valueChange(data) {
-        console.log('data:', data);
+        // console.log('data:', data);
         // const index = this.dataList.findIndex(item => item.key === data.key);
         // console.log('值变化', data, 'this.editCache[data.key].data[data.name] :', this.editCache[data.key]);
         let isValueChange = true;
@@ -1930,7 +1930,6 @@ export class TsDataTableComponent extends CnComponentBase
         const vc_rowdata = this.ts_getEditRow(data.key, data.name);
         this.EditSelectedRow = [];
         this.EditSelectedRow.push(vc_rowdata);
-
         console.log('当前行数据：', vc_rowdata);
         // 判断是否存在配置
         if (this.config.events) {
@@ -4729,6 +4728,7 @@ export class TsDataTableComponent extends CnComponentBase
                 'field': d.field,
                 'options': {
                     'type': 'input',
+                    'width': d.width,
                     'inputType': 'text'
                 }
             }
@@ -4739,7 +4739,25 @@ export class TsDataTableComponent extends CnComponentBase
                 'field': d.field,
                 'options': {
                     'type': 'select',
-                    'inputType': 'text'
+                    'labelSize': '6',
+                    'controlSize': '18',
+                    'inputType': 'submit',
+                    'disabled': false,
+                    'size': 'default',
+                    'width': d.width,
+                    'defaultValue': 1,
+                    'options': [
+                      {
+                        'label': '合格',
+                        'value': 1,
+                        'disabled': false
+                      },
+                      {
+                        'label': '不合格',
+                        'value': 2,
+                        'disabled': false
+                      }
+                    ]
                 }
             }
         }

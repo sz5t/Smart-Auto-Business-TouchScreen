@@ -1,0 +1,12 @@
+<nz-radio-group 
+[ngStyle]="{'width':config.width}"  
+[nzDisabled]="config.disabled" 
+[(ngModel)]="_value"
+[nzSize]="'large'"
+[nzButtonStyle]="'solid'"
+(ngModelChange)= "valueChange($event)"
+*ngFor="let opt of config.options">
+  <label nz-radio-button [nzValue]="opt.value" >
+    <span>{{opt.label}}</span>
+  </label>
+</nz-radio-group>

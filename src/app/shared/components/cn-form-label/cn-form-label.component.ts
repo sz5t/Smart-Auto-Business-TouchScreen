@@ -33,10 +33,24 @@ export class CnFormLabelComponent implements OnInit, AfterViewInit {
     public modelText = '';
     constructor() {}
 
-    public ngOnInit() {}
+    public ngOnInit() {
+    }
     public ngAfterViewInit() {
         // if (this.config.textName) {
         //   this.modelText = this.formGroup.controls[this.config.textName].value;
         // }
+    }
+
+    public setCellFont(value, format) {
+        let fontColor = '';
+        if (format) {
+            format.map(color => {
+                if (color.value === value) {
+                    fontColor = color.fontcolor;
+                }
+            });
+        }
+
+        return fontColor;
     }
 }

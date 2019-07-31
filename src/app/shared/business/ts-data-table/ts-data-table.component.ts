@@ -2277,7 +2277,7 @@ export class TsDataTableComponent extends CnComponentBase
         }
     }
 
-    private _getAjaxConfig(c, option ,row?) {
+    private _getAjaxConfig(c, option, row?) {
         let msg;
         if (c.action) {
             let handleData;
@@ -2377,6 +2377,11 @@ export class TsDataTableComponent extends CnComponentBase
                     // 获取更新状态的数据
                     handleData = {};
                     msg = '新增数据保存成功';
+                    break;
+                case BSN_EXECUTE_ACTION.EXECUTE_EDIT_ALL_ROW:
+                    // 获取更新状态的数据
+                    handleData = this._getAllEditRows();
+                    msg = '编辑数据保存成功';
                     break;
 
             }
@@ -4356,7 +4361,7 @@ export class TsDataTableComponent extends CnComponentBase
                 break;
             case BSN_COMPONENT_MODES.EXECUTE:
                 // 使用此方式注意、需要在按钮和ajaxConfig中都配置响应的action
-                 console.log('执行列3665：', option);
+                console.log('执行列3665：', option);
                 this._resolveAjaxConfig(option, row);
                 break;
             case BSN_COMPONENT_MODES.WINDOW:
@@ -4745,18 +4750,18 @@ export class TsDataTableComponent extends CnComponentBase
                     'disabled': false,
                     'size': 'default',
                     'width': d.width,
-                    'defaultValue': 1,
+                    'defaultValue': '1',
                     'options': [
-                      {
-                        'label': '合格',
-                        'value': 1,
-                        'disabled': false
-                      },
-                      {
-                        'label': '不合格',
-                        'value': 2,
-                        'disabled': false
-                      }
+                        {
+                            'label': '合格',
+                            'value': '1',
+                            'disabled': false
+                        },
+                        {
+                            'label': '不合格',
+                            'value': '2',
+                            'disabled': false
+                        }
                     ]
                 }
             }
@@ -5135,6 +5140,21 @@ export class TsDataTableComponent extends CnComponentBase
             }
         }
         return url;
+    }
+
+    public _getAllEditRows() {
+        const updatedRows = [];
+        this.dataList.map(item => {
+            let newitem
+            // console.log('edititem:', item);
+            if (JSON.stringify(item) !== JSON.stringify(this.editCache[item.key].data)) {
+                newitem = JSON.parse(
+                    JSON.stringify(this.editCache[item.key].data)
+                )
+                updatedRows.push(newitem);
+            };
+        });
+        return updatedRows
     }
 }
 

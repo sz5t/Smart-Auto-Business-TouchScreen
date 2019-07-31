@@ -115,6 +115,7 @@ import { BsnScreenShotComponent } from './business/bsn-screen-shot/bsn-screen-sh
 import { SafeUrlPipe } from '@core/pipe/safe-url.pipe';
 import { BsnShowImageComponent } from './business/bsn-show-image/bsn-show-image.component';
 import { BsnInlineCardSwipeComponent } from './business/bsn-inline-card-swipe/bsn-inline-card-swipe.component';
+import { CnGridRadioGroupComponent } from './components/cn-grid-radio-group/cn-grid-radio-group.component';
 
 
 const THIRDMODULES = [
@@ -222,7 +223,8 @@ const COMPONENTS = [
     BsnScreenShotComponent,
     BsnEntryCardListComponent,
     BsnShowImageComponent,
-    BsnInlineCardSwipeComponent
+    BsnInlineCardSwipeComponent,
+    CnGridRadioGroupComponent
 ];
 const DIRECTIVES = [
     FormResolverDirective,

@@ -31,6 +31,7 @@ import { CnGridNumberComponent } from '@shared/components/cn-grid-munber/cn-grid
 import { CnGridSelectGridComponent } from '@shared/components/cn-grid-select-grid/cn-grid-select-grid.component';
 import { CnGridSelectTreegridComponent } from '@shared/components/cn-grid-select-treegrid/cn-grid-select-treegrid.component';
 import { CnGridSearchComponent } from '@shared/components/cn-grid-search/cn-grid-search.component';
+import { CnGridRadioGroupComponent } from '@shared/components/cn-grid-radio-group/cn-grid-radio-group.component';
 const components: { [type: string]: Type<any> } = {
     input: CnGridInputComponent,
     select: CnGridSelectComponent,
@@ -39,7 +40,7 @@ const components: { [type: string]: Type<any> } = {
     // rangePicker: NzRangePickerComponent,
     checkbox: NzCheckboxComponent,
     checkboxGroup: NzCheckboxGroupComponent,
-    radioGroup: NzRadioComponent,
+    radioGroup: CnGridRadioGroupComponent,
     selectTree: CnGridSelectTreeComponent,
     datePicker: CnGridDatePickerComponent,
     number: CnGridNumberComponent,

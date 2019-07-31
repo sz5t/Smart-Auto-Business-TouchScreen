@@ -16,6 +16,10 @@
                type="hidden"
                formControlName="{{config.textName ? config.textName : config.name}}"
                [(ngModel)]="modelText"/>
-        <nz-form-text><span>{{config.textName? modelText: model}}</span></nz-form-text>
+        <nz-form-text>
+            <!-- <span>{{config.textName? modelText: model}}
+            </span> -->
+            <span [ngClass]="[config.formatter ? setCellFont(config.textName ? modelText: model, config.formatter):'']">{{config.textName? modelText: model}}</span>
+        </nz-form-text>
     </nz-input-group>
 </nz-form-control>

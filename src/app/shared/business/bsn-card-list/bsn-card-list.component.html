@@ -73,7 +73,7 @@
                                         </div>  
                                         <div nz-col nzSpan="16">
                                             <h2 class="h4">{{getItemValue('name',item)}}</h2>
-                                            <div *ngFor="let field of config.fieldMapping">{{getMappingField(item, field)}}</div>       
+                                            <div *ngFor="let field of config.fieldMapping" [ngClass]="[field.formatter ? setCellFont(getMappingField(item, field) ? getMappingField(item, field): '', field.formatter):'']">{{getMappingField(item, field)}}</div>       
                                         </div>
                                     </div>
                             </ng-template>     

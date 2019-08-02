@@ -2589,8 +2589,10 @@ export class TsDataTableComponent extends CnComponentBase
                 const childrenConfig = ajaxConfig.filter(
                     f => f.parentName && f.parentName === c.name
                 );
-                //  目前紧支持一次执行一个分之步骤
+                if (childrenConfig.length > 0) {
+                    //  目前紧支持一次执行一个分之步骤
                 this._getAjaxConfig(childrenConfig[0], ajaxConfig);
+                }
             }
 
         } else {
@@ -2873,6 +2875,8 @@ export class TsDataTableComponent extends CnComponentBase
             }
         } else if (reset) {
             this.pageIndex = 1;
+            this.load();
+        } else {
             this.load();
         }
     }

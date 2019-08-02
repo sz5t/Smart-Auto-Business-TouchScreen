@@ -697,5 +697,18 @@ export class BsnCardListComponent extends CnComponentBase
         });
     }
 
+    public setCellFont(value, format) {
+        let fontColor = '';
+        if (format) {
+            format.map(color => {
+                if (color.value === value) {
+                    fontColor = color.fontcolor;
+                }
+            });
+        }
+
+        return fontColor;
+    }
+
     
 }

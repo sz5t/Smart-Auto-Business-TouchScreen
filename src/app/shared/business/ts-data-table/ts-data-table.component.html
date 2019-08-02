@@ -7,7 +7,7 @@
                      [nzNoResult]="noResult"  [nzLoadingDelay]="50" [nzScroll]="config.scroll ? config.scroll : {}">
                     <thead (nzSortChange)="sort($event)" nzSingleSort>
                         <tr (contextmenu)="contextMenu($event,contextTemplate)">
-                            <th *ngIf="config.showCheckBox" [nzWidth]="config.checkedConfig.width?config.checkedConfig.width:'10px'" [nzShowCheckbox]="config.showCheckBox ? config.showCheckBox : false"
+                            <th *ngIf="config.showCheckBox" nzLeft="0px" [nzWidth]="config.checkedConfig.width?config.checkedConfig.width:'10px'" [nzShowCheckbox]="config.showCheckBox ? config.showCheckBox : false"
                                 [(nzChecked)]="allChecked" [nzIndeterminate]="indeterminate" (nzCheckedChange)="checkAll($event)">
                             </th>
                             <ng-template ngFor let-col [ngForOf]="config.columns">
@@ -85,7 +85,7 @@
                             <ng-container *ngIf="data.row_status != 'search'">
                                 <tr (click)="selectRow(data, $event)" [ngClass]="{selectedRow:data.selected}">
                                     <ng-container *ngIf="config.checkedConfig">
-                                        <td *ngIf="config.showCheckBox" [(nzChecked)]="data.checked"  (nzCheckedChange)="refChecked($event)" [ngClass]="['text-center']">
+                                        <td *ngIf="config.showCheckBox" nzLeft="0px" style="width: 200px" [(nzChecked)]="data.checked" (nzCheckedChange)="refChecked($event)" [ngClass]="['text-center']">
                                             <!-- [nzShowCheckbox]="config.showCheckBox" _serilize  nzCheckedChildren="data[config.columns[0].field]" nzUnCheckedChildren="data[config.columns[0].field]" -->
                                             <nz-switch [ngModel]="data.checked" [nzSize]="large" [nzCheckedChildren]="checkedTemplate" (ngModelChange)="swichChecked(data)" [nzUnCheckedChildren]="unCheckedTemplate"></nz-switch>
                                             <ng-template #checkedTemplate>{{data[config.checkedConfig.feild]}}</ng-template>

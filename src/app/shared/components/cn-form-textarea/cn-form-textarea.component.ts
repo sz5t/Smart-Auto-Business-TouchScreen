@@ -1,9 +1,12 @@
 import { FormGroup } from '@angular/forms';
-import {Component, Input, OnInit} from '@angular/core';
+import { Component, Input, OnInit, AfterViewInit, ViewChild, ElementRef, ViewEncapsulation } from '@angular/core';
+import { _HttpClient } from '@delon/theme';
+declare let CodeMirror: any;
 
 @Component({
   selector: 'cn-form-textarea',
   templateUrl: './cn-form-textarea.component.html',
+  encapsulation: ViewEncapsulation.None,
   styles: [
     `
     .anticon-close-circle {
@@ -23,15 +26,46 @@ import {Component, Input, OnInit} from '@angular/core';
     `
   ]
 })
-export class CnFormTextareaComponent implements OnInit {
-    @Input() config;
-    @Input() formGroup: FormGroup;
-    model;
-    constructor(
-    ) { }
+export class CnFormTextareaComponent implements OnInit, AfterViewInit {
+  @Input()
+  public config;
+  @Input()
+  public formGroup: FormGroup;
+  @ViewChild('CodeMirror')
+  public codeEditor: ElementRef;
+  public editor;
+  constructor(
+    private http: _HttpClient
+  ) { }
 
-    ngOnInit() {
+  public ngOnInit() {
+  }
 
-    }
+  public ngAfterViewInit() {
+  //   this.editor = CodeMirror.fromTextArea(this.codeEditor.nativeElement, {
+  //     mode: 'text/x-sql',
+  //     highlightFormatting: true,
+  //     indentWithTabs: true,
+  //     smartIndent: true,
+  //     lineNumbers: true,
+  //     matchBrackets: true,
+  //     autofocus: true,
+  //     extraKeys: { 'Ctrl-Space': 'autocomplete' },
+  //     hintOptions: {
+  //       tables: {
+  //         users: { name: null, score: null, birthDate: null },
+  //         countries: { name: null, population: null, size: null }
+  //       }
+  //     }
+  //   });
+  }
+
+  // public getValue() {
+  //   return this.editor.getValue();
+  // }
+
+  // public setValue(data?) {
+  //   this.editor.setValue(data);
+  // }
 
 }

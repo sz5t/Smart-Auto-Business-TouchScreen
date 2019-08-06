@@ -60,17 +60,17 @@ export class BsnDataStepComponent extends CnComponentBase
     public isLoading = true;
     public bNodeColor;
     public sNodeColor = '#eee';
-    public sNodeEnterColor = '#00B2EE';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
-    public sNodeClickColor = '#9BCD9B';
+    public sNodeEnterColor = '#00B2EE';
+    public sNodeClickColor = '#9BCD9C';
     public _lastNode;
     public _statusSubscription;
     public _cascadeSubscription;
     public graph;
     private dropdown: NzDropdownContextComponent;
     private defaultStyle = {
-            color: '#ccc',
-            background: '#ddd'
-        };
+        color: '#ccc',
+        background: '#ddd'
+    };
     constructor(
         private _apiService: ApiService,
         private _cacheService: CacheService,
@@ -98,8 +98,8 @@ export class BsnDataStepComponent extends CnComponentBase
     }
     public contextMenu($event: MouseEvent, template: TemplateRef<void>): void {
         this.dropdown = this.nzDropdownService.create($event, template);
-      }
-    
+    }
+
     public close(e: NzMenuItemDirective): void {
         this.dropdown.close();
     }
@@ -119,7 +119,7 @@ export class BsnDataStepComponent extends CnComponentBase
                         // 绘制图形 
                         this.graph.read({ nodes: crNodes, edges: edges });
                     } else {
-                        this.graph.read({ nodes: crNodes});
+                        this.graph.read({ nodes: crNodes });
                     }
                     this._lastNode = this.graph._cfg._itemMap[crNodes[0].Id];
                     this.isLoading = false;
@@ -134,34 +134,51 @@ export class BsnDataStepComponent extends CnComponentBase
         // 获取所有非根节点数据
         const restNodes = dataSource.filter(d => d.parentId !== parentId);
         const resultNodes = [];
-        if (Array.isArray(restNodes) && restNodes.length > 0) { 
+        if (Array.isArray(restNodes) && restNodes.length > 0) {
             parentNodes.forEach(parentNode => {
-                resultNodes.push(...this.addRestNodesToParent(parentNode, restNodes, 0));    
+                resultNodes.push(...this.addRestNodesToParent(parentNode, restNodes, 0));
             });
         } else {
             resultNodes.push(...this.sortData(parentNodes, 'parent'));
             resultNodes.forEach(nodeData => {
                 this.decorateNode(nodeData, 0);
-            });   
+            });
         }
         resultNodes.forEach((nodeData, i) => {
-            if (i === 0) {
-                nodeData['color'] = this.sNodeClickColor;
-                nodeData['style'] = {'stroke': '#000'};
-                this.tempValue['_selectedNode'] = nodeData;
-                if (
-                    this.config.componentType &&
-                    this.config.componentType.parent === true
-                ) {
-                    this.cascade.next(
-                        new BsnComponentMessage(
-                            BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
-                            this.config.viewId,
-                            {
-                                data: this.tempValue['_selectedNode']
+            if (this.config.processNode) {
+                this.config.processNode.propetry.forEach(element => {
+                    if (element['value'] === nodeData[this.config.processNode['field']]) {
+                        nodeData['color'] = element['color'];
+                        if (nodeData[this.config.processNode['field']] === this.config.processNode['selected']) {
+                            // nodeData['style'] = { stroke: '#000' };
+                            this.tempValue['_selectedNode'] = nodeData;
+                            if (this.config.componentType && this.config.componentType.parent === true) {
+                                this.cascade.next(new BsnComponentMessage(BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD, this.config.viewId, {
+                                    data: this.tempValue['_selectedNode']
+                                }));
                             }
-                        )
-                    );
+                        }
+                    }
+                });
+            } else {
+                if (i === 0) {
+                    // nodeData['color'] = this.sNodeClickColor;
+                    nodeData['style'] = { 'stroke': '#000' };
+                    this.tempValue['_selectedNode'] = nodeData;
+                    if (
+                        this.config.componentType &&
+                        this.config.componentType.parent === true
+                    ) {
+                        this.cascade.next(
+                            new BsnComponentMessage(
+                                BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
+                                this.config.viewId,
+                                {
+                                    data: this.tempValue['_selectedNode']
+                                }
+                            )
+                        );
+                    }
                 }
             }
             if (this.config.direction === 'horizontal') {
@@ -169,17 +186,17 @@ export class BsnDataStepComponent extends CnComponentBase
                     this.config.startX * i === 0
                         ? this.config.startX
                         : this.config.startX + this.config.startX * i;
-                        nodeData['y'] = this.config.startY + 25;
+                nodeData['y'] = this.config.startY + 25;
             } else if (this.config.direction === 'vertical') {
                 nodeData['y'] =
                     this.config.startY * i === 0
                         ? this.config.startY
                         : this.config.startY + this.config.startY * i;
             }
-    
+
             nodeData['label'] = nodeData[this.config.textField];
             if (nodeData['type'] === 'child') {
-                
+
             }
         });
         return resultNodes;
@@ -187,9 +204,9 @@ export class BsnDataStepComponent extends CnComponentBase
 
     public sortData(data, type) {
         if (type === 'children' && this.config.childSortField && this.config.childSortField.length > 0) {
-            return data.sort((x ,y) => x['childSortField'] - y['childSortField']);
+            return data.sort((x, y) => x['childSortField'] - y['childSortField']);
         } else if (type === 'parent' && this.config.parentSortField && this.config.parentSortField.length > 0) {
-            return data.sort((x ,y) => x['parentSortField'] - y['parentSortField']);
+            return data.sort((x, y) => x['parentSortField'] - y['parentSortField']);
         } else {
             return data;
         }
@@ -226,13 +243,13 @@ export class BsnDataStepComponent extends CnComponentBase
         let matchNodes = this.sortData(childNodes, 'children');
         const res = [];
         if (matchNodes.length > 0) {
-            level ++;
+            level++;
             matchNodes.forEach(match => {
                 res.push(...this.addRestNodesToParent(match, restNodes, level));
             });
             matchNodes = res;
         }
-        
+
         return [parentNode, ...matchNodes];
     }
 
@@ -363,7 +380,7 @@ export class BsnDataStepComponent extends CnComponentBase
                                 // 获取当前设置的级联的模式
                                 const mode =
                                     BSN_COMPONENT_CASCADE_MODES[
-                                        relation.cascadeMode
+                                    relation.cascadeMode
                                     ];
                                 // 获取传递的消息数据
                                 const option = cascadeEvent.option;
@@ -445,26 +462,27 @@ export class BsnDataStepComponent extends CnComponentBase
         });
 
         G6.registerBehaviour('onclick', graph => {
-            
+
             graph.on('node:click', ev => {
                 if (!this._lastNode) {
                     graph.update(ev.item, {
-                        color: this.sNodeClickColor,
-                        style: {'stroke': '#000'}
-                    });
-                    this._lastNode = ev.item;
+                        // color: this.sNodeClickColor,
+                        style: { stroke: '#000' }
+                    })
+                    this._lastNode = ev.item
                 }
                 if (this._lastNode !== ev.item) {
                     graph.update(ev.item, {
-                        color: this.sNodeClickColor,
-                        style: {'stroke': '#000'}
-                    });
+                        // color: this.sNodeClickColor,
+                        style: { stroke: '#000' }
+                    })
 
                     graph.update(this._lastNode, {
-                        color: this.config.styles ? this.config.styles[this._lastNode.model.level].background : this.defaultStyle.background,
-                        style: {'stroke': this.config.styles ? this.config.styles[this._lastNode.model.level].stroke : this.defaultStyle.color}
-                    });
-                    this._lastNode = ev.item;
+                        // color: this.config.styles ? this.config.styles[this._lastNode.model.level].background : this.defaultStyle.background,
+                        // style: { stroke: this.config.styles ? this.config.styles[this._lastNode.model.level].stroke : this.defaultStyle.color }
+                        style: { stroke: '' }
+                    })
+                    this._lastNode = ev.item
                 }
 
                 this.tempValue['_selectedNode'] = ev.item.model;
@@ -571,7 +589,7 @@ export class BsnDataStepComponent extends CnComponentBase
                 //     setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
                 this.router.navigateByUrl('/passport/ts-login').catch(() => {
                     this.apiService.post('login_out');
-                });    
+                });
                 // }).catch(() => console.log('Oops errors!'));
             }
         });

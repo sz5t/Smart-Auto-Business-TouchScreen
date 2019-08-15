@@ -1417,7 +1417,7 @@ export class FormResolverComponent extends CnFormBase
                                                     this.tempValue['tubetype'] = data['cardValue']['field0']['tubetype'];
                                                     this.tempValue['workordersinglecodeid'] = data['cardValue']['field0']['workordersinglecodeid'];
                                                 }
-                                                console.log(this.tempValue);
+                                                // console.log(this.tempValue);
                                                 this.valueChangeRelation(caseItem['relation'], data['dataItem'] ? data['dataItem'] : {}, data);
                                             }
                                         }
@@ -1784,6 +1784,9 @@ export class FormResolverComponent extends CnFormBase
                                     if (data[feild.valueName]) {
                                         sendData[feild.name] =
                                             data[feild.valueName];
+                                    } else if (data.dataItem[feild.valueName]) {
+                                        sendData[feild.name] =
+                                        data.dataItem[feild.valueName];
                                     }
                                 } else if (
                                     feild['type'] === 'tempValueObject'

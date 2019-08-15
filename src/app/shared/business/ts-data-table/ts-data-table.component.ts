@@ -559,6 +559,43 @@ export class TsDataTableComponent extends CnComponentBase
         // 表格内部状态触发接收器console.log(this.config);
         if (
             this.config.componentType &&
+            this.config.componentType.sub === true
+        ) {
+            this.after(this, 'selectRow', () => {
+                this._selectRow &&
+                    this.cascade.next(
+                        new BsnComponentMessage(
+                            BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD,
+                            this.config.viewId,
+                            {
+                                data: {
+                                    ...this.initValue,
+                                    ...this._selectRow
+                                },
+                                initValue: this.initValue ? this.initValue : {},
+                                tempValue: this.tempValue ? this.tempValue : {},
+                                subViewId: () => {
+                                    let id = '';
+                                    this.config.subMapping.forEach(sub => {
+                                        const mappingVal = this._selectRow[sub['field']];
+                                        if (sub.mapping) {
+                                            sub.mapping.forEach(m => {
+                                                if (m.value === mappingVal) {
+                                                    id = m.subViewId;
+                                                }
+                                            });
+                                        }
+                                    });
+                                    return id;
+                                }
+                            }
+                        )
+                    );
+            });
+        }
+
+        if (
+            this.config.componentType &&
             this.config.componentType.parent === true
         ) {
             // 注册消息发送方法
@@ -629,7 +666,6 @@ export class TsDataTableComponent extends CnComponentBase
                                         });
                                     }
                                 }
-
                                 // 匹配及联模式
                                 switch (mode) {
                                     case BSN_COMPONENT_CASCADE_MODES.REFRESH:
@@ -648,6 +684,10 @@ export class TsDataTableComponent extends CnComponentBase
                                     case BSN_COMPONENT_CASCADE_MODES.Scan_Code_ROW:
                                         this.scanCodeROW();
                                         break;
+                                    case BSN_COMPONENT_CASCADE_MODES.Scan_Code_Locate_ROW:
+                                        this.locateRow();
+                                        // this.load();
+                                        break;
 
                                 }
                             }
@@ -656,6 +696,43 @@ export class TsDataTableComponent extends CnComponentBase
                 }
             );
         }
+    }
+
+    public locateRow() {
+        // 定位行
+        // this.loadData.rows.push(rowContentNew);
+        const code = this.config.ScanCode.locateRow.columns[0]['field'];
+        const codeName = this.config.ScanCode.locateRow.columns[0]['valueName'];
+        const codeValue = this.tempValue[codeName];
+
+        // const index = this.loadData.rows.findIndex(item => item[code] === codeValue);
+        const index = this.dataList.findIndex(item => item[code] === codeValue);
+        if (index !== -1) {
+            // const rowValue = this.loadData.rows[index]['key'];
+            const rowValue = this.dataList[index]['key'];
+            this.pageIndex = Math.ceil((index + 1) / this.pageSize);
+            // this.load();
+            this.scanCodeSetSelectRow(rowValue);
+            // this.load();
+            // 如果有操作，再选中行后执行
+            // console.log('执行方法！，调用后执行load方法，并且定位到当前数据');
+        } else {
+            this._message.info('当前扫码未能匹配到数据！');
+        }
+    }
+
+    // 行定位，先计算出行数据的索引，定位到页面，然后选中数据
+    private scanCodeSetSelectRow(rowValue?) {
+
+        this.dataList &&
+            this.dataList.map(row => {
+                row.selected = false;
+            });
+        this.dataList.forEach(row => {
+            if (row['key'] === rowValue) {
+                row.selected = true;
+            }
+        });
     }
 
     private emptyLoad() {
@@ -4365,7 +4442,7 @@ export class TsDataTableComponent extends CnComponentBase
                 break;
             case BSN_COMPONENT_MODES.EXECUTE:
                 // 使用此方式注意、需要在按钮和ajaxConfig中都配置响应的action
-                console.log('执行列3665：', option);
+                // console.log('执行列3665：', option);
                 this._resolveAjaxConfig(option, row);
                 break;
             case BSN_COMPONENT_MODES.WINDOW:

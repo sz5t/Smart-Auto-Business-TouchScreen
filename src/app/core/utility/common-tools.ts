@@ -1,4 +1,5 @@
 import { BSN_PARAMETER_TYPE } from '@core/relative-Service/BsnTableStatus';
+import { getISOYear, getMonth, getISOWeek, getDate } from 'date-fns';
 export interface ParametersResolverModel {
     params;
     tempValue?;
@@ -50,6 +51,51 @@ export class CommonTools {
                                 }
                             }
                             break;
+                        case BSN_PARAMETER_TYPE.ITEM:
+                        if (model.item) {
+                            if (model.item) {
+                                // 判断组件取值是否为null
+                                if (
+                                    model.item[param['valueName']] ===
+                                    null ||
+                                    model.item[param['valueName']] ===
+                                    undefined
+                                ) {
+                                    if (param['value'] !== undefined) {
+                                        if (param['datatype']) {
+                                            result[param['name']] = this.getParameters(param['datatype'], param['value']);
+                                        } else if (param['defaultDate']) {
+                                            const dateType = param['defaultDate'];
+                                            let dValue;
+                                            switch (dateType) {
+                                                case 'defaultWeek':
+                                                dValue = `${getISOYear(Date.now())}-${getISOWeek(Date.now())}`;
+                                                break;
+                                                case 'defaultDay':
+                                                dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1}-${getDate(Date.now())}`;
+                                                break;
+                                                case 'defaultMonth':
+                                                dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1 }`;
+                                                break;
+                                                case 'defaultYear':
+                                                dValue = `${getISOYear(Date.now())}`;
+                                                break;
+                                            }
+                                            result[param['name']] = dValue;
+                                        } else {
+                                            result[param['name']] = param['value'];
+                                        }
+                                    }
+                                } else {
+                                    if (param['datatype']) {
+                                        result[param['name']] = this.getParameters(param['datatype'], model.item[param['valueName']]);
+                                    } else {
+                                        result[param['name']] = model.item[param['valueName']];
+                                    }
+                                }
+                            }
+                        }
+                        break;
                         case BSN_PARAMETER_TYPE.VALUE:
                             if (param['value'] === 'null') {
                                 param['value'] = null;

@@ -61,7 +61,8 @@ export const BSN_PARAMETER_TYPE = {
     CARD_VALUE: 'cardValue',
     CASCADE_VALUE: 'cascadeValue',
     RETURN_VALUE: 'returnValue',
-    ROUTER_VALUE: 'routerValue'
+    ROUTER_VALUE: 'routerValue',
+    ITEM: 'item'
 };
 
 export const BSN_EXECUTE_ACTION = {

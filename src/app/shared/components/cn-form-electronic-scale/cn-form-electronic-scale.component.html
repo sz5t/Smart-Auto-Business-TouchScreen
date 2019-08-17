@@ -3,7 +3,7 @@
 </nz-form-label>
 <nz-form-control [formGroup]="formGroup" [nzSpan]="config.controlSize">
     <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate" [nzSuffix]="suffixTemplate" nzAddOnAfterIcon="{{config.addOnAfterIcon}}"
-        nzAddOnBeforeIcon="{{config.addOnBeforeIcon}}" [nzCompact]="false" [nzSize]="'default'" [nzPrefixIcon]="config.perfix"
+        nzAddOnBeforeIcon="{{config.addOnBeforeIcon}}" [nzCompact]="false" [nzSize]="config.size" [nzPrefixIcon]="config.perfix"
         nzSearch>
         <!--  [nzAddOnAfter]="suffixTemplate"-->
         <input nz-input (blur)="onblur($event,'end')" type="{{config.inputType}}" formControlName="{{config.name}}" [nzSize]="config.size"
@@ -27,8 +27,8 @@
 </ng-template>
 <ng-template #suffixTemplate>
     <!-- <i nz-icon type="close-circle" theme="fill"></i> -->
-    <i nz-icon type="edit" theme="outline" (click)="showModal()"></i>
-    <!--   <button nz-button nzSearch [nzType]="'default'" (click)="showModal()" style="height: 32px;">
-        <i nz-icon type="edit" theme="outline"></i>
-    </button> -->
+    <!-- <i nz-icon style="width: 50px" type="edit" theme="outline" (click)="showModal()"></i> -->
+      <button nz-button nzSearch nzType="primary" (click)="showModal()" style="height: 40px; width: 70px;">
+        <i nz-icon type="{{config.perfix}}" theme="outline"></i>
+    </button>
 </ng-template>

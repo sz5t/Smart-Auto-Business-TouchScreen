@@ -473,12 +473,12 @@ export class BsnDataStepComponent extends CnComponentBase
                 }
                 if (this._lastNode !== ev.item) {
                     graph.update(ev.item, {
-                        // color: this.sNodeClickColor,
+                        color: this.sNodeClickColor,
                         style: { stroke: '#000' }
                     })
 
                     graph.update(this._lastNode, {
-                        // color: this.config.styles ? this.config.styles[this._lastNode.model.level].background : this.defaultStyle.background,
+                        color: this.config.styles ? this.config.styles[this._lastNode.model.level].background : this.defaultStyle.background,
                         // style: { stroke: this.config.styles ? this.config.styles[this._lastNode.model.level].stroke : this.defaultStyle.color }
                         style: { stroke: '' }
                     })

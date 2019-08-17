@@ -731,8 +731,10 @@ export class TsDataTableComponent extends CnComponentBase
         this.dataList.forEach(row => {
             if (row['key'] === rowValue) {
                 row.selected = true;
+                this.selectRow(row);
             }
         });
+      
     }
 
     private emptyLoad() {

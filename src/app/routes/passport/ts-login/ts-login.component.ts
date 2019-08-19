@@ -120,7 +120,12 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     public async  ngAfterViewInit() {
         if (this.isFaceLogin) {
             this.getMedia();
+        } else if (this.isCardLogin) {
+            this.getCard();
         }
+    }
+
+    public async getCard() {
         const that = this;
         const clientIp = await this.loadClientIP();
         this.ajax.params[1]['value'] = clientIp;
@@ -425,6 +430,7 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         if ($event.index === 1) {
             this.isCardLogin = true
+            this.getCard();
         }
         if ($event.index !== 1) {
             this.isCardLogin = false

@@ -40,7 +40,7 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     public timeout;
     // 当前选择登录系统的配置项
     private _currentSystem;
-    private isCardLogin = false;
+    private isCardLogin = true;
     private ajax = {
         url: 'open/getEquipment',
         ajaxType: 'get',
@@ -62,7 +62,7 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
         ajaxType: 'get',
         params: []
     };
-    private isFaceLogin = true;
+    private isFaceLogin = false;
     private faceAjax = {
         url: 'open/getEquipment',
         ajaxType: 'get',
@@ -79,6 +79,7 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
             }
         ]
     };
+    public ws;
     constructor(
         fb: FormBuilder,
         private router: Router,
@@ -113,7 +114,6 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
         this.menuService.clear();
         this.titleService.setTitle('SmartOne');
         this.cacheService.set('AppName', 'SmartOne');
-
         this.cacheService.set('currentConfig', SystemResource.settingSystem);
     }
 
@@ -130,37 +130,38 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
         const clientIp = await this.loadClientIP();
         this.ajax.params[1]['value'] = clientIp;
         const wsString = await this.loadWsConfig(1);
-        const ws = new WebSocket(wsString);
-        ws.onopen = function () {
+        this.ws = new WebSocket(wsString);
+        this.ws.onopen = function () {
             // Web Socket 已连接上，使用 send() 方法发送数据
             // 连接服务端socket
-            ws.send('客户端以上线');
+            that.ws.send('客户端以上线');
             console.log('数据发送中...');
         };
-        ws.onmessage = function (evt) {
+        this.ws.onmessage = function (evt) {
             const received_msg = evt.data;
             console.log('数据已接收...', received_msg);
             that.apiService.login('common/card/login', { cardNo: received_msg })
                 .toPromise()
                 .then(user => {
                     if (user.isSuccess) {
-
                         // console.log(user.data);
                         that.cacheService.set('userInfo', user.data);
                         const token: ITokenModel = { token: user.data.token };
                         that.tokenService.set(token); // 后续projectId需要进行动态获取
                         // let url = user.data.modules[0].link;
                         let url = '/ts/entry';
+                        that.ws.close();
+                        that.ws = null;
                         that.router.navigate([`${url}`]);
                     } else {
                         that.showError(user.message);
-                        ws.send('reload');
+                        that.ws.send('reload');
                     }
 
                 });
 
         };
-        ws.onclose = function () {
+        this.ws.onclose = function () {
             // 关闭 websocket
             console.log('连接已关闭...');
         };
@@ -171,14 +172,14 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
         const clientIp = await this.loadClientIP();
         this.faceAjax.params[1]['value'] = clientIp;
         const wsString = await this.loadWsConfig(2);
-        const ws = new WebSocket(wsString);
-        ws.onopen = function () {
+        this.ws = new WebSocket(wsString);
+        this.ws.onopen = function () {
             // Web Socket 已连接上，使用 send() 方法发送数据
             // 连接服务端socket
-            ws.send(image);
+            that.ws.send(image);
             console.log('数据发送中...');
         };
-        ws.onmessage = function (evt) {
+        this.ws.onmessage = function (evt) {
             const received_msg = evt.data;
             console.log('数据已接收...', received_msg);
             that.apiService.login('common/login2', { Id: received_msg })
@@ -193,16 +194,18 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
                         that.tokenService.set(token); // 后续projectId需要进行动态获取
                         // let url = user.data.modules[0].link;
                         let url = '/ts/entry';
+                        that.ws.close();
+                        that.ws = null;
                         that.router.navigate([`${url}`]);
                     } else {
                         that.showError(user.message);
-                        ws.send('reload');
+                        that.ws.send('reload');
                     }
 
                 });
 
         };
-        ws.onclose = function () {
+        this.ws.onclose = function () {
             // 关闭 websocket
             console.log('连接已关闭...');
         };
@@ -220,15 +223,33 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
         // then()是Promise对象里的方法
         // then()方法是异步执行，当then()前的方法执行完后再执行then()内部的程序
         // 避免数据没有获取到
-        const promise = navigator.mediaDevices.getUserMedia(constraints);
+        // const promise = navigator.mediaDevices.getUserMedia(constraints);
         const that = this;
-        promise.then(function (MediaStream) {
-            console.log(that.mediaStreamTrack);
-            //  this.mediaStreamTrack = MediaStream.getTracks()[0];
-            that.mediaStreamTrack = typeof MediaStream['stop'] === 'function' ? MediaStream : MediaStream.getTracks()[1];
-            video.srcObject = MediaStream;
-            video.play();
-        });
+        // promise.then(function (MediaStream) {
+        //     console.log(that.mediaStreamTrack);
+        //     //  this.mediaStreamTrack = MediaStream.getTracks()[0];
+        //     that.mediaStreamTrack = typeof MediaStream['stop'] === 'function' ? MediaStream : MediaStream.getTracks()[1];
+        //     video.srcObject = MediaStream;
+        //     video.play();
+        // });
+
+        window.navigator['getMedia'] = window.navigator.getUserMedia ||
+                window.navigator['webkitGetUserMedia'] ||
+                window.navigator['mozGetUserMedia'] ||
+                window.navigator['msGetUserMedia'];
+            window.navigator['getMedia']({
+                video: true, // 使用摄像头对象
+                audio: false  // 不适用音频
+            }, function (MediaStream) {
+                // console.log(MediaStream, MediaStream.getTracks());
+                that.mediaStreamTrack = typeof MediaStream.stop === 'function' ? MediaStream : MediaStream.getTracks()[0];
+                video.srcObject = MediaStream;
+               // video.src = vendorUrl.createObjectURL(strem);
+                video.play();
+
+            }, function (error) {
+                console.log(error);
+            });
 
         this.timeout = setTimeout(() => {
             this.takePhoto();
@@ -268,16 +289,19 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
 
     public async loadWsConfig(i: number) {
         let wsString;
+        let url;
+        let params;
         if (i === 1) {
-            const url = this._buildURL(this.ajax.url);
-            const params = {
+             url = this._buildURL(this.ajax.url);
+             params = {
                 ...this._buildParameters(this.ajax.params)
             };
         } else if (i === 2) {
-            const url = this._buildURL(this.faceAjax.url);
-            const params = {
+             url = this._buildURL(this.faceAjax.url);
+             params = {
                 ...this._buildParameters(this.faceAjax.params)
             }
+        }
             const loadData = await this._load(url, params);
             if (loadData && loadData.status === 200 && loadData.isSuccess) {
                 if (loadData.data.length > 0) {
@@ -288,7 +312,6 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
                 }
             }
             return wsString;
-        }
     }
 
 
@@ -421,20 +444,24 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private changeTab($event: NzTabChangeEvent) {
-        if ($event.index === 0) {
+        if ($event.index === 1) {
             this.getMedia();
         }
-        if ($event.index !== 0) {
+        if ($event.index !== 1) {
             this.isFaceLogin = false
             this.closeMedia();
         }
-        if ($event.index === 1) {
+        if ($event.index === 0) {
             this.isCardLogin = true
             this.getCard();
         }
-        if ($event.index !== 1) {
+        if ($event.index !== 0) {
             this.isCardLogin = false
         }
+    }
+
+    private cencleTab() {
+        this.ws.close();
     }
 
     public async _loadProjectModule() {

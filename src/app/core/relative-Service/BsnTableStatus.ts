@@ -107,6 +107,7 @@ export const BSN_COMPONENT_CASCADE_MODES = {
     CHECKED_ROWS: 'checkRow',
     Scan_Code_ROW: 'scanCodeROW',
     Scan_Code_Locate_ROW: 'scanCodeLocateROW',
+    START_AUTO_PLAY: 'startAutoPlay',
 
     // tree
     CLICK_NODE: 'clickNode',

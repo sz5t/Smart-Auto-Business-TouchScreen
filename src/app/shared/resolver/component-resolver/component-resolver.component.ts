@@ -163,6 +163,8 @@ export class ComponentResolverComponent
     }
 
     public ngOnDestroy() {
-        this.componentRef.destroy();
+        if (this.componentRef) {
+            this.componentRef.destroy();
+        }
     }
 }

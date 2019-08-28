@@ -66,6 +66,8 @@ export class BsnDataStepComponent extends CnComponentBase
     public _statusSubscription;
     public _cascadeSubscription;
     public graph;
+    public lastNodeColor;
+    public formatNode = [];
     private dropdown: NzDropdownContextComponent;
     private defaultStyle = {
         color: '#ccc',
@@ -149,6 +151,7 @@ export class BsnDataStepComponent extends CnComponentBase
                 this.config.processNode.propetry.forEach(element => {
                     if (element['value'] === nodeData[this.config.processNode['field']]) {
                         nodeData['color'] = element['color'];
+                        this.formatNode.push({Id: nodeData['Id'], color: element['color']})
                         if (nodeData[this.config.processNode['field']] === this.config.processNode['selected']) {
                             // nodeData['style'] = { stroke: '#000' };
                             this.tempValue['_selectedNode'] = nodeData;
@@ -162,7 +165,7 @@ export class BsnDataStepComponent extends CnComponentBase
                 });
             } else {
                 if (i === 0) {
-                    // nodeData['color'] = this.sNodeClickColor;
+                    nodeData['color'] = this.sNodeClickColor;
                     nodeData['style'] = { 'stroke': '#000' };
                     this.tempValue['_selectedNode'] = nodeData;
                     if (
@@ -472,13 +475,19 @@ export class BsnDataStepComponent extends CnComponentBase
                     this._lastNode = ev.item
                 }
                 if (this._lastNode !== ev.item) {
+                    this.formatNode.forEach(e => {
+                        if (e.Id === this._lastNode.id) {
+                            this.lastNodeColor =  e.color
+                        }
+                    })
                     graph.update(ev.item, {
                         color: this.sNodeClickColor,
                         style: { stroke: '#000' }
                     })
 
                     graph.update(this._lastNode, {
-                        color: this.config.styles ? this.config.styles[this._lastNode.model.level].background : this.defaultStyle.background,
+                        // color: this.config.styles ? this.config.styles[this._lastNode.model.level].background : this.defaultStyle.background,
+                        color: this.lastNodeColor ? this.lastNodeColor : this.defaultStyle.background,
                         // style: { stroke: this.config.styles ? this.config.styles[this._lastNode.model.level].stroke : this.defaultStyle.color }
                         style: { stroke: '' }
                     })

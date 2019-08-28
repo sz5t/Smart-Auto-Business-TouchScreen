@@ -129,7 +129,7 @@
                                                 <ng-container *ngIf="!col.type">
                                                     <span>{{data[col.field]}}</span>
                                                 </ng-container>
-                                                <ng-container *ngIf="col.type && col.name">
+                                                <ng-container *ngIf="col.type && col.name && col.conditionField && col.hidden === showbutton(data[col.conditionField], col.condition)">
                                                     <div class="editable-row-operations">
                                                         <button  nz-button nzType="primary" nzBlock (click)="execFun('deleteRow',data.key)">{{col.name}}</button>
                                                     </div>

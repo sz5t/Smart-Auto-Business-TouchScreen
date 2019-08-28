@@ -13,6 +13,7 @@ import { CommonTools } from '@core/utility/common-tools';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 import { BSN_COMPONENT_CASCADE, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES } from '@core/relative-Service/BsnTableStatus';
 import { Observer } from 'rxjs';
+import { worker } from 'cluster';
 
 @Component({
   selector: 'bsn-inline-face-recognition',
@@ -71,10 +72,49 @@ export class BsnInlineFaceRecognitionComponent extends CnComponentBase
   }
 
   public ngOnInit() {
+    this.resolverRelation();
   }
 
   public ngAfterViewInit() {
   }
+
+  private resolverRelation() {
+    // 注册按钮状态触发接收器
+    // 通过配置中的组件关系类型设置对应的事件接受者
+    // 表格内部状态触发接收器console.log(this.config);
+    if (
+        this.config.componentType &&
+        this.config.componentType.parent === true
+    ) {
+        // 注册消息发送方法
+        // 注册行选中事件发送消息
+        this.after(this, 'FaceRecognition', () => {
+            this.cascade.next(
+                new BsnComponentMessage(
+                    BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
+                    this.config.viewId,
+                    {
+                        data: this.tempValue
+                    }
+                )
+            );
+            // if (this.config.drawerDialog) {
+            //     if (this.config.drawerDialog.drawerType === 'condition' && this.config.drawerDialog.drawerMapping.length > 0) {
+            //         this.config.drawerDialog.drawerMapping.forEach(m => {
+            //             if (this._selectRow[m['field']] && this._selectRow[m['field']] === m['value']) {
+            //                 const drawer = this.config.drawerDialog.drawers.find(d => d.name === m['name']);
+            //                 this.showDrawer(drawer);
+            //                 return;
+            //             }
+            //         });
+            //     } else {
+            //         this.showDrawer(this.config.drawerDialog.drawers[0]);
+            //     }
+            // }
+
+        });
+    }
+}
 
   public ngOnDestroy(): void {
 
@@ -92,15 +132,33 @@ export class BsnInlineFaceRecognitionComponent extends CnComponentBase
     // then()是Promise对象里的方法
     // then()方法是异步执行，当then()前的方法执行完后再执行then()内部的程序
     // 避免数据没有获取到
-    const promise = navigator.mediaDevices.getUserMedia(constraints);
+    // const promise = navigator.mediaDevices.getUserMedia(constraints);
     const that = this;
-    promise.then(function (MediaStream) {
-      console.log(that.mediaStreamTrack);
-      //  this.mediaStreamTrack = MediaStream.getTracks()[0];
-      that.mediaStreamTrack = typeof MediaStream['stop'] === 'function' ? MediaStream : MediaStream.getTracks()[1];
-      video.srcObject = MediaStream;
-      video.play();
-    });
+    // promise.then(function (MediaStream) {
+    //   console.log(that.mediaStreamTrack);
+    //   //  this.mediaStreamTrack = MediaStream.getTracks()[0];
+    //   that.mediaStreamTrack = typeof MediaStream['stop'] === 'function' ? MediaStream : MediaStream.getTracks()[1];
+    //   video.srcObject = MediaStream;
+    //   video.play();
+    // });
+
+    window.navigator['getMedia'] = window.navigator.getUserMedia ||
+                window.navigator['webkitGetUserMedia'] ||
+                window.navigator['mozGetUserMedia'] ||
+                window.navigator['msGetUserMedia'];
+            window.navigator['getMedia']({
+                video: true, // 使用摄像头对象
+                audio: false  // 不适用音频
+            }, function (MediaStream) {
+                // console.log(MediaStream, MediaStream.getTracks());
+                that.mediaStreamTrack = typeof MediaStream.stop === 'function' ? MediaStream : MediaStream.getTracks()[0];
+                video.srcObject = MediaStream;
+               // video.src = vendorUrl.createObjectURL(strem);
+                video.play();
+
+            }, function (error) {
+                console.log(error);
+            });
 
     this.timeout = setTimeout(() => {
       this.takePhoto();
@@ -154,9 +212,12 @@ export class BsnInlineFaceRecognitionComponent extends CnComponentBase
         console.log('tempvalue', that.tempValue);
       }
       that.closeMedia();
+      ws.close();
       clearTimeout(that.timeout);
     };
-    console.log('tempvalue', that.tempValue);
+    console.log('tempvalue1', that.tempValue);
+    that.closeMedia();
+    clearTimeout(that.timeout);
     ws.onclose = function () {
       // 关闭 websocket
       console.log('连接已关闭...');

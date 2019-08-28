@@ -116,6 +116,9 @@ export class TsDataTableComponent extends CnComponentBase
     public changeConfig_new = {};
     public changeConfig_newSearch = {};
     public ajaxColumns; // 动态列
+    // 自动播放的变量
+    public loadautotime ;
+    public messageautotime ;
     // 前置条件集合
     public beforeOperation;
     constructor(
@@ -412,7 +415,8 @@ export class TsDataTableComponent extends CnComponentBase
         if (!this.config.ajaxproc) {
             if (this.config.componentType) {
                 if (!this.config.componentType.child) {
-                    this.load();
+                  await this.load();
+                   this.loadAutoPlay();
                 } else if (this.config.componentType.own === true) {
                     this.load();
                 }
@@ -688,6 +692,13 @@ export class TsDataTableComponent extends CnComponentBase
                                         this.locateRow();
                                         // this.load();
                                         break;
+                                    case BSN_COMPONENT_CASCADE_MODES.START_AUTO_PLAY:
+                                        if (this.loadautotime !== null) {
+                                            clearInterval(this.loadautotime)
+                                            this.messageAutoPlay();
+                                        }
+                                        // this.load();
+                                        break;
 
                                 }
                             }
@@ -732,6 +743,35 @@ export class TsDataTableComponent extends CnComponentBase
             if (row['key'] === rowValue) {
                 row.selected = true;
                 this.selectRow(row);
+                this._selectRow &&
+                    this.cascade.next(
+                        new BsnComponentMessage(
+                            BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD,
+                            this.config.viewId,
+                            {
+                                data: {
+                                    ...this.initValue,
+                                    ...this._selectRow
+                                },
+                                initValue: this.initValue ? this.initValue : {},
+                                tempValue: this.tempValue ? this.tempValue : {},
+                                subViewId: () => {
+                                    let id = '';
+                                    this.config.subMapping.forEach(sub => {
+                                        const mappingVal = this._selectRow[sub['field']];
+                                        if (sub.mapping) {
+                                            sub.mapping.forEach(m => {
+                                                if (m.value === mappingVal) {
+                                                    id = m.subViewId;
+                                                }
+                                            });
+                                        }
+                                    });
+                                    return id;
+                                }
+                            }
+                        )
+                    );
             }
         });
       
@@ -825,7 +865,7 @@ export class TsDataTableComponent extends CnComponentBase
 
 
 
-    public load() {
+    public async load() {
         this.changeConfig_new = {};
         // this._selectRow = {};
         // this.pageIndex = pageIndex;
@@ -844,7 +884,7 @@ export class TsDataTableComponent extends CnComponentBase
             ...this._buildFocusId(),
             ...this._buildSearch()
         };
-        (async () => {
+       // (async () => {
             const method = this.config.ajaxConfig.ajaxType;
             const loadData = await this._load(url, params, this.config.ajaxConfig.ajaxType);
             if (loadData.isSuccess) {
@@ -1034,35 +1074,76 @@ export class TsDataTableComponent extends CnComponentBase
             setTimeout(() => {
                 this.loading = false;
             });
-        })();
+      //  })();
         // console.log('load:', this.dataList);
+        
+    }
+
+    public loadAutoPlay() {
         this.pagetotal = Math.ceil(this.total / this.pageSize);
         if (!this.autoPlaySwitch) {
             this.temple = this.pageIndex;
         }
         if (this.config.autoPlay && this.autoPlaySwitch) {
-            setTimeout(() => {
+            if (this.config.autosingle) {
+                this.loadautotime = setInterval(() => {
+                    this.load()
+                }, this.config.timeInterval)
+            } else {
+                this.loadautotime = setInterval(() => {
                 if (this.pageIndex >= this.pagetotal) {
                     this.pageIndex = 1;
                 } else {
                     this.pageIndex = this.pageIndex + 1;
                 }
                 this.load();
-            }, this.config.timeInterval)
+            }, this.config.timeInterval)}
+        }
+    }
+
+    public messageAutoPlay() {
+        if (this.messageautotime) {
+            clearInterval(this.messageautotime);
+        }
+        // this.pagetotal = Math.ceil(this.dataList.length / this.pageSize);
+        if (!this.autoPlaySwitch) {
+            this.temple = this.pageIndex;
+        }
+        if (this.config.autoPlay && this.autoPlaySwitch) {
+            if (this.config.autosingle) {
+                this.messageautotime = setInterval(() => {
+                    this.load()
+                }, this.config.timeInterval)
+            } else {
+                this.messageautotime = setInterval(() => {
+                this.pagetotal = Math.ceil(this.total / this.pageSize);
+                // console.log('pagetotal:', this.pagetotal, 'pageIndex:', this.pageIndex);
+                if (this.pageIndex >= this.pagetotal) {
+                    this.pageIndex = 1;
+                } else {
+                    this.pageIndex = this.pageIndex + 1;
+                }
+                this.load();
+            }, this.config.timeInterval)}
         }
     }
 
     // 开启或关闭自动轮播
     public startAutoPlay() {
+        this.temple = this.pageIndex;
+        if (this.messageautotime) {
+            clearInterval(this.messageautotime);
+        }
+        if (this.loadautotime) {
+            clearInterval(this.loadautotime);
+        }
         if (this.autoPlaySwitch) {
             this.autoPlaySwitch = false;
         } else {
             this.autoPlaySwitch = true;
         }
         this.pageIndex = this.temple;
-        setTimeout(() => {
-            this.load();
-        }, this.config.timeInterval);
+        this.loadAutoPlay();
     }
 
     // 获取 文本值，当前选中行数据
@@ -3660,6 +3741,13 @@ export class TsDataTableComponent extends CnComponentBase
         if (this._cascadeSubscription) {
             this._cascadeSubscription.unsubscribe();
         }
+        if (this.loadautotime) {
+            clearInterval(this.loadautotime);
+        }
+
+        if (this.messageautotime) {
+            clearInterval(this.messageautotime);
+        }
     }
 
     private _hasProperty(obj, propertyName) {
@@ -5238,6 +5326,18 @@ export class TsDataTableComponent extends CnComponentBase
             };
         });
         return updatedRows
+    }
+
+    public showbutton(value, format) {
+        let result = true;
+        if (format) {
+            format.map(e => {
+                if (e.value === value) {
+                    result = false;
+                }
+            });
+        }
+        return result;
     }
 }
 

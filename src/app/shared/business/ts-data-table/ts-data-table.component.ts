@@ -4880,6 +4880,9 @@ export class TsDataTableComponent extends CnComponentBase
         fieldConfig.forEach(f => {
             const cf = {};
             cf['title'] = f.title;
+            cf['subtitle'] = f.subtitle ? f.subtitle : null;
+            cf['subtitletext'] = f.subtitletext ? f.subtitletext : null;
+            cf['text'] = f.text ? f.text : null;
             cf['field'] = f.field;
             cf['width'] = f.width;
             cf['hidden'] = f.hidden;
@@ -4979,7 +4982,11 @@ export class TsDataTableComponent extends CnComponentBase
                         loadData.data.forEach(element => {
                             const column = {};
                             this.config.columnsConfig.forEach(cc => {
-                                column[cc.name] = element[cc.feild];
+                                if (cc.feild) {
+                                    column[cc.name] = element[cc.feild];
+                                } else {
+                                    column[cc.name] = cc['value'];
+                                }
                             });
                             loadColumns.push(column);
                         });

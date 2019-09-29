@@ -444,10 +444,10 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private changeTab($event: NzTabChangeEvent) {
-        if ($event.index === 1) {
+        if ($event.index === 2) {
             this.getMedia();
         }
-        if ($event.index !== 1) {
+        if ($event.index !== 2) {
             this.isFaceLogin = false
             this.closeMedia();
         }

@@ -151,15 +151,19 @@ export class TsToolbarComponent implements OnInit, OnDestroy {
         const action = btn.action
             ? BSN_COMPONENT_MODES[btn.action]
             : BSN_COMPONENT_MODES['EXECUTE'];
-        this._cascadeState = this.state.next(
-            new BsnComponentMessage(action, this.viewId ? this.viewId : this.config.targetViewId, {
-                type: btn.actionType ? btn.actionType : null,
-                name: btn.name ? btn.name : '',
-                actionName: btn.actionName ? btn.actionName : null,
-                ajaxConfig: btn.ajaxConfig ? btn.ajaxConfig : null,
-                link: btn.link ? btn.link : ''
-            })
-        );
+        const result = this.config.targetViewId.split(',');
+        result.forEach(e => {
+            // console.log(e);
+            this._cascadeState = this.state.next(
+                new BsnComponentMessage(action, this.viewId ? this.viewId : e, {
+                    type: btn.actionType ? btn.actionType : null,
+                    name: btn.name ? btn.name : '',
+                    actionName: btn.actionName ? btn.actionName : null,
+                    ajaxConfig: btn.ajaxConfig ? btn.ajaxConfig : null,
+                    link: btn.link ? btn.link : ''
+                })
+            );
+        });
     }
 
     public ngOnDestroy() {

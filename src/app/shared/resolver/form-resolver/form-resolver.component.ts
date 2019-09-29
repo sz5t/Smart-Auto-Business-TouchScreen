@@ -35,6 +35,8 @@ import {
 import { Observable } from 'rxjs';
 import { Observer } from 'rxjs';
 import { Router } from '@angular/router';
+import { MenuService } from '@delon/theme';
+import { ITokenService, DA_SERVICE_TOKEN } from '@delon/auth';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -116,7 +118,9 @@ export class FormResolverComponent extends CnFormBase
         private cascade: Observer<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascadeEvents: Observable<BsnComponentMessage>,
-        private router: Router
+        private router: Router,
+        private menuService: MenuService,
+        @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     ) {
         super();
         this.formBuilder = this.builder;
@@ -278,6 +282,9 @@ export class FormResolverComponent extends CnFormBase
                         case BSN_COMPONENT_MODES.LINK:
                             this.linkToPage(option);
                             break;
+                        case BSN_COMPONENT_MODES.LOGIN_OUT:
+                        this.logout();
+                            return;
                     }
                 }
             }
@@ -1057,6 +1064,7 @@ export class FormResolverComponent extends CnFormBase
     }
 
     public valueChange(data?) {
+        // debugger;
         // console.log('当前表单数据：', data);
         // 第一步，知道是谁发出的级联消息（包含信息： field、json、组件类别（类别决定取值））
         // { name: this.config.name, value: name }
@@ -1878,4 +1886,24 @@ export class FormResolverComponent extends CnFormBase
      *  特别复杂的处理，不同值-》对应不同应答。 需要一种规则语言。
      *  将添加类别 cascadeValue  创建这个临时变量，动态从中取值，拼接数据
      */
+
+    public logout() {
+        this.baseModal.confirm({
+            nzTitle: '确认要关闭本系统吗？',
+            nzContent: '关闭后将清空相关操作数据！',
+            nzOnOk: () => {
+                this.tokenService.clear();
+                this.cacheValue.clear();
+                this.menuService.clear();
+                // console.log(this.tokenService.login_url);
+                // this.router.navigateByUrl(this.tokenService.login_url);
+                // new Promise((resolve, reject) => {
+                //     setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
+                this.router.navigateByUrl('/passport/ts-login').catch(() => {
+                    this.apiResource.post('login_out');
+                });
+                // }).catch(() => console.log('Oops errors!'));
+            }
+        });
+    }
 }

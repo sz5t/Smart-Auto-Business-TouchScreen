@@ -125,7 +125,7 @@ export class CnFormElectronicScaleComponent implements OnInit {
       ws.onmessage = function (evt) {
         const received_msg = evt.data;
         console.log(evt.data);
-        console.log('数据已接收...' + received_msg + '---' );
+        console.log('数据已接收...' + received_msg + '---');
         that.model = received_msg;
         that.assemblyValue();
 
@@ -147,6 +147,9 @@ export class CnFormElectronicScaleComponent implements OnInit {
 
   public async load(ajaxConfig) {
     let m = [{ name: '未找到设备', value: '0' }];
+    if (this.config['filterParam']) {
+      ajaxConfig.params = [...ajaxConfig.params, ...this.config.filterParam];
+    }
     const url = this._buildURL(ajaxConfig.url);
     const params = {
       ...this._buildParameters(ajaxConfig.params)

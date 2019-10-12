@@ -359,7 +359,7 @@ MagicZoom.prototype.initZoom = function() {
     this.smallImageSizeY = this.smallImage.height;
     if (this.bigImageSizeX == 0 || this.bigImageSizeY == 0 || this.smallImageSizeX == 0 || this.smallImageSizeY == 0) {
         setTimeout(MagicZoom_createMethodReference(this, "initZoom"), 100);
-        return
+        return;
     }
     if (this.loadingCont != null) this.loadingCont.style.visibility = 'hidden';
     this.smallImageCont.style.width = this.smallImage.width + 'px';
@@ -384,12 +384,12 @@ MagicZoom.prototype.initZoom = function() {
     case 'inner':
         this.bigImageCont.style.left = '0px';
         this.bigImageCont.style.top = '0px';
-        break
+        break;
     }
     this.bigImageContStyleLeft = this.bigImageCont.style.left;
     if (this.pup) {
         this.recalculatePopupDimensions();
-        return
+        return;
     }
     this.initBigContainer();
     this.initPopup();
@@ -451,7 +451,7 @@ function MagicZoom_findZooms() {
         if (/MagicZoomLoading/.test(iels[i].className)) {
             if (iels[i].alt != '') loadingText = iels[i].alt;
             loadingImg = iels[i].src;
-            break
+            break;
         }
     }
     var aels = window.document.getElementsByTagName("A");
@@ -461,7 +461,7 @@ function MagicZoom_findZooms() {
                 if (aels[i].firstChild.tagName != 'IMG') {
                     aels[i].removeChild(aels[i].firstChild)
                 } else {
-                    break
+                    break;
                 }
             }
             if (aels[i].firstChild.tagName != 'IMG') throw "Invalid MagicZoom invocation!";
@@ -478,13 +478,13 @@ function MagicZoom_findZooms() {
                     window.focus()
                 }
                 MagicZoom_stopEventPropagation(event);
-                return false
+                return false;
             });
             if (aels[i].id == '') {
-                aels[i].id = "sc" + rand
+                aels[i].id = "sc" + rand;
             }
             if (MagicZoom_ua == 'msie') {
-                aels[i].style.zIndex = 0
+                aels[i].style.zIndex = 0;
             }
             var smallImg = aels[i].firstChild;
             smallImg.id = "sim" + rand;
@@ -494,25 +494,25 @@ function MagicZoom_findZooms() {
             matches = re.exec(aels[i].rel);
             var opacity = 50;
             if (matches) {
-                opacity = parseInt(matches[3])
+                opacity = parseInt(matches[3]);
             }
             re = new RegExp(/thumb\-change(\s+)?:(\s+)?(click|mouseover)/i);
             matches = re.exec(aels[i].rel);
             var thumb_change = 'click';
             if (matches) {
-                thumb_change = matches[3]
+                thumb_change = matches[3];
             }
             re = new RegExp(/zoom\-width(\s+)?:(\s+)?(\w+)/i);
             matches = re.exec(aels[i].rel);
             bigCont.style.width = '300px';
             if (matches) {
-                bigCont.style.width = matches[3]
+                bigCont.style.width = matches[3];
             }
             re = new RegExp(/zoom\-height(\s+)?:(\s+)?(\w+)/i);
             matches = re.exec(aels[i].rel);
             bigCont.style.height = '297px';
             if (matches) {
-                bigCont.style.height = matches[3]
+                bigCont.style.height = matches[3];
             }
             re = new RegExp(/zoom\-position(\s+)?:(\s+)?(\w+)/i);
             matches = re.exec(aels[i].rel);
@@ -535,38 +535,38 @@ function MagicZoom_findZooms() {
                     break;
                 case 'inner':
                     position = 'inner';
-                    break
+                    break;
                 }
             }
             re = new RegExp(/drag\-mode(\s+)?:(\s+)?(true|false)/i);
             matches = re.exec(aels[i].rel);
             var drag_mode = false;
             if (matches) {
-                if (matches[3] == 'true') drag_mode = true
+                if (matches[3] == 'true') drag_mode = true;
             }
             re = new RegExp(/always\-show\-zoom(\s+)?:(\s+)?(true|false)/i);
             matches = re.exec(aels[i].rel);
             var bigImage_always_visible = false;
             if (matches) {
-                if (matches[3] == 'true') bigImage_always_visible = true
+                if (matches[3] == 'true') bigImage_always_visible = true;
             }
             bigCont.style.overflow = 'hidden';
             bigCont.className = "MagicZoomBigImageCont";
             bigCont.style.zIndex = 100;
             bigCont.style.visibility = 'hidden';
             if (position != 'custom') {
-                bigCont.style.position = 'absolute'
+                bigCont.style.position = 'absolute';
             } else {
-                bigCont.style.position = 'relative'
+                bigCont.style.position = 'relative';
             }
             var bigImg = document.createElement("IMG");
             bigImg.id = "bim" + rand;
             bigImg.src = aels[i].href;
             bigCont.appendChild(bigImg);
             if (position != 'custom') {
-                aels[i].appendChild(bigCont)
+                aels[i].appendChild(bigCont);
             } else {
-                _el(aels[i].id + '-big').appendChild(bigCont)
+                _el(aels[i].id + '-big').appendChild(bigCont);
             }
             var settings = {
                 bigImage_always_visible: bigImage_always_visible,
@@ -584,11 +584,11 @@ function MagicZoom_findZooms() {
                 zoom: zoom
             });
             zoom.initZoom();
-            MagicZoom_findSelectors(aels[i].id, zoom)
+            MagicZoom_findSelectors(aels[i].id, zoom);
         }
     }
-};
+}
 if (MagicZoom_ua == 'msie') try {
-    document.execCommand("BackgroundImageCache", false, true)
-} catch(e) {};
+    document.execCommand("BackgroundImageCache", false, true);
+} catch(e) {}
 MagicZoom_addEventListener(window, "load", MagicZoom_findZooms);

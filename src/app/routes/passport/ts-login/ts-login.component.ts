@@ -40,7 +40,8 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     public timeout;
     // 当前选择登录系统的配置项
     private _currentSystem;
-    private isCardLogin = true;
+    private isCardLogin = false;
+    private isFaceLogin = false;
     private ajax = {
         url: 'open/getEquipment',
         ajaxType: 'get',
@@ -62,7 +63,6 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
         ajaxType: 'get',
         params: []
     };
-    private isFaceLogin = false;
     private faceAjax = {
         url: 'open/getEquipment',
         ajaxType: 'get',
@@ -268,7 +268,7 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public closeMedia() {
-        console.log(this.mediaStreamTrack);
+        // console.log(this.mediaStreamTrack);
         this.mediaStreamTrack && this.mediaStreamTrack.stop();
     }
 
@@ -451,11 +451,11 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
             this.isFaceLogin = false
             this.closeMedia();
         }
-        if ($event.index === 0) {
+        if ($event.index === 1) {
             this.isCardLogin = true
             this.getCard();
         }
-        if ($event.index !== 0) {
+        if ($event.index !== 1) {
             this.isCardLogin = false
         }
     }

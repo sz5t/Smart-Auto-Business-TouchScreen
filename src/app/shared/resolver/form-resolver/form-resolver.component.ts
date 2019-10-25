@@ -99,6 +99,7 @@ export class FormResolverComponent extends CnFormBase
     @Output()
     public submit: EventEmitter<any> = new EventEmitter<any>();
     public _relativeResolver;
+    public loadAutoPlay;
     public isSpinning = false;
     public changeConfig = [];
     public beforeOperation: BeforeOperation;
@@ -157,7 +158,7 @@ export class FormResolverComponent extends CnFormBase
                 : {},
             apiResource: this.apiResource
         });
-
+        this.autoLoad();
         this.GetToolbarEvents();
     }
 
@@ -199,6 +200,10 @@ export class FormResolverComponent extends CnFormBase
 
     public ngOnDestroy() {
         this.unsubscribe();
+        if (this.loadAutoPlay) {
+            clearInterval(this.loadAutoPlay);
+            this.loadAutoPlay = '';
+        }
     }
 
     public initFormState() {
@@ -283,7 +288,7 @@ export class FormResolverComponent extends CnFormBase
                             this.linkToPage(option);
                             break;
                         case BSN_COMPONENT_MODES.LOGIN_OUT:
-                        this.logout();
+                            this.logout();
                             return;
                     }
                 }
@@ -1656,6 +1661,11 @@ export class FormResolverComponent extends CnFormBase
         if (index > -1) {
             updateState = this.toolbarConfig[index];
         }
+
+        if (!updateState.action) {
+            updateState.action = BSN_COMPONENT_MODES['EXECUTE'];
+        }
+        updateState.action = BSN_COMPONENT_MODES[updateState.action] ? BSN_COMPONENT_MODES[updateState.action] : updateState.action;
         const option = updateState;
         this.beforeOperation.operationItemData = this.value;
 
@@ -1794,7 +1804,7 @@ export class FormResolverComponent extends CnFormBase
                                             data[feild.valueName];
                                     } else if (data.dataItem[feild.valueName]) {
                                         sendData[feild.name] =
-                                        data.dataItem[feild.valueName];
+                                            data.dataItem[feild.valueName];
                                     }
                                 } else if (
                                     feild['type'] === 'tempValueObject'
@@ -1905,5 +1915,18 @@ export class FormResolverComponent extends CnFormBase
                 // }).catch(() => console.log('Oops errors!'));
             }
         });
+    }
+
+    // 表单的自动刷新
+    public autoLoad() {
+        if (this.config.autoPlay) {
+            // console.log('现在开始自动刷新表单');
+            this.loadAutoPlay = setInterval(
+                () => {
+                    this.load()
+                },
+                this.config.Interval
+            )
+        }
     }
 }

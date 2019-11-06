@@ -128,6 +128,7 @@ export class FormResolverComponent extends CnFormBase
         this.baseMessage = this.message;
         this.baseModal = this.modalService;
         this.apiResource = this.apiService;
+        this.cacheValue = this.cacheService;
     }
 
     public ngAfterViewInit() {

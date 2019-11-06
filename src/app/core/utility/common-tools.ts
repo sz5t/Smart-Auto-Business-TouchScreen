@@ -11,6 +11,7 @@ export interface ParametersResolverModel {
     cascadeValue?;
     returnValue?;
     routerValue?;
+    routeCheckedIds?;
 }
 export class CommonTools {
     public static uuID(w) {
@@ -52,50 +53,50 @@ export class CommonTools {
                             }
                             break;
                         case BSN_PARAMETER_TYPE.ITEM:
-                        if (model.item) {
                             if (model.item) {
-                                // 判断组件取值是否为null
-                                if (
-                                    model.item[param['valueName']] ===
-                                    null ||
-                                    model.item[param['valueName']] ===
-                                    undefined
-                                ) {
-                                    if (param['value'] !== undefined) {
-                                        if (param['datatype']) {
-                                            result[param['name']] = this.getParameters(param['datatype'], param['value']);
-                                        } else if (param['defaultDate']) {
-                                            const dateType = param['defaultDate'];
-                                            let dValue;
-                                            switch (dateType) {
-                                                case 'defaultWeek':
-                                                dValue = `${getISOYear(Date.now())}-${getISOWeek(Date.now())}`;
-                                                break;
-                                                case 'defaultDay':
-                                                dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1}-${getDate(Date.now())}`;
-                                                break;
-                                                case 'defaultMonth':
-                                                dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1 }`;
-                                                break;
-                                                case 'defaultYear':
-                                                dValue = `${getISOYear(Date.now())}`;
-                                                break;
+                                if (model.item) {
+                                    // 判断组件取值是否为null
+                                    if (
+                                        model.item[param['valueName']] ===
+                                        null ||
+                                        model.item[param['valueName']] ===
+                                        undefined
+                                    ) {
+                                        if (param['value'] !== undefined) {
+                                            if (param['datatype']) {
+                                                result[param['name']] = this.getParameters(param['datatype'], param['value']);
+                                            } else if (param['defaultDate']) {
+                                                const dateType = param['defaultDate'];
+                                                let dValue;
+                                                switch (dateType) {
+                                                    case 'defaultWeek':
+                                                        dValue = `${getISOYear(Date.now())}-${getISOWeek(Date.now())}`;
+                                                        break;
+                                                    case 'defaultDay':
+                                                        dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1}-${getDate(Date.now())}`;
+                                                        break;
+                                                    case 'defaultMonth':
+                                                        dValue = `${getISOYear(Date.now())}-${getMonth(Date.now()) + 1}`;
+                                                        break;
+                                                    case 'defaultYear':
+                                                        dValue = `${getISOYear(Date.now())}`;
+                                                        break;
+                                                }
+                                                result[param['name']] = dValue;
+                                            } else {
+                                                result[param['name']] = param['value'];
                                             }
-                                            result[param['name']] = dValue;
-                                        } else {
-                                            result[param['name']] = param['value'];
                                         }
-                                    }
-                                } else {
-                                    if (param['datatype']) {
-                                        result[param['name']] = this.getParameters(param['datatype'], model.item[param['valueName']]);
                                     } else {
-                                        result[param['name']] = model.item[param['valueName']];
+                                        if (param['datatype']) {
+                                            result[param['name']] = this.getParameters(param['datatype'], model.item[param['valueName']]);
+                                        } else {
+                                            result[param['name']] = model.item[param['valueName']];
+                                        }
                                     }
                                 }
                             }
-                        }
-                        break;
+                            break;
                         case BSN_PARAMETER_TYPE.VALUE:
                             if (param['value'] === 'null') {
                                 param['value'] = null;
@@ -214,6 +215,12 @@ export class CommonTools {
                                 const cache = model.cacheValue.getNone('routerValue');
                                 result[param['name']] =
                                     cache[param['valueName']];
+                            }
+                            break;
+                        case BSN_PARAMETER_TYPE.ROUTER_CHECKED_IDS:
+                            if (model.routeCheckedIds) {
+                                result[param['name']] =
+                                    model.routeCheckedIds[param['valueName']];
                             }
                             break;
                     }

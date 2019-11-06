@@ -44,6 +44,7 @@ import { BsnReportComponent } from '@shared/business/bsn-report/bsn-report.compo
 import { BsnShowImageComponent } from '@shared/business/bsn-show-image/bsn-show-image.component';
 import { BsnInlineCardSwipeComponent } from '@shared/business/bsn-inline-card-swipe/bsn-inline-card-swipe.component';
 import { BsnInlineFaceRecognitionComponent } from '@shared/business/bsn-inline-face-recognition/bsn-inline-face-recognition.component';
+import { BsnChartComponent } from '@shared/business/bsn-chart/bsn-chart.component';
 const components: { [type: string]: Type<any> } = {
     code_edit: CnCodeEditComponent,
     bsnTable: BsnTableComponent,
@@ -72,6 +73,7 @@ const components: { [type: string]: Type<any> } = {
     bsnScreenShot: BsnScreenShotComponent,
     bsnReport: BsnReportComponent,
     bsnShowImage: BsnShowImageComponent,
+    bsnChart: BsnChartComponent,
     bsnInlineswipe: BsnInlineCardSwipeComponent,
     bsnInlinesface: BsnInlineFaceRecognitionComponent
 };

@@ -22,6 +22,7 @@ export const BSN_COMPONENT_MODES = {
     FORM_BATCH: 'formBatch',
     LINK: 'link',
     EXECUTE_SELECTED_LINK: 'link_selected_item',
+    EXECUTE_CHECKED_ID_LINK: 'link_checked_items',
     LOGIN_OUT: 'login_out',
     WORK_CENTER: 'work_center',
     AUTO_PLAY: 'auto_play',
@@ -62,7 +63,8 @@ export const BSN_PARAMETER_TYPE = {
     CASCADE_VALUE: 'cascadeValue',
     RETURN_VALUE: 'returnValue',
     ROUTER_VALUE: 'routerValue',
-    ITEM: 'item'
+    ITEM: 'item',
+    ROUTER_CHECKED_IDS: 'routeCheckedIds'
 };
 
 export const BSN_EXECUTE_ACTION = {

@@ -526,14 +526,14 @@ export class TsDataTableComponent extends CnComponentBase
                             option
                         ) && this.formBatchDialog(option);
                         break;
-                    case BSN_EXECUTE_ACTION.EXECUTE_CHECKED_ID_LINK:
+                    case BSN_COMPONENT_MODES.EXECUTE_CHECKED_ID_LINK:
                         const itemIds = this._getCheckItemsId();
-                        this.cacheValue.set('routerValue', itemIds);
+                        this.cacheValue.set('routerValue', {'routeCheckedIds' : itemIds});
                         this.linkToPage(option, itemIds);
                         return;
-                    case BSN_EXECUTE_ACTION.EXECUTE_SELECTED_LINK:
+                    case BSN_COMPONENT_MODES.EXECUTE_SELECTED_LINK:
                         const itemId = this._getSelectedItem();
-                        this.cacheValue.set('routerValue', itemId);
+                        this.cacheValue.set('routerValue', {'routeSelectedItem' : itemId});
                         this.linkToPage(option, itemId);
                         return;
                     case BSN_COMPONENT_MODES.LINK:
@@ -801,7 +801,8 @@ export class TsDataTableComponent extends CnComponentBase
             initValue: this.initValue,
             cacheValue: this.cacheValue,
             routerValue: this.cacheValue,
-            item: handleData
+            item: handleData,
+            routeCheckedIds: {'routeCheckedIds' : handleData}
         });
         // 判断跳转页面是否为根据跳转跳转不同页面
         if (Array.isArray(option.link)) {
@@ -3231,10 +3232,10 @@ export class TsDataTableComponent extends CnComponentBase
                 item: this._selectRow,
                 tempValue: this.tempValue,
                 initValue: this.initValue,
-                cacheValue: this.cacheService,
-                cardValue: this.cacheService,
+                cacheValue: this.cacheValue,
+                cardValue: this.cacheValue,
                 cascadeValue: this.cascadeValue,
-                routerValue: this.cacheService
+                routerValue: this.cacheValue
             });
         }
         return params;

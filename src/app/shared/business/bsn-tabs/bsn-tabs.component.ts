@@ -12,6 +12,7 @@ import { Subscription, Observable, Observer } from 'rxjs';
 import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_CASCADE } from '@core/relative-Service/BsnTableStatus';
 import { NzTabComponent, NzTabChangeEvent } from 'ng-zorro-antd';
 import { CommonTools } from '@core/utility/common-tools';
+import { CacheService } from '@delon/cache';
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'bsn-tabs',
@@ -31,6 +32,7 @@ export class BsnTabsComponent extends CnComponentBase implements OnInit, OnDestr
     public _currentIndex;
     public handleIndexs;
     constructor(
+        private cacheService: CacheService,
         @Inject(BSN_COMPONENT_MODES)
         private stateEvents: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
@@ -40,6 +42,7 @@ export class BsnTabsComponent extends CnComponentBase implements OnInit, OnDestr
         
     ) {
         super();
+        this.cacheValue = this.cacheService;
     }
 
     public ngOnInit() {

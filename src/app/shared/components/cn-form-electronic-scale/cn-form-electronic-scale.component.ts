@@ -184,7 +184,8 @@ export class CnFormElectronicScaleComponent implements OnInit {
     if (paramsConfig) {
       params = CommonTools.parametersResolver({
         params: paramsConfig,
-        cacheValue: this.cacheService
+        cacheValue: this.cacheService,
+        tempValue: this.bsnData
       });
     }
     return params;

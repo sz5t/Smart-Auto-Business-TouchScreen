@@ -216,6 +216,7 @@ export class FormResolverDirective extends CnComponentBase
         this.component.instance.changeConfig = this.changeConfig;
         // console.log('164' , this.changeConfig);
         // if (this.component.instance.bsnData) {
+            console.log('tempValue', this.tempValue);
         this.component.instance.bsnData = this.tempValue;
         this.component.instance.initValue = this.initValue;
         // }

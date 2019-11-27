@@ -118,6 +118,8 @@ import { BsnInlineCardSwipeComponent } from './business/bsn-inline-card-swipe/bs
 import { CnGridRadioGroupComponent } from './components/cn-grid-radio-group/cn-grid-radio-group.component';
 import { BsnInlineFaceRecognitionComponent } from './business/bsn-inline-face-recognition/bsn-inline-face-recognition.component';
 import { BsnChartComponent } from './business/bsn-chart/bsn-chart.component';
+import { CnFormInputKeyboardComponent } from './components/cn-form-input-keyboard/cn-form-input-keyboard.component';
+import { BsnKetboardComponent } from './business/bsn-ketboard/bsn-ketboard.component';
 // import { CnFormSocketComponent } from './components/cn-form-socket/cn-form-socket.component';
 
 
@@ -229,7 +231,9 @@ const COMPONENTS = [
     BsnInlineCardSwipeComponent,
     CnGridRadioGroupComponent,
     BsnInlineFaceRecognitionComponent,
-    BsnChartComponent
+    BsnChartComponent,
+    CnFormInputKeyboardComponent,
+    BsnKetboardComponent
     // CnFormSocketComponent
 ];
 const DIRECTIVES = [

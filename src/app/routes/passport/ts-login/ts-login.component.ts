@@ -118,6 +118,7 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public async  ngAfterViewInit() {
+
         if (this.isFaceLogin) {
             this.getMedia();
         } else if (this.isCardLogin) {
@@ -144,6 +145,7 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
                 .toPromise()
                 .then(user => {
                     if (user.isSuccess) {
+                        // this.fullScreen();
                         // console.log(user.data);
                         that.cacheService.set('userInfo', user.data);
                         const token: ITokenModel = { token: user.data.token };
@@ -186,6 +188,7 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
                 .toPromise()
                 .then(user => {
                     if (user.isSuccess) {
+                        // this.fullScreen();
                         console.log(user.data);
                         that.closeMedia();
                         clearTimeout(that.timeout);
@@ -234,22 +237,22 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
         // });
 
         window.navigator['getMedia'] = window.navigator.getUserMedia ||
-                window.navigator['webkitGetUserMedia'] ||
-                window.navigator['mozGetUserMedia'] ||
-                window.navigator['msGetUserMedia'];
-            window.navigator['getMedia']({
-                video: true, // 使用摄像头对象
-                audio: false  // 不适用音频
-            }, function (MediaStream) {
-                // console.log(MediaStream, MediaStream.getTracks());
-                that.mediaStreamTrack = typeof MediaStream.stop === 'function' ? MediaStream : MediaStream.getTracks()[0];
-                video.srcObject = MediaStream;
-               // video.src = vendorUrl.createObjectURL(strem);
-                video.play();
+            window.navigator['webkitGetUserMedia'] ||
+            window.navigator['mozGetUserMedia'] ||
+            window.navigator['msGetUserMedia'];
+        window.navigator['getMedia']({
+            video: true, // 使用摄像头对象
+            audio: false  // 不适用音频
+        }, function (MediaStream) {
+            // console.log(MediaStream, MediaStream.getTracks());
+            that.mediaStreamTrack = typeof MediaStream.stop === 'function' ? MediaStream : MediaStream.getTracks()[0];
+            video.srcObject = MediaStream;
+            // video.src = vendorUrl.createObjectURL(strem);
+            video.play();
 
-            }, function (error) {
-                console.log(error);
-            });
+        }, function (error) {
+            console.log(error);
+        });
 
         this.timeout = setTimeout(() => {
             this.takePhoto();
@@ -292,26 +295,26 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
         let url;
         let params;
         if (i === 1) {
-             url = this._buildURL(this.ajax.url);
-             params = {
+            url = this._buildURL(this.ajax.url);
+            params = {
                 ...this._buildParameters(this.ajax.params)
             };
         } else if (i === 2) {
-             url = this._buildURL(this.faceAjax.url);
-             params = {
+            url = this._buildURL(this.faceAjax.url);
+            params = {
                 ...this._buildParameters(this.faceAjax.params)
             }
         }
-            const loadData = await this._load(url, params);
-            if (loadData && loadData.status === 200 && loadData.isSuccess) {
-                if (loadData.data.length > 0) {
-                    loadData.data.forEach(element => {
-                        wsString = 'ws://' + element['webSocketIp'] + ':' + element['webSocketPort'] + '/' + element['connEntry'];
-                        return true;
-                    });
-                }
+        const loadData = await this._load(url, params);
+        if (loadData && loadData.status === 200 && loadData.isSuccess) {
+            if (loadData.data.length > 0) {
+                loadData.data.forEach(element => {
+                    wsString = 'ws://' + element['webSocketIp'] + ':' + element['webSocketPort'] + '/' + element['connEntry'];
+                    return true;
+                });
             }
-            return wsString;
+        }
+        return wsString;
     }
 
 
@@ -403,6 +406,7 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     public async login(userLogin) {
         const user = await this._userLogin(userLogin);
         if (user.isSuccess) {
+            // this.fullScreen();
             console.log(user.data);
             this.cacheService.set('userInfo', user.data);
             const token: ITokenModel = { token: user.data.token };
@@ -610,6 +614,20 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
 
     public ngOnDestroy(): void {
         // if (this.interval$) clearInterval(this.interval$);
+    }
+
+    public fullScreen() {
+        const el = document.documentElement;
+
+        const rfs = el['requestFullScreen'] || el['webkitRequestFullScreen'] ||
+
+            el['mozRequestFullScreen'] || el['msRequestFullScreen'];
+
+        if (typeof rfs !== 'undefined' && rfs) {
+
+            rfs.call(el);
+
+        }
     }
 
     // public arrayToTree(data, parentid): any[] {

@@ -38,9 +38,11 @@ import { CnFormGridComponent } from '@shared/components/cn-form-grid/cn-form-gri
 import { CnFormSelectGridMultipleComponent } from '@shared/components/cn-form-select-grid-multiple/cn-form-select-grid-multiple.component';
 import { CnFormInputSensorComponent } from '@shared/components/cn-form-input-sensor/cn-form-input-sensor.component';
 import { CnFormElectronicScaleComponent } from '@shared/components/cn-form-electronic-scale/cn-form-electronic-scale.component';
+import { CnFormInputKeyboardComponent } from '@shared/components/cn-form-input-keyboard/cn-form-input-keyboard.component';
 
 const components: { [type: string]: Type<any> } = {
     input: CnFormInputComponent,
+    inputKeyboard: CnFormInputKeyboardComponent,
     submit: CnFormSubmitComponent,
     select: CnFormSelectComponent,
     selectMultiple: CnFormSelectMultipleComponent,
@@ -216,7 +218,7 @@ export class FormResolverDirective extends CnComponentBase
         this.component.instance.changeConfig = this.changeConfig;
         // console.log('164' , this.changeConfig);
         // if (this.component.instance.bsnData) {
-            console.log('tempValue', this.tempValue);
+            // console.log('tempValue', this.tempValue);
         this.component.instance.bsnData = this.tempValue;
         this.component.instance.initValue = this.initValue;
         // }

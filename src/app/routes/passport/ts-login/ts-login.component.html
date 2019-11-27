@@ -32,7 +32,7 @@
             </nz-form-item>
         </form>
     </nz-tab>
-    <nz-tab  [nzTitle]="card">
+    <nz-tab *ngIf="false" [nzTitle]="card">
         <div class="card">
 
             <i class="card_logo" nz-icon type="idcard" theme="twotone" twoToneColor="#eee"></i>
@@ -47,7 +47,7 @@
             <i nz-icon type="idcard"></i> 刷卡登录
         </ng-template>
     </nz-tab>
-    <nz-tab  [nzTitle]="face">
+    <nz-tab *ngIf="false" [nzTitle]="face">
         <div class="face">
 
             <!-- <input nz-button id='button' type="button" title="开启摄像头" value="开启摄像头" (click)="getMedia()"/> -->

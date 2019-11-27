@@ -419,6 +419,7 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
         if (msgObj && msgObj.length > 1) {
             const messageType = msgObj[0];
             let options;
+            console.log(msgObj);
             switch (messageType) {
                 case 'info':
                     options = {
@@ -426,7 +427,7 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
                         nzWidth: '350px',
                         nzContent: msgObj[1]
                     };
-                    this.baseModal[messageType](options);
+                    this.modal[messageType](options);
                     break;
                 case 'error':
                     options = {
@@ -434,7 +435,7 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
                         nzWidth: '350px',
                         nzContent: msgObj[1]
                     };
-                    this.baseModal[messageType](options);
+                    this.modal[messageType](options);
                     break;
                 case 'confirm':
                     options = {
@@ -458,7 +459,7 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
                         },
                         nzOnCancel: () => { }
                     };
-                    this.baseModal[messageType](options);
+                    this.modal[messageType](options);
                     break;
                 case 'warning':
                     options = {
@@ -466,7 +467,7 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
                         nzWidth: '350px',
                         nzContent: msgObj[1]
                     };
-                    this.baseModal[messageType](options);
+                    this.modal[messageType](options);
                     break;
                 case 'success':
                     options = {

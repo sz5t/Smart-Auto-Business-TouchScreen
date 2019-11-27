@@ -269,7 +269,7 @@ export class CnFormWindowResolverComponent extends CnFormBase
             this.tempValue[d] = data[d];
         }
         this.load();
-        console.log('初始化参数并load 主子刷新', this.tempValue);
+        // console.log('初始化参数并load 主子刷新', this.tempValue);
     }
 
     /**
@@ -777,7 +777,6 @@ export class CnFormWindowResolverComponent extends CnFormBase
 
         const sendData = this.value;
         sendData[data.name] = data.value;
-
         if (this.config.cascadeRelation) {
             this.config.cascadeRelation.forEach(element => {
                 if (element.name === data.name) {
@@ -791,6 +790,12 @@ export class CnFormWindowResolverComponent extends CnFormBase
                                 if (feild['type'] === 'selectObject') {
                                     if (data[feild.valueName]) {
                                         sendData[feild.name] = data[feild.valueName];
+                                    }
+                                } else if ( feild['type'] === 'selectObjectValue' ) {
+                                    if (data.dataItem) { 
+                                        sendData[feild.name] = data.dataItem[feild.valueName];
+                                    } else {
+                                        sendData[feild.name] = null;
                                     }
                                 } else if (feild['type'] === 'tempValueObject') {
 

@@ -18,6 +18,7 @@ import {
 import { Observable, Observer } from 'rxjs';
 import { ApiService } from '@core/utility/api-service';
 import { FormGroup } from '@angular/forms';
+import { CacheService } from '@delon/cache';
 
 @Component({
     selector: 'cn-form-scancode,[cn-form-scancode]',
@@ -35,7 +36,8 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
     public rowData;
     @Input()
     public dataSet;
-    @Input() public initValue;
+    @Input() 
+    public initValue;
     public formGroup: FormGroup;
     // @Output() updateValue = new EventEmitter();
     @Output()
@@ -45,6 +47,7 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
 
     public _options = [];
     public cascadeValue = {};
+    public cacheValue;
     public resultData;
     public _value;
     public isScan = true;
@@ -57,8 +60,12 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
         private cascade: Observer<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascadeEvents: Observable<BsnComponentMessage>,
-        private apiService: ApiService
-    ) { }
+        private apiService: ApiService,
+        private cacheService: CacheService,
+    ) { 
+        this.cacheValue = this.cacheService;
+        this.cacheValue = this.cacheValue.getNone('userInfo');
+    }
 
     public ngOnInit() {
 
@@ -71,7 +78,8 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
 
 
     public async onKeyPress(e) {
-       // console.log('onKeyPress', e, '******',  this.isScan );
+       // this._value = this._value + e.target.value;
+        // console.log('onKeyPress', e, '******' , e.code, e.target.value);
         if (e.code === 'Enter') {
             this.isScan = false;
             this.oldvalue = this._value;
@@ -184,6 +192,8 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
                     params[param.name] = this.cascadeValue[param.valueName];
                 } else if (param.type === 'initValue') {
                     params[param.name] = this.initValue[param.valueName];
+                } else if (param.type === 'cacheValue') {
+                    params[param.name] = this.cacheValue[param.valueName];
                 }
             });
             if (this.isString(p.url)) {

@@ -11,6 +11,7 @@ import { _HttpClient } from '@delon/theme';
 import { ApiService } from '@core/utility/api-service';
 import { APIResource } from '@core/utility/api-resource';
 import { FormGroup } from '@angular/forms';
+import { CacheService } from '@delon/cache';
 
 @Component({
     selector: 'cn-form-select-multiple',
@@ -29,14 +30,20 @@ export class CnFormSelectMultipleComponent
     @Input()
     public dataSet;
     @Input() public changeConfig;
+    @Input()
+    public initValue;
     public formGroup: FormGroup;
+    public cacheValue;
     // @Output() updateValue = new EventEmitter();
     @Output()
     public updateValue = new EventEmitter();
     public _options = [];
     public cascadeValue = {};
     // _selectedMultipleOption:any[];
-    constructor(private apiService: ApiService) {}
+    constructor(private cacheService: CacheService, private apiService: ApiService) { 
+        this.cacheValue = this.cacheService;
+        this.cacheValue = this.cacheValue.getNone('userInfo');
+    }
     public _selectedOption;
 
     public ngOnInit() {
@@ -109,7 +116,7 @@ export class CnFormSelectMultipleComponent
         // console.log('select加载固定数据ngOnChanges', this.config);
         // console.log('变化时临时参数' , this.bsnData);
     }
-    public ngAfterViewInit() {}
+    public ngAfterViewInit() { }
 
     public async asyncLoadOptions(p?, componentValue?, type?) {
         // console.log('select load 异步加载'); // liu
@@ -145,6 +152,10 @@ export class CnFormSelectMultipleComponent
                     params[param.name] = componentValue[param.valueName];
                 } else if (param.type === 'cascadeValue') {
                     params[param.name] = this.cascadeValue[param.valueName];
+                } else if (param.type === 'initValue') {
+                    params[param.name] = this.initValue[param.valueName];
+                } else if (param.type === 'cacheValue') {
+                    params[param.name] = this.cacheValue[param.valueName];
                 }
             });
             if (this.isString(p.url)) {
@@ -209,11 +220,17 @@ export class CnFormSelectMultipleComponent
     }
 
     public valueChange(name?) {
+        let ArrayValue = '';
+        name && name.forEach(element => {
+            ArrayValue = ArrayValue + element.toString() + ',';
+        });
+        const dataItemobj = { value: ArrayValue };
         if (name) {
-            const backValue = { name: this.config.name, value: name };
+
+            const backValue = { name: this.config.name, value: name, dataItem: dataItemobj };
             this.updateValue.emit(backValue);
         } else {
-            const backValue = { name: this.config.name, value: name };
+            const backValue = { name: this.config.name, value: name, dataItem: dataItemobj };
             this.updateValue.emit(backValue);
         }
     }

@@ -5183,6 +5183,10 @@ export class TsDataTableComponent extends CnComponentBase
                 // this.config.actions['deleteRow'] ? this.config.actions['deleteRow'] : null
                 this.deleteRowOnSelected(key);
                 break;
+            case 'executeRow':
+                // this.config.actions['deleteRow'] ? this.config.actions['deleteRow'] : null
+                this.executeRowOnSelected(key);
+                break;
             default:
                 break;
         }
@@ -5194,6 +5198,35 @@ export class TsDataTableComponent extends CnComponentBase
         // console.log('删除行', row, this.config.events);
         if (this.config.events) {
             const index = this.config.events.findIndex(item => item['onTrigger'] === 'deleteRow');
+            let c_eventConfig = {};
+            if (index > -1) {
+                c_eventConfig = this.config.events[index];
+            } else {
+                return true;
+            }
+            const isField = true; // 列变化触发
+            // 首先适配类别、字段，不满足的时候 看是否存在default 若存在 取default
+            if (isField) {
+                c_eventConfig['onEvent'].forEach(eventConfig => {
+                    // 无配置 的默认项
+                    if (eventConfig.type === 'default') {
+                        this.ExecRowEvent(eventConfig.action, row);
+                    }
+                });
+            }
+        }
+        // console.log('行内删除', key);
+        // 注意，末页删除需要将数据页数上移
+
+
+    }
+
+    // 行内操作
+    public executeRowOnSelected(key) {
+        const row = this.dataList.filter(item => item.key === key)[0];
+        // console.log('删除行', row, this.config.events);
+        if (this.config.events) {
+            const index = this.config.events.findIndex(item => item['onTrigger'] === 'executeRow');
             let c_eventConfig = {};
             if (index > -1) {
                 c_eventConfig = this.config.events[index];

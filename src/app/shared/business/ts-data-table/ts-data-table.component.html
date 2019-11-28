@@ -25,7 +25,6 @@
                                     </ng-container>
                                 </th>
                             </ng-template>
-
                         </tr>
                         <tr *ngIf="config.columnsGroup">
                                 <ng-template ngFor let-col [ngForOf]="config.columns">
@@ -147,7 +146,7 @@
                                                 </ng-container>
                                                 <ng-container *ngIf="col.type && col.name && col.conditionField && col.hidden === showbutton(data[col.conditionField], col.condition)">
                                                     <div class="editable-row-operations">
-                                                        <button  nz-button nzType="primary" nzBlock (click)="execFun('deleteRow',data.key)">{{col.name}}</button>
+                                                        <button  nz-button nzType="primary" nzBlock (click)="execFun(col.actionName,data.key)">{{col.name}}</button>
                                                     </div>
                                                 </ng-container>
                                                 <ng-container *ngIf="col.type && !col.name">

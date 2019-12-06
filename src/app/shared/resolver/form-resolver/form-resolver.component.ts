@@ -1423,7 +1423,7 @@ export class FormResolverComponent extends CnFormBase
                                         if (caseItem['type'] === 'relation') {
                                             // console.log('消息信息：', caseItem['relation']);
                                             if (caseItem['relation']) {
-                                                if (data['cardValue'].length > 0) {
+                                                if (data['cardValue'] && data['cardValue'].length > 0) {
                                                     this.tempValue['cardId'] = data['cardValue']['field0']['Id'];
                                                     this.tempValue['barcode'] = data['cardValue']['field0']['barcode'];
                                                     this.tempValue['config'] = data['cardValue']['field0']['config'];
@@ -1660,7 +1660,7 @@ export class FormResolverComponent extends CnFormBase
      * ce
      */
     public ExecRowEvent(enentname) {
-        console.log(enentname, this.toolbarConfig);
+        // console.log(enentname, this.toolbarConfig);
         let updateState;
         const index = this.toolbarConfig.findIndex(
             item => item['name'] === enentname

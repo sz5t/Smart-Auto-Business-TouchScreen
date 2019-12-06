@@ -24,6 +24,7 @@ import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { Route } from '@angular/router';
 import { SettingsService, MenuService } from '@delon/theme';
 import { ITokenService, DA_SERVICE_TOKEN } from '@delon/auth';
+import { callbackify } from 'util';
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'bsn-step',
@@ -37,7 +38,7 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
     public config;
     @Input()
     public viewId;
-    @Input() 
+    @Input()
     public initData;
     public viewCfg;
     // public _tempValue = {};
@@ -46,6 +47,7 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
     public indexContent = '';
     public itemList;
     public handleData;
+    public procResult;
 
     public _statusSubscription: Subscription;
     public _cascadeSubscription: Subscription;
@@ -102,10 +104,10 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
                 switch (updateState._mode) {
                     case BSN_COMPONENT_MODES.LINK:
                         this.linkToPage(option, '');
-                        return; 
+                        return;
                     case BSN_COMPONENT_MODES.LOGIN_OUT:
                         this.logout();
-                        return; 
+                        return;
                     case BSN_COMPONENT_MODES.WORK_CENTER:
                         this.linkToCenter(option);
                         return;
@@ -117,7 +119,7 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
         if (
             this.config.componentType &&
             this.config.componentType.parent === true
-        ) {}
+        ) { }
         if (
             this.config.componentType &&
             this.config.componentType.child === true
@@ -159,13 +161,13 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
                                 // 匹配及联模式
                                 switch (mode) {
                                     case BSN_COMPONENT_CASCADE_MODES.REFRESH:
-                                        
+
                                         break;
                                     case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
-                                        
+
                                         break;
                                     case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILDREN:
-                                        
+
                                         break;
                                     case BSN_COMPONENT_CASCADE_MODES.CHECKED_ROWS:
                                         break;
@@ -193,7 +195,7 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
             cacheValue: this.cacheValue,
             item: handleData
         });
-        this.router.navigate([option.link], {queryParams: params});
+        this.router.navigate([option.link], { queryParams: params });
     }
 
     private linkToCenter(option) {
@@ -204,7 +206,7 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
             initValue: this.initValue,
             cacheValue: this.cacheValue
         });
-        this.router.navigate(['/ts/entry'], {queryParams: params});
+        this.router.navigate(['/ts/entry'], { queryParams: params });
     }
 
     public loadSteps() {
@@ -259,13 +261,15 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
         this.changeContent();
     }
 
-    public next() {
+    public async next() {
         if (this._current === this.config.steps.length) return;
         // 执行本步骤中的数据操作
-        this.handleCurrent();
+        await this.handleCurrent();
         // 进入下一步骤
-        this._current += 1;
-        this.changeContent();
+        if (this.procResult === 'success') {
+            this._current += 1;
+            this.changeContent();
+        }
     }
 
 
@@ -284,25 +288,25 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
         // this.config.backAjaxConfig;
         const url = this.config.backAjaxConfig.link;
         const param = this.buildParamsters(this.config.backAjaxConfig.params, {});
-        this._route.navigate([url], {queryParams: param});
+        this._route.navigate([url], { queryParams: param });
 
-    } 
-
-    // 处理点击下一步按钮前的数据处理
-    public handleCurrent() {    
-        // this.config.nextAjaxConfig;
-        const ajaxConfig = this.config.nextAjaxConfig[this._current];
-        this.handleAjax(ajaxConfig, this.config.nextAjaxConfig);
     }
 
-    private handleAjax(c, ajaxConfig) {
+    // 处理点击下一步按钮前的数据处理
+    public async handleCurrent() {
+        // this.config.nextAjaxConfig;
+        const ajaxConfig = this.config.nextAjaxConfig[this._current];
+        await this.handleAjax(ajaxConfig, this.config.nextAjaxConfig);
+    }
+
+    private async handleAjax(c, ajaxConfig) {
         if (c) {
-            const {url, ajaxType, params, link, action} = c;
+            const { url, ajaxType, params, link, action } = c;
             let paramsData;
             switch (action) {
                 case BSN_EXECUTE_ACTION.EXECUTE_SELECTED:
                     paramsData = this.buildParamsters(params, this.handleData);
-                break;
+                    break;
                 case BSN_EXECUTE_ACTION.EXECUTE_CHECKED:
                     paramsData = this.buildBatchParameters(params);
                     break;
@@ -314,35 +318,49 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
                     this._route.navigate(link, paramsData);
                     return;
             }
-
-            this.apiResource[ajaxType](url, paramsData).subscribe(response => {
-                if (c.outputParams) {
-                    this.outputParametersResolver(
-                        c,
-                        response,
-                        ajaxConfig,
-                        () => {
-                            // this.load();
-                        }
-                    );
-                } else {
-                    // 没有输出参数，进行默认处理
-                    this.showAjaxMessage(response, response.message, () => {
+            const response = await this.apiResource[ajaxType](url, paramsData).toPromise();
+            if (c.outputParams) {
+                this.outputParametersResolver(
+                    c,
+                    response,
+                    ajaxConfig,
+                    () => {
+                        response.data.Message;
                         // this.load();
-                    });
-                }
-            }, error => {
-                console.log(error);
-            });
+                    }
+                );
+            }
+            const array = response.data.Message.split(':');
+            this.procResult = array[0];
+            // this.apiResource[ajaxType](url, paramsData).subscribe(response => {
+            //     if (c.outputParams) {
+            //         this.outputParametersResolver(
+            //             c,
+            //             response,
+            //             ajaxConfig,
+            //             () => {
+            //                 response.data.Message;
+            //                 // this.load();
+            //             }
+            //         );
+            //     } else {
+            //         // 没有输出参数，进行默认处理
+            //         this.showAjaxMessage(response, response.message, () => {
+            //             // this.load();
+            //         });
+            //     }
+            // }, error => {
+            //     console.log(error);
+            // });
         }
     }
 
-     /**
-     * 数据访问返回消息处理
-     * @param result
-     * @param message
-     * @param callback
-     */
+    /**
+    * 数据访问返回消息处理
+    * @param result
+    * @param message
+    * @param callback
+    */
     public showAjaxMessage(result, message?, callback?) {
         const rs: { success: boolean; msg: string[] } = {
             success: true,
@@ -389,110 +407,110 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
     * 2、值类型的结果可以设置多个
     * 3、表类型的返回结果可以设置多个
     */
-   public outputParametersResolver(c, response, ajaxConfig, callback) {
-    const result = false;
-    if (response.isSuccess) {
+    public outputParametersResolver(c, response, ajaxConfig, callback) {
+        const result = false;
+        if (response.isSuccess) {
 
-        const msg =
-            c.outputParams[
-            c.outputParams.findIndex(
-                m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.MESSAGE
-            )
-            ];
-        const value =
-            c.outputParams[
-            c.outputParams.findIndex(
-                m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.VALUE
-            )
-            ];
-        const table =
-            c.outputParams[
-            c.outputParams.findIndex(
-                m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.TABLE
-            )
-            ];
-        const msgObj = msg
-            ? response.data[msg.name].split(':')
-            : null;
-        const valueObj = response.data ? response.data : {};
-        // const tableObj = response.data[table.name] ? response.data[table.name] : [];
-        if (msgObj && msgObj.length > 1) {
-            const messageType = msgObj[0];
-            let options;
-            console.log(msgObj);
-            switch (messageType) {
-                case 'info':
-                    options = {
-                        nzTitle: '提示',
-                        nzWidth: '350px',
-                        nzContent: msgObj[1]
-                    };
-                    this.modal[messageType](options);
-                    break;
-                case 'error':
-                    options = {
-                        nzTitle: '提示',
-                        nzWidth: '350px',
-                        nzContent: msgObj[1]
-                    };
-                    this.modal[messageType](options);
-                    break;
-                case 'confirm':
-                    options = {
-                        nzTitle: '提示',
-                        nzContent: msgObj[1],
-                        nzOnOk: () => {
-                            // 是否继续后续操作，根据返回状态结果
-                            const childrenConfig = ajaxConfig.filter(
-                                f => f.parentName && f.parentName === c.name
-                            );
-                            //  目前紧支持一次执行一个分之步骤
-                            this.handleAjax(childrenConfig[0], ajaxConfig);
-                            // childrenConfig &&
-                            //     childrenConfig.map(currentAjax => {
-                            //         this.getAjaxConfig(
-                            //             currentAjax,
-                            //             ajaxConfig,
-                            //             callback
-                            //         );
-                            //     });
-                        },
-                        nzOnCancel: () => { }
-                    };
-                    this.modal[messageType](options);
-                    break;
-                case 'warning':
-                    options = {
-                        nzTitle: '提示',
-                        nzWidth: '350px',
-                        nzContent: msgObj[1]
-                    };
-                    this.modal[messageType](options);
-                    break;
-                case 'success':
-                    options = {
-                        nzTitle: '',
-                        nzWidth: '350px',
-                        nzContent: msgObj[1]
-                    };
-                    this.baseMessage.success(msgObj[1]);
-                    callback && callback();
-                    break;
+            const msg =
+                c.outputParams[
+                c.outputParams.findIndex(
+                    m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.MESSAGE
+                )
+                ];
+            const value =
+                c.outputParams[
+                c.outputParams.findIndex(
+                    m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.VALUE
+                )
+                ];
+            const table =
+                c.outputParams[
+                c.outputParams.findIndex(
+                    m => m.dataType === BSN_OUTPOUT_PARAMETER_TYPE.TABLE
+                )
+                ];
+            const msgObj = msg
+                ? response.data[msg.name].split(':')
+                : null;
+            const valueObj = response.data ? response.data : {};
+            // const tableObj = response.data[table.name] ? response.data[table.name] : [];
+            if (msgObj && msgObj.length > 1) {
+                const messageType = msgObj[0];
+                let options;
+                // console.log(msgObj);
+                switch (messageType) {
+                    case 'info':
+                        options = {
+                            nzTitle: '提示',
+                            nzWidth: '350px',
+                            nzContent: msgObj[1]
+                        };
+                        this.modal[messageType](options);
+                        break;
+                    case 'error':
+                        options = {
+                            nzTitle: '提示',
+                            nzWidth: '350px',
+                            nzContent: msgObj[1]
+                        };
+                        this.modal[messageType](options);
+                        break;
+                    case 'confirm':
+                        options = {
+                            nzTitle: '提示',
+                            nzContent: msgObj[1],
+                            nzOnOk: () => {
+                                // 是否继续后续操作，根据返回状态结果
+                                const childrenConfig = ajaxConfig.filter(
+                                    f => f.parentName && f.parentName === c.name
+                                );
+                                //  目前紧支持一次执行一个分之步骤
+                                this.handleAjax(childrenConfig[0], ajaxConfig);
+                                // childrenConfig &&
+                                //     childrenConfig.map(currentAjax => {
+                                //         this.getAjaxConfig(
+                                //             currentAjax,
+                                //             ajaxConfig,
+                                //             callback
+                                //         );
+                                //     });
+                            },
+                            nzOnCancel: () => { }
+                        };
+                        this.modal[messageType](options);
+                        break;
+                    case 'warning':
+                        options = {
+                            nzTitle: '提示',
+                            nzWidth: '350px',
+                            nzContent: msgObj[1]
+                        };
+                        this.modal[messageType](options);
+                        break;
+                    case 'success':
+                        options = {
+                            nzTitle: '',
+                            nzWidth: '350px',
+                            nzContent: msgObj[1]
+                        };
+                        this.baseMessage.success(msgObj[1]);
+                        callback && callback();
+                        break;
+                }
             }
-        }
-        if (valueObj) {
-            this.returnValue = valueObj;
-            const childrenConfig = ajaxConfig.filter(
-                f => f.parentName && f.parentName === c.name
-            );
-            //  目前紧支持一次执行一个分之步骤
-            this.handleAjax(childrenConfig[0], ajaxConfig);
-        }
+            if (valueObj) {
+                this.returnValue = valueObj;
+                const childrenConfig = ajaxConfig.filter(
+                    f => f.parentName && f.parentName === c.name
+                );
+                //  目前紧支持一次执行一个分之步骤
+                this.handleAjax(childrenConfig[0], ajaxConfig);
+            }
 
-    } else {
-        this.baseMessage.error('操作异常：', response.message);
+        } else {
+            this.baseMessage.error('操作异常：', response.message);
+        }
     }
-}
 
     private buildParamsters(param, data) {
         return CommonTools.parametersResolver({
@@ -510,7 +528,7 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
         if (Array.isArray(this.handleData)) {
             params = [];
             this.handleData.forEach(d => {
-                const p =  this.buildParamsters(paramCfg, d);
+                const p = this.buildParamsters(paramCfg, d);
                 params.push(p);
             });
         } else if (this.handleData) {
@@ -520,7 +538,7 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
     }
 
     private buildIdsParameters(paramCfg) {
-       
+
         const ids = [];
         const Id = this.config.keyId ? this.config.keyId : 'Id';
         if (Array.isArray(this.handleData)) {
@@ -533,7 +551,7 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
 
         return this.buildParamsters(paramCfg, ids.join(','));
     }
-    
+
 
     public changeContent() {
         this.getViewCfg();
@@ -545,9 +563,9 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
 
     public getData() {
         this.apiResource.get('https://randomuser.me/api/?results=12')
-        .toPromise().then(res => {
-            this.itemList = res.results;
-        })
+            .toPromise().then(res => {
+                this.itemList = res.results;
+            })
     }
 
     public handleStep(data) {
@@ -568,7 +586,7 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
                 //     setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
                 this.router.navigateByUrl('/passport/ts-login').catch(() => {
                     this.apiResource.post('login_out');
-                });    
+                });
                 // }).catch(() => console.log('Oops errors!'));
             }
         });

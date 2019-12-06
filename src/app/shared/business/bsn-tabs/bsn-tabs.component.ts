@@ -135,6 +135,25 @@ export class BsnTabsComponent extends CnComponentBase implements OnInit, OnDestr
                                             this.config = CommonTools.deepCopy(this.config);
                                         }
                                     break;
+                                    case BSN_COMPONENT_CASCADE_MODES.START_AUTO_PLAY:
+                                        if (option.data.mappingData) {
+                                            // 解析参数
+                                            if (
+                                                relation.params &&
+                                                relation.params.length > 0
+                                            ) {
+                                                const t = {};
+                                                relation.params.forEach(param => {
+                                                    t[param['cid']] =
+                                                        option.data.mappingData[param['pid']];
+                                                });
+                                                this.tempValue = t;
+                                            }
+
+                                            // 刷新当前页签，重新设置激活状态
+                                            this.config = CommonTools.deepCopy(this.config);
+                                        }
+                                    break;
                                     case BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD:
                                         // 获取相关配置，该配置获取所有标签页
                                         // 找出标签页中设置替换刷新的配置标签

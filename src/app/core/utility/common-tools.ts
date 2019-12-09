@@ -48,7 +48,12 @@ export class CommonTools {
                                     param['value'] === '' ||
                                     param['value'] === 0
                                 ) {
-                                    result[param['name']] = param.value;
+                                    // result[param['name']] = param.value;
+                                    if (param['datatype']) {
+                                        result[param['name']] = this.getParameters(param['datatype'], param.value);
+                                    } else {
+                                        result[param['name']] = param.value;
+                                    }
                                 }
                             }
                             break;

@@ -1,5 +1,5 @@
 
-import { SystemResource } from '@core/utility/system-resource';
+import { SystemResource, SystemResource_1 } from '@core/utility/system-resource';
 import { CnComponentBase } from './../../components/cn-component-base';
 import {
     Component,
@@ -120,6 +120,7 @@ export class BsnCarouselComponent extends CnComponentBase
                                 imgItem[element['name']] = (d[element['field']]).replace('/^\\/$', function (s) {
                                     return s = '/';
                                 });
+                                imgItem[element['name']] = this._replaceCurrentURL(this.serverPath + imgItem[element['name']]);
                             }
                         } else {
                             imgItem[element['name']] = d[element['field']];
@@ -149,6 +150,36 @@ export class BsnCarouselComponent extends CnComponentBase
         });
         return this._apiService
             .get(url, params).toPromise();
+    }
+
+    public _replaceCurrentURL(oldUrl: string): string {
+        const reg = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/;
+        const reg_port = /:\d{1,5}/;
+        const reg_all = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5}/
+        const ip = reg_all.exec(oldUrl)[0];
+        
+        const href = window.location.href;
+
+        const port = reg_port.exec(href)[0];
+        const subPort = reg_port.exec(href)[0].substring(1, port.length);
+
+        let match, matchIP;
+        if (href.indexOf('localhost') < 0) {
+            match = reg.exec(window.location.href)[0].replace(/\./g, '_');  
+            
+            matchIP = `url_${match}_${subPort}`;
+        } else {
+            matchIP = `url_localhost_${subPort}`;
+        }
+        let newIP;
+        if (oldUrl.indexOf('api.cfg') > 0) {
+            newIP = SystemResource_1[matchIP].settingSystemServer;
+        } else if (oldUrl.indexOf('ReportServer.ashx') > 0) {
+            newIP = SystemResource_1[matchIP].reportServerUrl;
+        } else {
+            newIP = SystemResource_1[matchIP].localResourceUrl;
+        }
+        return oldUrl.replace(ip, newIP);
     }
 
     public resolverRelation() {

@@ -35,16 +35,20 @@ export class TsLayoutPassportComponent implements OnInit {
     }
 
     public ngOnInit() {
+
+        // this._route.data.subscribe(data => {
+        //     this.title = data['title'] ? data['title'] : 'Smart One 自动化业务平台';
+        //     this.subTitle = data['sub'] ? data['sub'] : '管理系统'
+        // });
+    }
+
+    public ngAfterViewInit() {
         this._apiService.getSystemConfig().subscribe(s => {
             this.title = s.title;
             this.subTitle = s.subTitle;
             this.year = s.year;
             this.company = s.company;
         });
-        // this._route.data.subscribe(data => {
-        //     this.title = data['title'] ? data['title'] : 'Smart One 自动化业务平台';
-        //     this.subTitle = data['sub'] ? data['sub'] : '管理系统'
-        // });
     }
 
 }

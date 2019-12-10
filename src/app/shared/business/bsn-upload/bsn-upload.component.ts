@@ -2,6 +2,7 @@ import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { NzMessageService, UploadFile } from 'ng-zorro-antd';
 import { ApiService } from '@core/utility/api-service';
 import { CommonTools } from '@core/utility/common-tools';
+import { SystemResource_1, SystemResource } from '@core/utility/system-resource';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -38,6 +39,8 @@ export class BsnUploadComponent implements OnInit, AfterViewInit {
     public securityLevel;
     public remark;
 
+    public url = SystemResource.appSystem.Server;
+
     constructor(
         private _message: NzMessageService,
         private _apiService: ApiService
@@ -46,6 +49,7 @@ export class BsnUploadComponent implements OnInit, AfterViewInit {
     public ngOnInit() {}
 
     public ngAfterViewInit() {
+        this.url = this._replaceCurrentURL(this.url);
         this.loadUploadList();
     }
 
@@ -142,6 +146,36 @@ export class BsnUploadComponent implements OnInit, AfterViewInit {
                 this._message.success('附件删除失败！');
             }
         );
+    }
+
+    public _replaceCurrentURL(oldUrl: string): string {
+        const reg = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/;
+        const reg_port = /:\d{1,5}/;
+        const reg_all = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5}/
+        const ip = reg_all.exec(oldUrl)[0];
+        
+        const href = window.location.href;
+
+        const port = reg_port.exec(href)[0];
+        const subPort = reg_port.exec(href)[0].substring(1, port.length);
+
+        let match, matchIP;
+        if (href.indexOf('localhost') < 0) {
+            match = reg.exec(window.location.href)[0].replace(/\./g, '_');  
+            
+            matchIP = `url_${match}_${subPort}`;
+        } else {
+            matchIP = `url_localhost_${subPort}`;
+        }
+        let newIP;
+        if (oldUrl.indexOf('api.cfg') > 0) {
+            newIP = SystemResource_1[matchIP].settingSystemServer;
+        } else if (oldUrl.indexOf('ReportServer.ashx') > 0) {
+            newIP = SystemResource_1[matchIP].reportServerUrl;
+        } else {
+            newIP = SystemResource_1[matchIP].localResourceUrl;
+        }
+        return oldUrl.replace(ip, newIP);
     }
 
     public cancel() {

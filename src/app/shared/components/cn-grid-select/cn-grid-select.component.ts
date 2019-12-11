@@ -21,6 +21,8 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
     @Input()
     public value;
     @Input()
+    public initData;
+    @Input()
     public bsnData;
     @Input()
     public rowData;
@@ -148,6 +150,8 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
                     params[param.name] = param.value;
                 } else if (param.type === 'componentValue') {
                     params[param.name] = componentValue[param.valueName];
+                } else if (param.type === 'initValue') {
+                    params[param.name] = this.initData[param.valueName];
                 } else if (param.type === 'cascadeValue') {
                     if (this.cascadeValue[param.valueName]) {
                         params[param.name] = this.cascadeValue[param.valueName];

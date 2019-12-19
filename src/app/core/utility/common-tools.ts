@@ -211,8 +211,14 @@ export class CommonTools {
                             break;
                         case BSN_PARAMETER_TYPE.RETURN_VALUE:
                             if (model.returnValue) {
-                                result[param['name']] =
+                                if (model.returnValue.length) {
+                                    result[param['name']] = 
+                                    model.returnValue
+                                } else {
+                                    result[param['name']] =
                                     model.returnValue[param['valueName']];
+                                }
+                                
                             }
                             break;
                         case BSN_PARAMETER_TYPE.ROUTER_VALUE:

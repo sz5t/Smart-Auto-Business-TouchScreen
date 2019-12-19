@@ -2578,6 +2578,12 @@ export class TsDataTableComponent extends CnComponentBase
                                     response,
                                     option.ajaxConfig,
                                     () => {
+                                        this.cascade.next(
+                                            new BsnComponentMessage(
+                                                BSN_COMPONENT_CASCADE_MODES.REFRESH,
+                                                this.config.viewId
+                                            )
+                                        );
                                         this.focusIds = this._getFocusIds(
                                             response.data
                                         );
@@ -2634,6 +2640,16 @@ export class TsDataTableComponent extends CnComponentBase
                             this.focusIds = this._getFocusIds(response.data);
                             this.load();
                         });
+                        this.returnValue = response.data;
+                        if (this.returnValue) {
+                            const childrenConfig = option.ajaxConfig.filter(
+                                f => f.parentName && f.parentName === c.name
+                            );
+                            if (Array.isArray(childrenConfig) && childrenConfig.length > 0) {
+                                //  目前紧支持一次执行一个分之步骤
+                                this._getAjaxConfig(childrenConfig[0], option.ajaxConfig, this.returnValue);
+                            }
+                        }
                     }
                 })();
             }
@@ -3247,7 +3263,8 @@ export class TsDataTableComponent extends CnComponentBase
                 cacheValue: this.cacheValue,
                 cardValue: this.cacheValue,
                 cascadeValue: this.cascadeValue,
-                routerValue: this.cacheValue
+                routerValue: this.cacheValue,
+                returnValue: this.returnValue
             });
         }
         return params;

@@ -33,7 +33,7 @@ import { NzCarouselComponent } from 'ng-zorro-antd';
   <nz-spin [nzSpinning]="isLoading" nzTip='加载中...'>
     <nz-carousel #carousel [nzEffect]="'fade'" [nzAutoPlay]="config.autoPlay" [nzEnableSwipe]="config.enableSwipe" >
         <div nz-carousel-content *ngFor="let img of imgList">
-            <img class="image" alt="{{img.alt}}" src="{{serverPath + img.src}}"/>
+            <img class="image" alt="{{img.alt}}" src="{{img.src}}"/>
         </div>
     </nz-carousel>
     </nz-spin>

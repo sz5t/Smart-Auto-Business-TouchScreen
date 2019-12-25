@@ -2640,7 +2640,8 @@ export class TsDataTableComponent extends CnComponentBase
                             this.focusIds = this._getFocusIds(response.data);
                             this.load();
                         });
-                        this.returnValue = response.data;
+
+                        this.returnValue = {...row, 'returnValue': response.data};
                         if (this.returnValue) {
                             const childrenConfig = option.ajaxConfig.filter(
                                 f => f.parentName && f.parentName === c.name

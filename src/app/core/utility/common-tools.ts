@@ -211,14 +211,25 @@ export class CommonTools {
                             break;
                         case BSN_PARAMETER_TYPE.RETURN_VALUE:
                             if (model.returnValue) {
-                                if (model.returnValue.length) {
-                                    result[param['name']] = 
-                                    model.returnValue
-                                } else {
-                                    result[param['name']] =
-                                    model.returnValue[param['valueName']];
-                                }
-                                
+                                // if (model.returnValue.length) {
+                                    // result[param['name']] =
+                                        // [
+                                        //     { 'opcname': '1', 'opctime': '2019-12-19 17:45' , 'opcvalue': '1' , 'opcvaluetype': 'number' },
+                                        //     { 'opcname': '1', 'opctime': '2019-12-19 17:46' , 'opcvalue': '2' , 'opcvaluetype': 'number' },
+                                        //     { 'opcname': '1', 'opctime': '2019-12-19 17:47' , 'opcvalue': '3' , 'opcvaluetype': 'number' },
+                                        //     { 'opcname': '1', 'opctime': '2019-12-19 17:48' , 'opcvalue': '4' , 'opcvaluetype': 'number' }
+                                        // ]
+                                        model.returnValue
+                                // } else {
+                                    // if (param['valueName']) {
+                                        result[param['name']] =
+                                            model.returnValue[param['valueName']];
+                                    // } else {
+                                        // result[param['name']] = { 'opcname': '1', 'opctime': '2019-12-19 17:45' , 'opcvalue': '1' , 'opcvaluetype': 'number' }
+                                        // model.returnValue
+                                    // }
+                                // }
+
                             }
                             break;
                         case BSN_PARAMETER_TYPE.ROUTER_VALUE:

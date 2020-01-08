@@ -2625,7 +2625,11 @@ export class TsDataTableComponent extends CnComponentBase
                                 this.focusIds = this._getFocusIds(
                                     response.data
                                 );
-                                this.load();
+                                if (this.config.ajaxConfig.ajaxType === 'proc') {
+                                    this.loadbypage();
+                                } else {
+                                    this.load();
+                                }
                             }
                         );
                     } else {

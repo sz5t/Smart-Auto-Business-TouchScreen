@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { ApiService } from '@core/utility/api-service';
 import { APIResource } from '@core/utility/api-resource';
+import { CacheService } from '@delon/cache';
 
 @Component({
     selector: 'cn-grid-select',
@@ -37,8 +38,13 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
     public resultData;
     public cascadeValue = {};
     public cascadeSetValue = {};
+    public cacheValue;
     // _selectedMultipleOption:any[];
-    constructor(private apiService: ApiService) { }
+    constructor(
+        private apiService: ApiService,
+        private cacheService: CacheService) { 
+        this.cacheValue = this.cacheService;
+    }
 
     public async ngOnInit() {
         // console.log('变化时临时参数', this.casadeData);
@@ -150,6 +156,8 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
                     params[param.name] = param.value;
                 } else if (param.type === 'componentValue') {
                     params[param.name] = componentValue[param.valueName];
+                } else if (param.type === 'cacheValue') {
+                    params[param.name] = this.cacheValue.getNone('userInfo')[param.valueName];
                 } else if (param.type === 'initValue') {
                     params[param.name] = this.initData[param.valueName];
                 } else if (param.type === 'cascadeValue') {

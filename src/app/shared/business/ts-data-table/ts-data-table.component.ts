@@ -533,7 +533,7 @@ export class TsDataTableComponent extends CnComponentBase
                         this.cacheValue.set('routerValue', { 'routeCheckedIds': itemIds });
                         this.linkToPage(option, itemIds);
                         return;
-                    case BSN_COMPONENT_MODES.EXECUTE_SELECTED_LINK:
+                    case BSN_COMPONENT_MODES.EXECUTE_SELECTED_ID_LINK:
                         const itemId = this._getSelectedItem();
                         this.cacheValue.set('routerValue', { 'routeSelectedItem': itemId });
                         this.linkToPage(option, itemId);
@@ -860,6 +860,31 @@ export class TsDataTableComponent extends CnComponentBase
             j = ((this.pageIndex - 1) * this.pageSize) + i;
             if (j < this.loadData.total) {
                 pagedata.push(this.loadData.rows[j]);
+            }
+        }
+        this._updateEditCacheByLoad(pagedata);
+        this.dataList = pagedata;
+    }
+
+    public loadbydynamictable() {
+        if (typeof this.pageIndex !== 'undefined') {
+            this.pageIndex = this.pageIndex || 1;
+        }
+        // 当前页无数据则退回到上一页
+        if (this.pageIndex > 1) {
+            const p_pindex = ((this.pageIndex - 1) * this.pageSize);
+            if (this.dataList.length <= p_pindex) {
+                this.pageIndex = this.pageIndex - 1;
+                this.pageIndexPlan();
+            }
+        }
+
+        const pagedata = [];
+        let j = 0;
+        for (let i = 0; i < this.pageSize; i++) {
+            j = ((this.pageIndex - 1) * this.pageSize) + i;
+            if (j < this.dataList.length) {
+                pagedata.push(this.dataList[j]);
             }
         }
         this._updateEditCacheByLoad(pagedata);
@@ -2626,7 +2651,7 @@ export class TsDataTableComponent extends CnComponentBase
                                     response.data
                                 );
                                 if (this.config.ajaxConfig.ajaxType === 'proc') {
-                                    this.loadbypage();
+                                    this.loadbydynamictable();
                                 } else {
                                     this.load();
                                 }

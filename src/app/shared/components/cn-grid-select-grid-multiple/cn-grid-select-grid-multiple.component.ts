@@ -12,6 +12,7 @@ export class CnGridSelectGridMultipleComponent implements OnInit {
   @Input() public value;
   @Input() public bsnData;
   @Input() public rowData;
+  @Input() public initData;
   @Input() public dataSet;
   @Input() public casadeData;
   @Input() public changeConfig;

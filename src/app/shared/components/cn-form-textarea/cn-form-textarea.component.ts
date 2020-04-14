@@ -34,6 +34,7 @@ export class CnFormTextareaComponent implements OnInit, AfterViewInit {
   @ViewChild('CodeMirror')
   public codeEditor: ElementRef;
   public editor;
+  public model;
   constructor(
     private http: _HttpClient
   ) { }

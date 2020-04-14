@@ -3,13 +3,13 @@
         <nz-card [nzBordered]="true" [nzBodyStyle]="config.bodyStyle?config.bodyStyle:{height: '500px'}">
             <nz-table #nzTable [nzBordered]="config.bordered?config.bordered:false" [nzData]="dataList"
                 [nzSize]="config.size" [nzFrontPagination]="false" [nzShowSizeChanger]="true" [nzTotal]="total"
-                [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize" [nzShowTotal]="totals"
+                [(nzPageIndex)]="pageIndex" [(nzPageSize)]="pageSize" [nzShowTotal]="showTotal"
                 [nzPageSizeOptions]="config.pageSizeOptions ? config.pageSizeOptions :[]" [nzLoading]="loading"
                 (nzPageIndexChange)="searchData()" (nzPageSizeChange)="searchData(true)"
-                [nzTitle]="this.config.title ? title : false" [nzNoResult]="noResult" [nzLoadingDelay]="50"
+                [nzTitle]="this.config.title ? title : false" [nzLoadingDelay]="50"
                 [nzScroll]="config.scroll ? config.scroll : {}">
                 <thead (nzSortChange)="sort($event)" nzSingleSort>
-                    <tr (contextmenu)="contextMenu($event,contextTemplate)">
+                    <tr>
                         <th [attr.rowspan]="config.checkedConfig.rowspan?config.checkedConfig.rowspan:1"
                             *ngIf="config.checkedConfig" nzLeft="0px"
                             [nzWidth]="config.checkedConfig.width?config.checkedConfig.width:'10px'"
@@ -286,24 +286,10 @@
                 <!--</ng-template> -->
                 <nz-switch *ngIf="config.autoPlaySwitch" [ngModel]="true" nzCheckedChildren="开始滚动"
                     nzUnCheckedChildren="暂停滚动" (ngModelChange)="startAutoPlay()"></nz-switch>
-                <ng-template #totals let-total *ngIf="config.pagination">
-                    共 {{total|async}} 条
-                </ng-template>
-                <ng-template #noResult *ngIf="config.pagination">
-                    未查询到任何数据...
-                </ng-template>
+                    <ng-template #showTotal let-total>
+                        共 {{total|async}} 条
+                    </ng-template>
             </nz-table>
-            <ng-template #contextTemplate *ngIf="config.pagination">
-                <!-- <cn-bsn-tree-menu [config]="menus" [dropdown]="dropdown"></cn-bsn-tree-menu> -->
-                <ul nz-menu nzInDropDown *ngFor="let group of menus">
-                    <li *ngFor="let btn of group" nz-menu-item (click)="selectMenu(btn, group)">
-                        <span style="padding-left:15px;padding-right:15px;">
-                            <strong>
-                                <i nz-icon type="setting" theme="outline"></i> {{btn.text}}</strong>
-                        </span>
-                    </li>
-                </ul>
-            </ng-template>
         </nz-card>
     </nz-content>
     <nz-footer style="text-align: center; padding: 0px" *ngIf="config.toolbar">

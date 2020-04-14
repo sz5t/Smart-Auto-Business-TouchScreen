@@ -31,17 +31,17 @@ import { CommonTools } from '@core/utility/common-tools';
     providers: [SocialService]
 })
 export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
-    private form: FormGroup;
-    private error = '';
-    private errorApp = '';
+    public form: FormGroup;
+    public error = '';
+    public errorApp = '';
     // 登录配置/解析系统的标识：0配置平台，1解析平台
-    private loading = false;
-    private mediaStreamTrack = null;
+    public loading = false;
+    public mediaStreamTrack = null;
     public timeout;
     // 当前选择登录系统的配置项
-    private _currentSystem;
-    private isCardLogin = false;
-    private isFaceLogin = false;
+    public _currentSystem;
+    public isCardLogin = false;
+    public isFaceLogin = false;
     private ajax = {
         url: 'open/getEquipment',
         ajaxType: 'get',
@@ -387,7 +387,7 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // endregion
 
-    private submit() {
+    public submit() {
         this.error = '';
         this.errorApp = '';
         this.loading = true;
@@ -447,7 +447,7 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
         this.loading = false;
     }
 
-    private changeTab($event: NzTabChangeEvent) {
+    public changeTab($event: NzTabChangeEvent) {
         if ($event.index === 2) {
             this.getMedia();
         }

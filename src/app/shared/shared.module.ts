@@ -32,9 +32,7 @@ import { CountdownModule } from 'ngx-countdown';
 import { UEditorModule } from 'ngx-ueditor';
 import { NgxTinymceModule } from 'ngx-tinymce';
 import { ComponentResolverComponent } from '@shared/resolver/component-resolver/component-resolver.component';
-import { ComponentSettingResolverComponent } from '@shared/resolver/component-resolver/component-setting-resolver.component';
 import { LayoutResolverComponent } from '@shared/resolver/layout-resolver/layout-resolver.component';
-import { LayoutSettingResolverComponent } from '@shared/resolver/layout-resolver/layout-setting-resolver.component';
 import { FormResolverComponent } from '@shared/resolver/form-resolver/form-resolver.component';
 import { CnFormInputComponent } from '@shared/components/cn-form-input/cn-form-input.component';
 import { CnFormSubmitComponent } from '@shared/components/cn-form-submit/cn-form-submit.component';
@@ -56,10 +54,6 @@ import { SqlEditorComponent } from '@shared/business/sql-editor/sql-editor.compo
 import { CnCodeEditComponent } from '@shared/components/cn-code-edit/cn-code-edit.component';
 import { CnBsnTreeComponent } from '@shared/business/bsn-tree/bsn-tree.component';
 import { BsnAsyncTreeComponent } from '@shared/business/bsn-async-tree/bsn-async-tree.component';
-import { SettingLayoutComponent } from '@shared/resolver/setting-resolver/setting-layout/setting-layout.component';
-import { SettingComponentComponent } from '@shared/resolver/setting-resolver/setting-component/setting-component.component';
-import { SettingLayoutEditorComponent } from '@shared/resolver/setting-resolver/setting-layout/setting-layout-editor.component';
-import { SettingComponentEditorComponent } from '@shared/resolver/setting-resolver/setting-component/setting-component-editor.component';
 import { SearchResolverComponent } from '@shared/resolver/form-resolver/search-resolver.component';
 import { CnFormSearchComponent } from '@shared/components/cn-form-search/cn-form-search.component';
 import { CnDatePickerComponent } from '@shared/components/cn-date-picker/cn-date-picker.component';
@@ -102,7 +96,6 @@ import { BsnCardListItemComponent } from './business/bsn-card-list/bsn-card-list
 import { CnFormScancodeComponent } from './components/cn-form-scancode/cn-form-scancode.component';
 import { CnGridSearchComponent } from './components/cn-grid-search/cn-grid-search.component';
 import { CnGridBetweenInputComponent } from './components/cn-grid-between-input/cn-grid-between-input.component';
-import { CnFormInputSelectComponent } from './components/cn-form-input-select/cn-form-input-select.component'
 import { BsnReportComponent } from './business/bsn-report/bsn-report.component';
 import { BsnAsyncTreeTableComponent } from './business/bsn-treeTable/bsn-treeTable.component';
 import { CnFormSelectGridMultipleComponent } from './components/cn-form-select-grid-multiple/cn-form-select-grid-multiple.component';
@@ -118,8 +111,6 @@ import { BsnInlineCardSwipeComponent } from './business/bsn-inline-card-swipe/bs
 import { CnGridRadioGroupComponent } from './components/cn-grid-radio-group/cn-grid-radio-group.component';
 import { BsnInlineFaceRecognitionComponent } from './business/bsn-inline-face-recognition/bsn-inline-face-recognition.component';
 import { BsnChartComponent } from './business/bsn-chart/bsn-chart.component';
-import { CnFormInputKeyboardComponent } from './components/cn-form-input-keyboard/cn-form-input-keyboard.component';
-import { BsnKetboardComponent } from './business/bsn-ketboard/bsn-ketboard.component';
 // import { CnFormSocketComponent } from './components/cn-form-socket/cn-form-socket.component';
 
 
@@ -136,9 +127,7 @@ const THIRDMODULES = [
 // region: your componets & directives
 const COMPONENTS = [
     ComponentResolverComponent,
-    ComponentSettingResolverComponent,
     LayoutResolverComponent,
-    LayoutSettingResolverComponent,
     FormResolverComponent,
     CnFormInputComponent,
     CnFormSubmitComponent,
@@ -170,10 +159,6 @@ const COMPONENTS = [
     SqlEditorComponent,
     CnBsnTreeComponent,
     BsnAsyncTreeComponent,
-    SettingLayoutComponent,
-    SettingComponentComponent,
-    SettingComponentEditorComponent,
-    SettingLayoutEditorComponent,
     SearchResolverComponent,
     CnFormSearchComponent,
     BsnToolbarComponent,
@@ -212,7 +197,6 @@ const COMPONENTS = [
     CnGridSearchComponent,
     CnGridBetweenInputComponent,
     BsnReportComponent,
-    CnFormInputSelectComponent,
     BsnAsyncTreeTableComponent,
     CnFormSelectGridMultipleComponent,
     CnGridSelectGridMultipleComponent,
@@ -231,9 +215,7 @@ const COMPONENTS = [
     BsnInlineCardSwipeComponent,
     CnGridRadioGroupComponent,
     BsnInlineFaceRecognitionComponent,
-    BsnChartComponent,
-    CnFormInputKeyboardComponent,
-    BsnKetboardComponent
+    BsnChartComponent
     // CnFormSocketComponent
 ];
 const DIRECTIVES = [

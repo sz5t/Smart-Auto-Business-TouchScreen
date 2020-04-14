@@ -26,7 +26,7 @@
          <i data-command="addGroup" class="command iconfont icon-group disable" title="成组"></i>
          <i data-command="unGroup" class="command iconfont icon-ungroup disable" title="解组"></i>
          <span class="separator"></span>
-         <button (click)="save()" class="ant-btn ng-star-inserted ant-btn-default" title="保存">
+         <button class="ant-btn ng-star-inserted ant-btn-default" title="保存">
            <span><strong><i class="anticon anticon-save text-primary"></i> 保存</strong></span>
          </button>
      </div>
@@ -65,7 +65,7 @@
                                  <nz-form-item>
                                      <nz-form-label [nzSpan]="7" nzFor="label">名称：</nz-form-label>
                                      <nz-form-control [nzSpan]="16">
-                                         <input nz-input name="label" type="text" id="label" [(ngModel)]="nodeinfo.label" (ngModelChange)="valueChange()">
+                                         <input nz-input name="label" type="text" id="label" [(ngModel)]="nodeinfo.label" >
                                      </nz-form-control>
                                  </nz-form-item>
                              </form>

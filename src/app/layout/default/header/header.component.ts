@@ -50,4 +50,6 @@ export class HeaderComponent {
         this.settings.setLayout('collapsed', !this.settings.layout.collapsed);
     }
 
+    public searchToggleChange(){}
+
 }

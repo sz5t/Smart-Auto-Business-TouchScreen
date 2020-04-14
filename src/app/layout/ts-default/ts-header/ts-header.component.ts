@@ -50,4 +50,11 @@ export class TsHeaderComponent {
         this.settings.setLayout('collapsed', !this.settings.layout.collapsed);
     }
 
+    /**
+     * searchToggleChange
+     */
+    public searchToggleChange() {
+        
+    }
+
 }

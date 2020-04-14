@@ -8,7 +8,10 @@ import { Component, OnInit } from '@angular/core';
 export class WfDashboardComponent implements OnInit {
 
   constructor() { }
-
+  public node_panels;
+  public nodeinfo
+  edge_panels
+  edgeinfo
   ngOnInit() {
   }
 

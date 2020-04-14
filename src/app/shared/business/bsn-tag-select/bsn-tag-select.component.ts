@@ -52,7 +52,7 @@ export class BsnTagSelectComponent extends CnComponentBase
     public selectedItems;
     public loadingMore = false;
     public beforeOperation: BeforeOperation;
-    private itemList;
+    public itemList;
     @Output() public updateValue = new EventEmitter();
     constructor(
         private _apiService: ApiService,

@@ -3,8 +3,7 @@
             <nz-list
             [nzDataSource]="data"
             [nzItemLayout]="'vertical'"
-            [nzRenderItem]="itemDetail"
-            [nzFooter]="footer">
+            [nzRenderItem]="itemDetail">
             <ng-template #itemDetail let-item >
               <nz-list-item [nzContent]="item.content ? item.content : false" 
               [nzActions]="[starAction,likeAction,msgAction]" 

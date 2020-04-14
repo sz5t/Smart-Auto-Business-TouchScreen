@@ -80,19 +80,19 @@
     <div class="steps-content2" *ngIf="current == 1">
         <nz-card nzTitle="布局预览">
             <nz-spin [nzSpinning]="isShowPreview">
-                    <cn-setting-layout 
+                    <!-- <cn-setting-layout 
                     *ngIf="previewLayoutData" 
                     [layoutId]="_selectedLayoutId" 
                     [config]="previewLayoutData"
                     [bufferId]="_bufferId"
-                    ></cn-setting-layout>
+                    ></cn-setting-layout> -->
             </nz-spin>
         </nz-card>
 
     </div>
     <div class="steps-content2" *ngIf="current == 2">
         <cn-layout-resolver [layoutId]="_selectedLayoutId" [config]="previewLayoutData"></cn-layout-resolver>
-        <cn-setting-layout [bufferId]="_bufferId" *ngIf="previewLayoutData" [layoutId]="_selectedLayoutId" [config]="previewLayoutData"></cn-setting-layout>
+        <!-- <cn-setting-layout [bufferId]="_bufferId" *ngIf="previewLayoutData" [layoutId]="_selectedLayoutId" [config]="previewLayoutData"></cn-setting-layout> -->
     </div>
     <div class="steps-action">
         <button nz-button nzType="primary" (click)="done()" *ngIf="current === 1">

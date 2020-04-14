@@ -26,7 +26,7 @@ export class LayoutDrawerComponent extends CnComponentBase implements OnInit, On
     public permissions = [];
     @Input()
     public initData;
-    private visible = false;
+    public visible = false;
     constructor(
         @Inject(BSN_COMPONENT_MODES)
         private stateEvents: Observable<BsnComponentMessage>,
@@ -106,7 +106,7 @@ export class LayoutDrawerComponent extends CnComponentBase implements OnInit, On
         }
     }
 
-    private close() {
+    public close() {
         setTimeout(() => {
             this.visible = false;   
         });

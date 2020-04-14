@@ -18,7 +18,7 @@ import { Form, FormGroup } from '@angular/forms';
     styleUrls: ['./table-chart.css']
 })
 export class TableChartComponent implements OnInit, AfterViewInit {
-    private config = {
+    public config = {
         rows: [
             {
                 row: {

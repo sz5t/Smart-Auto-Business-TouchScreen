@@ -7918,6 +7918,7 @@ export class WorkFlowTodoComponent implements OnInit {
     };
 
     constructor(private http: _HttpClient) { }
+    public searchValue;
 
     public isVisible = false;
     public isConfirmLoading = false;

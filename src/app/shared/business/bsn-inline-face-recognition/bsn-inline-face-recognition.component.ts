@@ -31,8 +31,8 @@ export class BsnInlineFaceRecognitionComponent extends CnComponentBase
   @Input()
   public permissions;
   // public _cardNo = {};
-  private mediaStreamTrack = null;
-  private errorApp = '';
+  public mediaStreamTrack = null;
+  public errorApp = '';
   public timeout;
   private faceAjax = {
     url: 'open/getEquipment',

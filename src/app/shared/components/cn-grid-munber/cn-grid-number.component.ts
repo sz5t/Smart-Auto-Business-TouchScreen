@@ -9,6 +9,9 @@ export class CnGridNumberComponent implements OnInit {
     @Output() updateValue = new EventEmitter();
     @Input()  value;
     @Input() casadeData;
+    public parser;
+    public model;
+    public formatter;
     _value;
     cascadeSetValue = {};
     constructor(

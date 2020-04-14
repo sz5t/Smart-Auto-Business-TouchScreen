@@ -17,6 +17,8 @@ import { zip } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { I18NService } from '@core/i18n/i18n.service';
 import { SystemResource } from '@core/utility/system-resource';
+import G6Editor from '@antv/g6-editor';
+import G6 from '@antv/g6';
 /**
  * 用于应用启动时
  * 一般用来获取应用所需要的基础数据等
@@ -36,6 +38,8 @@ export class StartupService {
         iconSrv: NzIconService,
         private cacheService: CacheService
     ) {
+        G6Editor.track(false);
+        G6.track(false);
         // iconSrv.addIcon(...ICONS_AUTO, ...ICONS);
     }
 

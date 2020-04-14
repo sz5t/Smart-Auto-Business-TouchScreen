@@ -77,6 +77,15 @@ export const SystemResource_1 = {
         /**报表  */
         reportServerUrl: '10.129.150.111:8088'
     },
+    'url_10_129_203_33_8084': {
+        localResourceUrl: '10.129.203.33:8084',
+        /** 后台服务 */
+        settingSystemServer: '10.129.203.33:8081',
+        /** 后台服务 */
+        appSystemServer: '10.129.203.33:8081',
+        /**报表  */
+        reportServerUrl: '10.129.203.33:8088'
+      },
     // 7416
     'url_192_168_250_232_8084': {
         localResourceUrl: '192.168.250.232:8084',

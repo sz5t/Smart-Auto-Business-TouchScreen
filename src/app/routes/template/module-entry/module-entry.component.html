@@ -32,6 +32,8 @@
                 <!-- <nz-page-header-subtitle></nz-page-header-subtitle> -->
                 <nz-page-header-extra>
                         <button nz-button nzType="primary" (click)="logout()">退出登录</button>
+                        <nz-avatar [nzSrc]="'../assets/img/user.svg'" nzSize="small" class="mr-sm"></nz-avatar>
+                        {{userInfo?.accountName ? userInfo?.accountName : '用户'}}
                 </nz-page-header-extra>
         </nz-page-header>
         <ng-template #backIcon>

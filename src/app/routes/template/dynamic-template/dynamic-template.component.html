@@ -33,6 +33,8 @@
                 <nz-page-header-extra>
                         <bsn-toolbar style="float:left" *ngIf="config.toolbar" [config]="config.toolbar" [viewId]="config.targetViewId"></bsn-toolbar>
                         <button *ngIf="config.siderLayout" nz-button (click)="isCollapsed=!isCollapsed"><i class="trigger" nz-icon [type]="isCollapsed?'menu-unfold':'menu-fold'"></i></button>
+                        <nz-avatar [nzSrc]="'../assets/img/user.svg'" nzSize="small" class="mr-sm"></nz-avatar>
+                        {{userInfo?.accountName ? userInfo?.accountName: '用户'}}
                 </nz-page-header-extra>
                 <!-- <nz-page-header-content>
                         {{config.desc}}

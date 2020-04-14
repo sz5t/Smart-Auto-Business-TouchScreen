@@ -122,7 +122,7 @@ export class BsnToolbarComponent implements OnInit, OnDestroy {
     }
 
     public toolbarAction(btn, $event) {
-        //$event.stopPropagation();
+        // $event.stopPropagation();
         // console.log('send btn message', this.viewId);
         // const message = new BsnToolbarRelativeMessage();
         // message.action = this.TABLE_MODELS[btn.action];

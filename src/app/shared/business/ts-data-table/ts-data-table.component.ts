@@ -530,12 +530,16 @@ export class TsDataTableComponent extends CnComponentBase
                         break;
                     case BSN_COMPONENT_MODES.EXECUTE_CHECKED_ID_LINK:
                         const itemIds = this._getCheckItemsId();
+                        this.beforeOperation.operationItemsData = itemIds
                         this.cacheValue.set('routerValue', { 'routeCheckedIds': itemIds });
+                        !this.beforeOperation.beforeItemsDataOperation(option) &&
                         this.linkToPage(option, itemIds);
                         return;
                     case BSN_COMPONENT_MODES.EXECUTE_SELECTED_ID_LINK:
                         const itemId = this._getSelectedItem();
+                        this.beforeOperation.operationItemData = itemId
                         this.cacheValue.set('routerValue', { 'routeSelectedItem': itemId });
+                        !this.beforeOperation.beforeItemDataOperation(option) &&
                         this.linkToPage(option, itemId);
                         return;
                     case BSN_COMPONENT_MODES.LINK:
@@ -544,6 +548,8 @@ export class TsDataTableComponent extends CnComponentBase
                     case BSN_COMPONENT_MODES.EXECUTE_SELECTED_LINK:
                         const item = this._getSelectedItem();
                         this.cacheValue.set('routerValue', item);
+                        this.beforeOperation.operationItemData = item;
+                        !this.beforeOperation.beforeItemDataOperation(option) &&
                         this.linkToPage(option, item);
                         return;
                     case BSN_COMPONENT_MODES.LOGIN_OUT:

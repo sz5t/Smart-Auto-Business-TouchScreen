@@ -136,7 +136,7 @@ export class GridEditorDirective implements OnInit, OnChanges, OnDestroy {
     }
 
     public ngOnInit() {
-        console.log('ngOnChangesvalue', this.changecount);
+        // console.log('ngOnChangesvalue', this.changecount);
         if (this.changecount === 'first') {
             if (!components[this.config.type]) {
                 const supportedTypes = Object.keys(components).join(', ');

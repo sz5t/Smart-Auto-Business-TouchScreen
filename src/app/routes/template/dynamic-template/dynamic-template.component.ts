@@ -9,6 +9,7 @@ import { ActivatedRoute } from '@angular/router';
     styleUrls: [`./dynamic-template.component.less`]
 })
 export class DynamicTemplateComponent implements OnInit, OnDestroy {
+    public userInfo: any;
     public title;
     public permissions;
     public config: any = {
@@ -32,8 +33,8 @@ export class DynamicTemplateComponent implements OnInit, OnDestroy {
             this._http.getLocalData(params.templateName).subscribe(data => {
                 this.config = data;
                 (async() => {
-                    const userInfo = this._cacheService.getNone('userInfo');
-                    const userId = userInfo['userId'];    
+                    this.userInfo = this._cacheService.getNone('userInfo');
+                    const userId = this.userInfo['userId'];    
                     const permission = await this._getOperationPermission(params.name, userId, 'button');
                     if (permission.isSuccess) {
                         this.permissions = permission.data;

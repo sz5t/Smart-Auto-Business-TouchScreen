@@ -64,8 +64,8 @@ export class UserLoginComponent implements OnInit, OnDestroy {
     }
 
     public ngOnInit(): void {
-        this.titleService.setTitle('SmartOne');
-        this.cacheService.set('AppName', 'SmartOne');
+        this.titleService.setTitle(this.titleService.default);
+        // this.cacheService.set('AppName', 'SmartOne');
     }
     // region: fields
 

@@ -12,6 +12,7 @@ import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
     styleUrls: [`./module-entry.component.less`]
 })
 export class ModuleEntryComponent implements OnInit, OnDestroy {
+    public userInfo: any = {};
     public title;
     public permissions;
     public config: any = {
@@ -61,6 +62,16 @@ export class ModuleEntryComponent implements OnInit, OnDestroy {
     /** custom trigger can be TemplateRef **/
     public changeTrigger(): void {
         // this.triggerTemplate = this.customTrigger;
+    }
+
+    public ngAfterViewInit() {
+        setTimeout(() => {
+            this.userInfo = this.cacheService.getNone('userInfo');
+        });
+
+        // this.tokenService.change().subscribe((res: any) => {
+        //     this.settings.setUser(res);
+        // });
     }
 
     public ngOnDestroy(): void {

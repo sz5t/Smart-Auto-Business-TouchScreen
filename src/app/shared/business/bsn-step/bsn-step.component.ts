@@ -161,13 +161,10 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
                                 // 匹配及联模式
                                 switch (mode) {
                                     case BSN_COMPONENT_CASCADE_MODES.REFRESH:
-
                                         break;
                                     case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
-
                                         break;
                                     case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILDREN:
-
                                         break;
                                     case BSN_COMPONENT_CASCADE_MODES.CHECKED_ROWS:
                                         break;

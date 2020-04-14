@@ -96,7 +96,43 @@ export const SystemResource_1 = {
         appSystemServer: '192.168.1.200:8072',
         /**报表  */
         reportServerUrl: '192.168.1.200:8088'
-    }
+    },
+    'url_39_101_168_200_8042': {
+        localResourceUrl: '39.101.168.200:8042',
+        /** 后台服务 */
+        settingSystemServer: '39.101.168.200:8040',
+        /** 后台服务 */
+        appSystemServer: '39.101.168.200:8040',
+        /**报表  */
+        reportServerUrl: '39.101.168.200:8043'
+    },
+    'url_39_101_168_200_8013': {
+        localResourceUrl: '39.101.168.200:8013',
+        /** 后台服务 */
+        settingSystemServer: '39.101.168.200:8010',
+        /** 后台服务 */
+        appSystemServer: '39.101.168.200:8010',
+        /**报表  */
+        reportServerUrl: '39.101.168.200:8012'
+      },
+      'url_39_101_168_200_8023': {
+        localResourceUrl: '39.101.168.200:8023',
+        /** 后台服务 */
+        settingSystemServer: '39.101.168.200:8020',
+        /** 后台服务 */
+        appSystemServer: '39.101.168.200:8020',
+        /**报表  */
+        reportServerUrl: '39.101.168.200:8022'
+      },
+      'url_39_101_168_200_8033': {
+        localResourceUrl: '39.101.168.200:8033',
+        /** 后台服务 */
+        settingSystemServer: '39.101.168.200:8030',
+        /** 后台服务 */
+        appSystemServer: '39.101.168.200:8030',
+        /**报表  */
+        reportServerUrl: '39.101.168.200:8032'
+      }
 }
 
 

@@ -27,7 +27,7 @@ import {
     ViewChild,
     ElementRef
 } from '@angular/core';
-import { NzMessageService, NzModalService, NzDropdownService, NzDrawerService } from 'ng-zorro-antd';
+import { NzMessageService, NzModalService, NzDropdownService, NzDrawerService, NzModalRef } from 'ng-zorro-antd';
 import { CommonTools } from '@core/utility/common-tools';
 import { ApiService } from '@core/utility/api-service';
 import { CnComponentBase } from '@shared/components/cn-component-base';
@@ -74,6 +74,79 @@ export class TsDataTableComponent extends CnComponentBase
     public ref;
     // tempValue = {};
     @Output() public updateValue = new EventEmitter();
+
+
+    private _tplModal: NzModalRef;
+    public get tplModal(): NzModalRef {
+        return this._tplModal;
+    }
+    public set tplModal(value: NzModalRef) {
+        this._tplModal = value;
+    }
+
+    private _msgTitle: string;
+    public get msgTitle(): string {
+        return this._msgTitle;
+    }
+    public set msgTitle(value: string) {
+        this._msgTitle = value;
+    }
+
+    private _msgContent: string;
+    public get msgContent(): string {
+        return this._msgContent;
+    }
+    public set msgContent(value: string) {
+        this._msgContent = value;
+    }
+
+    @ViewChild('tplTitle')
+    private _tplTitleRef: TemplateRef<any>;
+    public get tplTitleRef(): TemplateRef<any> {
+        return this._tplTitleRef;
+    }
+    public set tplTitleRef(value: TemplateRef<any>) {
+        this._tplTitleRef = value;
+    }
+    
+    
+    @ViewChild('tplContent')
+    private _tplContentRef: TemplateRef<any>;
+    public get tplContentRef(): TemplateRef<any> {
+        return this._tplContentRef;
+    }
+    public set tplContentRef(value: TemplateRef<any>) {
+        this._tplContentRef = value;
+    }
+
+    @ViewChild('tplFooter')
+    private _tplFooterRef: TemplateRef<any>;
+    public get tplFooterRef(): TemplateRef<any> {
+        return this._tplFooterRef;
+    }
+    public set tplFooterRef(value: TemplateRef<any>) {
+        this._tplFooterRef = value;
+    }
+    
+    @ViewChild('tplConfirmFooter')
+    private _tplConfirmFooterRef: TemplateRef<any>;
+    public get tplConfirmFooterRef(): TemplateRef<any> {
+        return this._tplConfirmFooterRef;
+    }
+    public set tplConfirmFooterRef(value: TemplateRef<any>) {
+        this._tplConfirmFooterRef = value;
+    }
+
+    @ViewChild('tplInnerConfirmFooter')
+    private _tplInnerConfirmFooterRef: TemplateRef<any>;
+    public get tplInnerConfirmFooterRef(): TemplateRef<any> {
+        return this._tplInnerConfirmFooterRef;
+    }
+    public set tplInnerConfirmFooterRef(value: TemplateRef<any>) {
+        this._tplInnerConfirmFooterRef = value;
+    }
+
+
     public loading = false;
     public pageIndex = 1;
     public pageSize = 5;
@@ -122,6 +195,11 @@ export class TsDataTableComponent extends CnComponentBase
     public loadAutoTimeByTab;
     // 前置条件集合
     public beforeOperation;
+
+
+    // 提示框对象
+    private confirmExecuteObj: any;
+    private innerConfirmExecuteObj: any;
     constructor(
         private _http: ApiService,
         private _message: NzMessageService,
@@ -1342,11 +1420,13 @@ export class TsDataTableComponent extends CnComponentBase
                     submitData
                 );
                 if (response && response.status === 200 && response.isSuccess) {
-                    this.baseMessage.create('success', '保存成功');
+                    // this.baseMessage.create('success', '保存成功');
+                    this.createMessageTemplateModal2('success', '系统提示', '保存成功');
                     this.focusIds = this._getFocusIds(response.data);
                     isSuccess = true;
                 } else {
-                    this.baseMessage.create('error', response.message);
+                    // this.baseMessage.create('error', response.message);
+                    this.createMessageTemplateModal2('error', '错误提示', response.message);
                 }
             }
             if (isSuccess) {
@@ -1463,7 +1543,8 @@ export class TsDataTableComponent extends CnComponentBase
                     this.baseMessage.create('success', '执行成功');
                     isSuccess = true;
                 } else {
-                    this.baseMessage.create('error', response.message);
+                    // this.baseMessage.create('error', response.message);
+                    this.createMessageTemplateModal2('error', '错误提示', response.message);
                 }
             }
             this.load();
@@ -2196,7 +2277,9 @@ export class TsDataTableComponent extends CnComponentBase
 
     public executeSelectedRow(option) {
         if (!this._selectRow) {
-            this.baseMessage.create('info', '请选选择要执行的数据');
+            // this.baseMessage.create('info', '请选选择要执行的数据');
+            this.createMessageTemplateModal2('info', '系统提示', '请选选择要执行的数据');
+
             return false;
         }
         this.baseModal.confirm({
@@ -2204,7 +2287,8 @@ export class TsDataTableComponent extends CnComponentBase
             nzContent: '',
             nzOnOk: () => {
                 if (this._selectRow['row_status'] === 'adding') {
-                    this.baseMessage.create('info', '当前数据未保存无法进行处理');
+                    // this.baseMessage.create('info', '当前数据未保存无法进行处理');
+                    this.createMessageTemplateModal2('info', '系统提示', '当前数据未保存无法进行处理');
                     return false;
                 }
 
@@ -2216,7 +2300,8 @@ export class TsDataTableComponent extends CnComponentBase
 
     public executeCheckedRow(option) {
         if (this.dataList.filter(item => item.checked === true).length <= 0) {
-            this.baseMessage.create('info', '请选择要执行的数据');
+            // this.baseMessage.create('info', '请选择要执行的数据');
+            this.createMessageTemplateModal2('info', '系统提示', '请选择要执行的数据');
             return false;
         }
         this.baseModal.confirm({
@@ -2255,7 +2340,8 @@ export class TsDataTableComponent extends CnComponentBase
 
     public deleteRow(option) {
         if (this.dataList.filter(item => item.checked === true).length <= 0) {
-            this.baseMessage.create('info', '请选择要删除的数据');
+            // this.baseMessage.create('info', '请选择要删除的数据');
+            this.createMessageTemplateModal2('info', '提示' , '请选择要删除的数据');
         } else {
             if (
                 option.ajaxConfig.delete &&
@@ -2353,7 +2439,8 @@ export class TsDataTableComponent extends CnComponentBase
         };
         const response = await this['delete'](deleteConfig.url, params);
         if (response && response.status === 200 && response.isSuccess) {
-            this.baseMessage.create('success', '删除成功');
+            // this.baseMessage.create('success', '删除成功');
+            this.createMessageTemplateModal2('success', '系统提示', '删除成功');
             isSuccess = true;
             this.focusIds = null;
             this.load();
@@ -2369,7 +2456,9 @@ export class TsDataTableComponent extends CnComponentBase
                 );
             }
         } else {
-            this.baseMessage.create('error', response.message);
+            // this.baseMessage.create('error', response.message);
+            this.createMessageTemplateModal2('error', '错误提示', response.message);
+            this
         }
 
         return isSuccess;
@@ -2821,7 +2910,8 @@ export class TsDataTableComponent extends CnComponentBase
             }
 
         } else {
-            this.baseMessage.error('操作异常：', response.message);
+            // this.baseMessage.error('操作异常：', response.message);
+            this.createMessageTemplateModal2('error', '系统错误', response.message);
         }
     }
 
@@ -2908,10 +2998,12 @@ export class TsDataTableComponent extends CnComponentBase
                 }
                 const response = await this[option.type](cfg[i].url, params);
                 if (response.isSuccess) {
-                    this.baseMessage.create('success', '执行成功');
+                    // this.baseMessage.create('success', '执行成功');
+                    this.createMessageTemplateModal2('success', '系统提示' , '执行成功')
                     isSuccess = true;
                 } else {
-                    this.baseMessage.create('error', response.message);
+                    // this.baseMessage.create('error', response.message);
+                    this.createMessageTemplateModal2('error', '系统错误', response.message);
                 }
             }
             this.load();
@@ -3460,7 +3552,8 @@ export class TsDataTableComponent extends CnComponentBase
                 });
             }
         } else {
-            this.baseMessage.create('warning', '请先选中需要处理的数据');
+            // this.baseMessage.create('warning', '请先选中需要处理的数据');
+            this.createMessageTemplateModal2('warning', '系统警告', '请先选中需要处理的数据');
         }
     }
     /**
@@ -3482,21 +3575,25 @@ export class TsDataTableComponent extends CnComponentBase
                 }
             });
             if (rs.success) {
-                this.baseMessage.success(message);
+                // this.baseMessage.success(message);
+                this.createMessageTemplateModal2('success', '系统提示', message);
                 if (callback) {
                     callback();
                 }
             } else {
-                this.baseMessage.error(rs.msg.join('<br/>'));
+                // this.baseMessage.error(rs.msg.join('<br/>'));
+                this.createMessageTemplateModal2('error', '错误提示', rs.msg.join('<br/>'));
             }
         } else {
             if (result.isSuccess) {
-                this.baseMessage.success(message);
+                // this.baseMessage.success(message);
+                this.createMessageTemplateModal2('success', '提示信息', message);
                 if (callback) {
                     callback();
                 }
             } else {
-                this.baseMessage.error(result.message);
+                // this.baseMessage.error(result.message);
+                this.createMessageTemplateModal2('error', '错误提示', result.message);
             }
         }
     }
@@ -5450,6 +5547,71 @@ export class TsDataTableComponent extends CnComponentBase
             });
         }
         return result;
+    }
+
+    public confirmDialogOK() {
+        // (async () => {
+        //     const url = this.confirmExecuteObj.url;
+        //     const c = this.confirmExecuteObj.c;
+        //     const params = this.confirmExecuteObj.params;
+        //     const ajaxConfigs = this.confirmExecuteObj.ajaxConfigs;
+
+        //     const response = await this.execute(url, c.ajaxType, params);
+        //     // 处理输出参数
+        //     if (c.outputParams) {
+        //         this.outputParametersResolver(
+        //             c,
+        //             response,
+        //             ajaxConfigs,
+        //             () => {
+        //                 if (this.confirmExecuteObj.callback) {
+        //                     this.confirmExecuteObj.callback();
+        //                 }
+        //             }
+        //         );
+        //     } else {
+        //         // 没有输出参数，进行默认处理
+        //         this.showAjaxMessage(
+        //             response,
+        //             '操作成功',
+        //             () => {
+        //                 if (this.confirmExecuteObj.callback) {
+        //                     this.confirmExecuteObj.callback();
+        //                 }
+        //             }
+        //         );
+        //     }
+        // })();
+    }
+
+    public innerConfirmDialogOK() {
+        if (this.innerConfirmExecuteObj) {
+            // this.getAjaxConfig(
+            //     this.innerConfirmExecuteObj.c, 
+            //     this.innerConfirmExecuteObj.ajaxConfig, 
+            //     this.innerConfirmExecuteObj.callback
+            // );
+        }
+    }
+
+    public createConfirmTemplateModal(confirmObj) {
+        this.tplModal = this.baseModal.create(confirmObj);
+    }
+
+    public createMessageTemplateModal2(type, title, content) {
+        this.msgContent = content;
+        this.msgTitle = title;
+        this.tplModal = this.baseModal.create({
+            nzTitle: this.tplTitleRef,
+            nzContent: this.tplContentRef,
+            nzFooter: this.tplFooterRef,
+            nzMaskClosable: true,
+            nzClosable: false
+        });
+    }
+
+    public destoryTplModal() {
+        this.tplModal.destroy();
     }
 }
 

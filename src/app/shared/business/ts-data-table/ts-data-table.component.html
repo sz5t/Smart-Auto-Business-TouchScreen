@@ -371,40 +371,26 @@
     </nz-footer>
 </nz-layout>
 
-<!-- <nz-modal [(nzVisible)]="isVisible" nzTitle="高级设置" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
-    <nz-card>
-        <div nz-row>
-            <div nz-col nzSpan="12">
-                <label>表格宽度：</label>
-                <input [(ngModel)]="tablewidth" style="width:80px; border:none; border-bottom:1px solid #1890ff;">
-            </div>
-            <div nz-col nzSpan="12">
-                <label>表格高度：</label>
-                <input [(ngModel)]="tableheight" style="width:80px; border:none; border-bottom:1px solid #1890ff;">
-            </div>
-        </div>
-    </nz-card>
-    <nz-table #basicTable [nzData]="c_data" [nzFrontPagination]="false" [nzShowPagination]="false" [nzScroll]="{y:'400px'}" nzSize="middle">
-        <thead>
-            <tr #bt>
-                <th nzWidth="100px">
-                    列名称
-                </th>
-                <th nzWidth="100px">是否隐藏</th>
-                <th nzWidth="100px">宽度</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let data of basicTable.data" [draggable]="is_drag" (dragstart)="f_ondragstart($event,data)" (dragover)="f_ondragover($event,data)"
-                (drop)="f_ondrop($event,data)">
-                <td>{{data.title?data.title:data.field}}</td>
-                <td>
-                    <nz-switch [(ngModel)]="data.hidden" name="bordered"></nz-switch>
-                </td>
-                <td>
-                    <input draggable="false" [(ngModel)]="data.width" (blur)="onblur($event,data)" (focus)="onfocus($event,data)" style="width:80px; border:none; border-bottom:1px solid #1890ff;">
-                </td>
-            </tr>
-        </tbody>
-    </nz-table>
-</nz-modal> -->
+<ng-template #tplTitle>
+        <span style="font-size:1.2em;">{{msgTitle}}</span>
+    </ng-template>
+    
+    <ng-template #tplContent>
+        <div style="font-size:1.5em;;text-align: left">{{ msgContent }}</div>
+    </ng-template>
+    
+    <ng-template #tplFooter>
+        <button nz-button style="font-size:1.5em;padding:15px 45px 40px 45px;" nzType="primary" (click)="destoryTplModal()">关闭</button>
+    </ng-template>
+    
+    
+    <ng-template #tplConfirmFooter>
+            <button nz-button style="font-size:1.5em;padding:15px 45px 40px 45px;" nzType="primary" (click)="confirmDialogOK()">确认</button>
+        <button nz-button style="font-size:1.5em;padding:15px 45px 40px 45px;" nzType="primary" (click)="destoryTplModal()">取消</button>
+    </ng-template>
+    
+    
+    <ng-template #tplInnerConfirmFooter>
+            <button nz-button style="font-size:1.5em;padding:15px 45px 40px 45px;" nzType="primary" (click)="innerConfirmDialogOK()">确认</button>
+        <button nz-button style="font-size:1.5em;padding:15px 45px 40px 45px;" nzType="primary" (click)="destoryTplModal()">取消</button>
+    </ng-template>

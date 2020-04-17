@@ -174,6 +174,8 @@ export class BsnCardListComponent extends CnComponentBase
                                     case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
                                         this.load();
                                         break;
+                                    case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_SELECT:
+                                        break;
                                 }
                             }
                         });
@@ -650,6 +652,16 @@ export class BsnCardListComponent extends CnComponentBase
     public selectItems(item) {
         item.selected = !item.selected;
         this.getSelectedItems();
+        const Ids = this.getCheckedItemsId();
+        this.cascade.next(
+            new BsnComponentMessage(
+                BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
+                this.config.viewId,
+                {
+                    data: {'Ids': Ids}
+                }
+            )
+        );
     }
 
     public ngAfterViewInit() {
@@ -680,7 +692,7 @@ export class BsnCardListComponent extends CnComponentBase
     public logout() {
         this.baseModal.confirm({
             nzTitle: '确认要关闭本系统吗？',
-            nzContent: '关闭后将清空相关操作数据！',
+            // nzContent: '关闭后将清空相关操作数据！',
             nzOnOk: () => {
                 this.tokenService.clear();
                 this.cacheValue.clear();

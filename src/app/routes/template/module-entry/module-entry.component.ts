@@ -81,7 +81,7 @@ export class ModuleEntryComponent implements OnInit, OnDestroy {
     public logout() {
         this.modal.confirm({
             nzTitle: '确认要关闭本系统吗？',
-            nzContent: '关闭后将清空相关操作数据！',
+            // nzContent: '关闭后将清空相关操作数据！',
             nzOnOk: () => {
                 this.tokenService.clear();
                 this.cacheService.clear();

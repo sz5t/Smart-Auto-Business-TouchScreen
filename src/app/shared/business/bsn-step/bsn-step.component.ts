@@ -572,7 +572,7 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
     public logout() {
         this.baseModal.confirm({
             nzTitle: '确认要关闭本系统吗？',
-            nzContent: '关闭后将清空相关操作数据！',
+            // nzContent: '关闭后将清空相关操作数据！',
             nzOnOk: () => {
                 this.tokenService.clear();
                 this.cacheValue.clear();

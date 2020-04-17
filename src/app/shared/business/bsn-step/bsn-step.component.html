@@ -36,7 +36,7 @@
           <button nz-button nzType="default" (click)="next()" *ngIf="_current < config.steps.length-1">
             <span>{{config.nexttext ? config.nexttext : '下一步'}} <i nz-icon type="arrow-right"></i></span>
           </button>
-          <button nz-button nzType="primary" (click)="done()"> 
+          <button nz-button nzType="primary" (click)="done()" *ngIf="config.finish"> 
               <!-- *ngIf="_current === config.steps.length" -->
               <span><i nz-icon type="save" *ngIf="config.finish"></i> {{config.finishtext ? config.finishtext : '完成'}}</span>
             </button>

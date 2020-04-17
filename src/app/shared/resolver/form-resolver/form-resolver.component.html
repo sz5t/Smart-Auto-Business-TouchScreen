@@ -75,3 +75,27 @@
         </ng-template>
     </nz-card>
 </nz-spin>
+
+<ng-template #tplTitle>
+    <span style="font-size:1.2em;">{{msgTitle}}</span>
+</ng-template>
+
+<ng-template #tplContent>
+    <div style="font-size:1.5em;;text-align: left">{{ msgContent }}</div>
+</ng-template>
+
+<ng-template #tplFooter>
+    <button nz-button style="font-size:1.5em;padding:15px 45px 40px 45px;" nzType="primary" (click)="destoryTplModal()">关闭</button>
+</ng-template>
+
+
+<ng-template #tplConfirmFooter>
+        <button nz-button style="font-size:1.5em;padding:15px 45px 40px 45px;" nzType="primary" (click)="confirmDialogOK()">确认</button>
+    <button nz-button style="font-size:1.5em;padding:15px 45px 40px 45px;" nzType="primary" (click)="destoryTplModal()">取消</button>
+</ng-template>
+
+
+<ng-template #tplInnerConfirmFooter>
+        <button nz-button style="font-size:1.5em;padding:15px 45px 40px 45px;" nzType="primary" (click)="innerConfirmDialogOK()">确认</button>
+    <button nz-button style="font-size:1.5em;padding:15px 45px 40px 45px;" nzType="primary" (click)="destoryTplModal()">取消</button>
+</ng-template>

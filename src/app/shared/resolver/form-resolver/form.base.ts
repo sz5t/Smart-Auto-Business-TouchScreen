@@ -1,10 +1,84 @@
+import { TemplateRef, ViewChild } from '@angular/core';
 import { BSN_FORM_STATUS } from './../../../core/relative-Service/BsnTableStatus';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 import { FormBuilder, Validators } from '@angular/forms';
 import { FormGroup } from '@angular/forms';
 import { CommonTools } from '@core/utility/common-tools';
 import { BSN_OUTPOUT_PARAMETER_TYPE } from '@core/relative-Service/BsnTableStatus';
+import { NzModalRef } from 'ng-zorro-antd';
+import { Template } from '@angular/compiler/src/render3/r3_ast';
 export class CnFormBase extends CnComponentBase {
+
+    private _tplModal: NzModalRef;
+    public get tplModal(): NzModalRef {
+        return this._tplModal;
+    }
+    public set tplModal(value: NzModalRef) {
+        this._tplModal = value;
+    }
+
+    private _msgTitle: string;
+    public get msgTitle(): string {
+        return this._msgTitle;
+    }
+    public set msgTitle(value: string) {
+        this._msgTitle = value;
+    }
+
+    private _msgContent: string;
+    public get msgContent(): string {
+        return this._msgContent;
+    }
+    public set msgContent(value: string) {
+        this._msgContent = value;
+    }
+
+    @ViewChild('tplTitle')
+    private _tplTitleRef: TemplateRef<any>;
+    public get tplTitleRef(): TemplateRef<any> {
+        return this._tplTitleRef;
+    }
+    public set tplTitleRef(value: TemplateRef<any>) {
+        this._tplTitleRef = value;
+    }
+    
+    
+    @ViewChild('tplContent')
+    private _tplContentRef: TemplateRef<any>;
+    public get tplContentRef(): TemplateRef<any> {
+        return this._tplContentRef;
+    }
+    public set tplContentRef(value: TemplateRef<any>) {
+        this._tplContentRef = value;
+    }
+
+    @ViewChild('tplFooter')
+    private _tplFooterRef: TemplateRef<any>;
+    public get tplFooterRef(): TemplateRef<any> {
+        return this._tplFooterRef;
+    }
+    public set tplFooterRef(value: TemplateRef<any>) {
+        this._tplFooterRef = value;
+    }
+    
+    @ViewChild('tplConfirmFooter')
+    private _tplConfirmFooterRef: TemplateRef<any>;
+    public get tplConfirmFooterRef(): TemplateRef<any> {
+        return this._tplConfirmFooterRef;
+    }
+    public set tplConfirmFooterRef(value: TemplateRef<any>) {
+        this._tplConfirmFooterRef = value;
+    }
+
+    @ViewChild('tplInnerConfirmFooter')
+    private _tplInnerConfirmFooterRef: TemplateRef<any>;
+    public get tplInnerConfirmFooterRef(): TemplateRef<any> {
+        return this._tplInnerConfirmFooterRef;
+    }
+    public set tplInnerConfirmFooterRef(value: TemplateRef<any>) {
+        this._tplInnerConfirmFooterRef = value;
+    }
+
     private _loadData;
     public get loadData() {
         return this._loadData;
@@ -59,6 +133,10 @@ export class CnFormBase extends CnComponentBase {
     public set formState(value) {
         this._formState = value;
     }
+
+    private confirmExecuteObj: any;
+
+    private innerConfirmExecuteObj: any;
 
     constructor() {
         super();
@@ -288,46 +366,69 @@ export class CnFormBase extends CnComponentBase {
             if (msgObj && msgObj.length > 1) {
                 const messageType = msgObj[0];
                 let options;
+                this.destoryTplModal();
                 switch (messageType) {
                     case 'info':
                         options = {
-                            nzTitle: '提示',
+                            nzTitle: '信息提示',
                             nzWidth: '350px',
                             nzContent: msgObj[1]
                         };
-                        this.baseModal[messageType](options);
+                        // this.baseModal[messageType](options);
+                        this.createMessageTemplateModal2('info', '提示', msgObj[1]);
                         break;
                     case 'error':
                         options = {
-                            nzTitle: '提示',
+                            nzTitle: '错误提示',
                             nzWidth: '350px',
                             nzContent: msgObj[1]
                         };
-                        this.baseModal[messageType](options);
+                        // this.baseModal[messageType](options);
+                        this.createMessageTemplateModal2('error', '提示', msgObj[1]);
                         break;
                     case 'confirm':
-                        options = {
-                            nzTitle: '提示',
-                            nzContent: msgObj[1],
-                            nzOnOk: () => {
-                                // 是否继续后续操作，根据返回状态结果
-                                const childrenConfig = ajaxConfig.filter(
-                                    f => f.parentName && f.parentName === c.name
-                                );
-                                //  目前紧支持一次执行一个分之步骤
-                                this.getAjaxConfig(childrenConfig[0], ajaxConfig, callback);
-                                // childrenConfig &&
-                                //     childrenConfig.map(currentAjax => {
-                                //         this.getAjaxConfig(
-                                //             currentAjax,
-                                //             ajaxConfig,
-                                //             callback
-                                //         );
-                                //     });
-                            },
-                            nzOnCancel: () => { }
+                        this.msgTitle = '确认提示';
+                        this.msgContent = msgObj[1];
+                        
+                        const opts = {
+                            nzTitle: this.tplTitleRef,
+                            nzContent: this.tplContentRef,
+                            nzFooter: this.tplInnerConfirmFooterRef
                         };
-                        this.baseModal[messageType](options);
+
+                        this.innerConfirmExecuteObj = {};
+                        const childrenConfig = ajaxConfig.filter(
+                            f => f.parentName && f.parentName === c.name
+                        );
+
+                        this.innerConfirmExecuteObj['c'] = childrenConfig[0];
+                        this.innerConfirmExecuteObj['ajaxConfig'] = ajaxConfig,
+                        this.innerConfirmExecuteObj['callback'] = callback;
+
+                        // options = {
+                        //     nzTitle: '提示',
+                        //     nzContent: msgObj[1],
+                        //     nzOnOk: () => {
+                        //         // 是否继续后续操作，根据返回状态结果
+                        //         const childrenConfig = ajaxConfig.filter(
+                        //             f => f.parentName && f.parentName === c.name
+                        //         );
+                        //         //  目前紧支持一次执行一个分之步骤
+                        //         this.getAjaxConfig(childrenConfig[0], ajaxConfig, callback);
+                        //         // childrenConfig &&
+                        //         //     childrenConfig.map(currentAjax => {
+                        //         //         this.getAjaxConfig(
+                        //         //             currentAjax,
+                        //         //             ajaxConfig,
+                        //         //             callback
+                        //         //         );
+                        //         //     });
+                        //     },
+                        //     nzOnCancel: () => { }
+                        // };
+                        // this.baseModal[messageType](options);
+                        this.destoryTplModal();
+                        this.createConfirmTemplateModal(opts);
                         break;
                     case 'warning':
                         options = {
@@ -335,7 +436,8 @@ export class CnFormBase extends CnComponentBase {
                             nzWidth: '350px',
                             nzContent: msgObj[1]
                         };
-                        this.baseModal[messageType](options);
+                        // this.baseModal[messageType](options);
+                        this.createMessageTemplateModal2('warning', '警告提示', msgObj[1]);
                         break;
                     case 'success':
                         options = {
@@ -343,10 +445,12 @@ export class CnFormBase extends CnComponentBase {
                             nzWidth: '350px',
                             nzContent: msgObj[1]
                         };
-                        this.baseMessage.success(msgObj[1]);
+                        // this.baseMessage.success(msgObj[1]);
+                        this.createMessageTemplateModal2('success', '成功提示', msgObj[1]);
                         callback && callback();
                         break;
                 }
+                
                 // if(options) {
                 //     this.modalService[messageType](options);
                 //
@@ -375,8 +479,14 @@ export class CnFormBase extends CnComponentBase {
             }
 
         } else {
-            this.baseMessage.error('操作异常：', response.message);
+
+            // this.baseMessage.error('操作异常：', response.message);
+            this.createMessageTemplateModal2('error', '操作异常', response.message);
         }
+    }
+
+    public executeInnerConfirmDialogOK () {
+         
     }
 
     /**
@@ -399,21 +509,29 @@ export class CnFormBase extends CnComponentBase {
                 }
             });
             if (rs.success) {
-                this.baseMessage.success(message);
+                // this.baseMessage.success(message);
+                this.createMessageTemplateModal2('success', '消息提示', message);
+                
                 suc = true;
             } else {
-                this.baseMessage.error(rs.msg.join('<br/>'));
+                // this.baseMessage.error(rs.msg.join('<br/>'));
+                this.createMessageTemplateModal2('error', '错误提示', rs.msg.join('<br/>'));
             }
         } else {
             if (result.isSuccess) {
-                this.baseMessage.success(message);
+                // this.baseMessage.success(message);
+                this.createMessageTemplateModal2('success', '消息提示', message);
                 suc = true;
             } else {
-                this.baseMessage.error(result.message);
+                // this.baseMessage.error(result.message);
+                this.createMessageTemplateModal2('error', '错误提示', result.message);
             }
         }
         if (suc && callback) {
             callback();
+        }
+        if(this.tplModal) {
+            this.tplModal.destroy();
         }
     }
 
@@ -421,70 +539,89 @@ export class CnFormBase extends CnComponentBase {
         return this.apiResource[method](url, body).toPromise();
     }
 
+   
     public getAjaxConfig(c, ajaxConfigs, callback?) {
         if (c) {
             const url = this.buildUrl(c.url);
             const params = this.buildParameter(c.params);
             if (c.message) {
-                this.baseModal.confirm({
-                    nzTitle: c.title ? c.title : '提示',
-                    nzContent: c.message ? c.message : '',
-                    nzOnOk: () => {
-                        (async () => {
-                            const response = await this.execute(url, c.ajaxType, params);
-                            // 处理输出参数
-                            if (c.outputParams) {
-                                this.outputParametersResolver(
-                                    c,
-                                    response,
-                                    ajaxConfigs,
-                                    () => {
-                                        if (callback) {
-                                            callback();
-                                        }
-                                    }
-                                );
-                            } else {
-                                // 没有输出参数，进行默认处理
-                                this.showAjaxMessage(
-                                    response,
-                                    '操作成功',
-                                    () => {
-                                        if (callback) {
-                                            callback();
-                                        }
-                                    }
-                                );
-                            }
-                        })();
-                    },
-                    nzOnCancel() { }
-                });
-            } else {
-                (async () => {
-                    const response = await this.execute(url, c.ajaxType, params);
-                    // 处理输出参数
-                    if (c.outputParams) {
-                        this.outputParametersResolver(
-                            c,
-                            response,
-                            ajaxConfigs,
-                            () => {
-                                if (callback) {
-                                    callback();
-                                }
-                            }
-                        );
-                    } else {
-                        // 没有输出参数，进行默认处理
-                        this.showAjaxMessage(response, '操作成功', () => {
-                            if (callback) {
-                                callback();
-                            }
-                        });
-                    }
-                })();
+                this.confirmExecuteObj = {};
+                this.confirmExecuteObj['url'] = url;
+                this.confirmExecuteObj['c'] = c;
+                this.confirmExecuteObj['params'] = params;
+                this.confirmExecuteObj['ajaxConfigs'] = ajaxConfigs;
+                callback && (this.confirmExecuteObj['callback'] = callback);
+
+
+                this.msgTitle = '提示';
+                this.msgContent = c.message // c.message;
+                const confirmObj = {
+                    nzTitle: this.tplTitleRef,
+                    nzContent: this.tplContentRef,
+                    nzFooter: this.tplConfirmFooterRef
+                }
+                this.createConfirmTemplateModal(confirmObj);
             }
+            // if (c.message) {
+            //     this.baseModal.confirm({
+            //         nzTitle: c.title ? c.title : '提示',
+            //         nzContent: c.message ? c.message : '',
+            //         nzOnOk: () => {
+            //             (async () => {
+            //                 const response = await this.execute(url, c.ajaxType, params);
+            //                 // 处理输出参数
+            //                 if (c.outputParams) {
+            //                     this.outputParametersResolver(
+            //                         c,
+            //                         response,
+            //                         ajaxConfigs,
+            //                         () => {
+            //                             if (callback) {
+            //                                 callback();
+            //                             }
+            //                         }
+            //                     );
+            //                 } else {
+            //                     // 没有输出参数，进行默认处理
+            //                     this.showAjaxMessage(
+            //                         response,
+            //                         '操作成功',
+            //                         () => {
+            //                             if (callback) {
+            //                                 callback();
+            //                             }
+            //                         }
+            //                     );
+            //                 }
+            //             })();
+            //         },
+            //         nzOnCancel() { }
+            //     });
+            // } else {
+            //     (async () => {
+            //         const response = await this.execute(url, c.ajaxType, params);
+            //         // 处理输出参数
+            //         if (c.outputParams) {
+            //             this.outputParametersResolver(
+            //                 c,
+            //                 response,
+            //                 ajaxConfigs,
+            //                 () => {
+            //                     if (callback) {
+            //                         callback();
+            //                     }
+            //                 }
+            //             );
+            //         } else {
+            //             // 没有输出参数，进行默认处理
+            //             this.showAjaxMessage(response, '操作成功', () => {
+            //                 if (callback) {
+            //                     callback();
+            //                 }
+            //             });
+            //         }
+            //     })();
+            // }
         }
     }
 
@@ -516,6 +653,71 @@ export class CnFormBase extends CnComponentBase {
         //     }
         //     this.baseMessage.warning('配置异常,无法执行请求!');
         // }
+    }
+
+    public confirmDialogOK() {
+        (async () => {
+            const url = this.confirmExecuteObj.url;
+            const c = this.confirmExecuteObj.c;
+            const params = this.confirmExecuteObj.params;
+            const ajaxConfigs = this.confirmExecuteObj.ajaxConfigs;
+
+            const response = await this.execute(url, c.ajaxType, params);
+            // 处理输出参数
+            if (c.outputParams) {
+                this.outputParametersResolver(
+                    c,
+                    response,
+                    ajaxConfigs,
+                    () => {
+                        if (this.confirmExecuteObj.callback) {
+                            this.confirmExecuteObj.callback();
+                        }
+                    }
+                );
+            } else {
+                // 没有输出参数，进行默认处理
+                this.showAjaxMessage(
+                    response,
+                    '操作成功',
+                    () => {
+                        if (this.confirmExecuteObj.callback) {
+                            this.confirmExecuteObj.callback();
+                        }
+                    }
+                );
+            }
+        })();
+    }
+
+    public innerConfirmDialogOK() {
+        if (this.innerConfirmExecuteObj) {
+            this.getAjaxConfig(
+                this.innerConfirmExecuteObj.c, 
+                this.innerConfirmExecuteObj.ajaxConfig, 
+                this.innerConfirmExecuteObj.callback
+            );
+        }
+    }
+
+    public createConfirmTemplateModal(confirmObj) {
+        this.tplModal = this.baseModal.create(confirmObj);
+    }
+
+    public createMessageTemplateModal2(type, title, content) {
+        this.msgContent = content;
+        this.msgTitle = title;
+        this.tplModal = this.baseModal.create({
+            nzTitle: this.tplTitleRef,
+            nzContent: this.tplContentRef,
+            nzFooter: this.tplFooterRef,
+            nzMaskClosable: true,
+            nzClosable: false
+        });
+    }
+
+    public destoryTplModal() {
+        this.tplModal.destroy();
     }
 
 }

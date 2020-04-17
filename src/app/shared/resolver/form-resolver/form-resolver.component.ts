@@ -15,11 +15,14 @@ import {
     Output,
     Inject,
     OnDestroy,
-    AfterViewInit
+    AfterViewInit,
+    ViewChild,
+    ElementRef,
+    TemplateRef
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '@core/utility/api-service';
-import { NzMessageService, NzModalService } from 'ng-zorro-antd';
+import { NzMessageService, NzModalService, NzNotificationService, NzModalRef } from 'ng-zorro-antd';
 import {
     RelativeService,
     RelativeResolver
@@ -106,11 +109,25 @@ export class FormResolverComponent extends CnFormBase
     public change_config = {};
     public cascadeList = {};
     public toolbarConfig = [];
+
+    public tplModal: NzModalRef;
+
+    // @ViewChild('tplTitle')
+    // private tplTitleRef: TemplateRef<any>; 
+
+    // @ViewChild('tplContent')
+    // private tplContentRef: TemplateRef<any>;
+
+    // @ViewChild('tplFooter')
+    // private tplFooterRef: TemplateRef<any>;
+
+    // public msgContent: any;
+    // public msgTitle: any;
     constructor(
         private builder: FormBuilder,
         private apiService: ApiService,
         private cacheService: CacheService,
-        private message: NzMessageService,
+        private message: NzNotificationService,
         private modalService: NzModalService,
         private _messageService: RelativeService,
         @Inject(BSN_COMPONENT_MODES)
@@ -248,7 +265,8 @@ export class FormResolverComponent extends CnFormBase
                             if (option.ajaxConfig) {
                                 this.saveForm_2(option.ajaxConfig);
                             } else {
-                                this.message.info('未配置任何操作!');
+                                // this.message.info('提示', '未配置任何操作!');
+                                this.createMessageTemplateModal2('info', '提示', '未配置任何操作');
                             }
                             break;
                         case BSN_COMPONENT_MODES.DELETE:
@@ -451,7 +469,7 @@ export class FormResolverComponent extends CnFormBase
      * @param getConfig 数据访问配置
      */
     private async get(getConfig) {
-        let result = true;
+        const result = true;
         let url: string;
         if (getConfig.urlobj) {
             url = this.buildUrl(getConfig.url, getConfig.urlobj);
@@ -462,14 +480,14 @@ export class FormResolverComponent extends CnFormBase
         const params = this.buildParameter(getConfig.params);
         if (this.tempValue['cardId']) {
             if (document.getElementById('tag1')) {
-                let tag = document.getElementById('tag1');
+                const tag = document.getElementById('tag1');
                 tag.parentNode.removeChild(tag);
             }
             const script = document.createElement('script');
             script.setAttribute('type', 'text/javascript');
             script.setAttribute('id', 'tag1');
             let requestString = '';
-            for (let p in params) {
+            for (const p in params) {
                 if (params.hasOwnProperty(p) && p !== undefined) {
                     requestString += p + '=' + params[p] + '&';
                 }
@@ -497,13 +515,15 @@ export class FormResolverComponent extends CnFormBase
         const params = this.buildParameter(postConfig.params);
         const res = await this.execute(url, postConfig.ajaxType, params);
         if (res.isSuccess) {
-            this.message.create('success', '操作成功');
+            // this.message.create('success', '提示', '操作成功');
+            this.createMessageTemplateModal2('success', '提示', '操作成功');
             this.formState = BSN_FORM_STATUS.EDIT;
             // this.load();
             // 发送消息 刷新其他界面
             this.sendCascadeMessage();
         } else {
-            this.baseMessage.create('error', res.message);
+            // this.message.create('error', '提示', res.message);
+            this.createMessageTemplateModal2('error', '提示', res.message)
             result = false;
         }
         return result;
@@ -524,18 +544,21 @@ export class FormResolverComponent extends CnFormBase
         const newValue = this.GetComponentValue();
         const params = this.buildParameter(putConfig.params);
         if (params && !params['Id']) {
-            this.message.warning('编辑数据的Id不存在，无法进行更新！');
+            // this.message.warning('提示', '编辑数据的Id不存在，无法进行更新！');
+            this.createMessageTemplateModal2('warning', '提示', '编辑数据的Id不存在，无法进行更新！');
             return;
         } else {
             const res = await this.execute(url, putConfig.ajaxType, params);
             if (res.isSuccess) {
-                this.message.create('success', '保存成功');
+                // this.message.create('success', '提示', '保存成功');
+                this.createMessageTemplateModal2('success', '提示', '保存成功');
                 this.formState = BSN_FORM_STATUS.EDIT;
                 this.load();
                 // 发送消息 刷新其他界面
                 this.sendCascadeMessage();
             } else {
-                this.message.create('error', res.message);
+                // this.message.create('error', '提示', res.message);
+                this.createMessageTemplateModal2('error', '提示', res.message)
                 result = false;
             }
         }
@@ -634,7 +657,8 @@ export class FormResolverComponent extends CnFormBase
      */
     private openUploadDialog(dialog) {
         if (!this.value) {
-            this.message.warning('请选中一条需要添加附件的记录！');
+            // this.message.warning('提示', '请选中一条需要添加附件的记录！');
+            this.createMessageTemplateModal2('warning', '提示', '请选中一条需要添加附件的记录！');
             return false;
         }
         const footer = [];
@@ -692,7 +716,8 @@ export class FormResolverComponent extends CnFormBase
         if (dialog.type === 'add') {
         } else if (dialog.type === 'edit') {
             if (!this.value) {
-                this.message.warning('请选中一条需要添加附件的记录！');
+                // this.message.warning('提示', '请选中一条需要添加附件的记录！');
+                this.createMessageTemplateModal2('warning', '提示', '请选中一条需要添加附件的记录！')
                 return false;
             }
         }
@@ -891,7 +916,8 @@ export class FormResolverComponent extends CnFormBase
                 });
             }
         } else {
-            this.message.create('warning', '请先选中需要处理的数据');
+            // this.message.create('warning', '提示', '请先选中需要处理的数据');
+            this.createMessageTemplateModal2('warning', '提示', '请先选中需要处理的数据');
         }
     }
 
@@ -1697,7 +1723,8 @@ export class FormResolverComponent extends CnFormBase
                     if (option.ajaxConfig) {
                         this.saveForm_2(option.ajaxConfig);
                     } else {
-                        this.message.info('未配置任何操作!');
+                        // this.message.info('提示', '未配置任何操作!');
+                        this.createMessageTemplateModal2('info', '提示', '未配置任何操作!');
                     }
                     break;
                 case BSN_COMPONENT_MODES.DELETE:
@@ -1772,17 +1799,21 @@ export class FormResolverComponent extends CnFormBase
 
         if (option.messageType) {
             if (option.messageType === 'warning') {
-                this.message.warning(messageStr);
+                // this.message.warning('提示', messageStr);
+                this.createMessageTemplateModal2('warning', '提示', messageStr);
             }
             if (option.messageType === 'success') {
-                this.message.success(messageStr);
+                // this.message.success('提示', messageStr);
+                this.createMessageTemplateModal2('success', '提示', messageStr);
             }
             if (option.messageType === 'info') {
-                this.message.info(messageStr);
+                // this.message.info('提示', messageStr);
+                this.createMessageTemplateModal2('info', '提示', messageStr);
             }
 
         } else {
-            this.message.info(messageStr);
+            // this.message.info('提示', messageStr);
+            this.createMessageTemplateModal2('info', '提示', messageStr);
         }
 
 
@@ -1936,4 +1967,18 @@ export class FormResolverComponent extends CnFormBase
             )
         }
     }
+
+    
+
+    public createMessageTemplateModal(tplTitle: TemplateRef<{}>, tplContent: TemplateRef<{}>, tplFooter: TemplateRef<{}>) {
+        this.tplModal = this.modalService.create({
+            nzTitle: tplTitle,
+            nzContent: tplContent,
+            nzFooter: tplFooter,
+            nzMaskClosable: true,
+            nzClosable: false
+        });
+    }
+
+    
 }

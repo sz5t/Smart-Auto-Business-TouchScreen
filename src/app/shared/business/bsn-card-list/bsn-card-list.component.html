@@ -8,7 +8,10 @@
             <div nz-col [nzSpan]="12" class="text-right" *ngIf= "config.selectionSwitch">
                     <span><nz-badge nzStatus="processing" nzText="已派工"></nz-badge></span>
                     <nz-divider nzType="vertical"></nz-divider>
-                    <span><nz-switch [(ngModel)]="switchAll" (ngModelChange)="switch()" nzCheckedChildren="全部选择" nzUnCheckedChildren="取消选择"></nz-switch></span>
+                    <span>
+                        <nz-switch [(ngModel)]="switchAll" (ngModelChange)="switch()" nzCheckedChildren="全部选择" nzUnCheckedChildren="取消选择">
+                        </nz-switch>
+                    </span>
             </div>
                  
                 
@@ -28,14 +31,14 @@
                             <i nz-icon style="font-size:5em" [iconfont]="getItemValue('icon',item)?getItemValue('icon',item):'icon-constructionworker'"></i>
                         </div>  
                         <div nz-col nzSpan="16">
-                            <h2 class="h3">{{getItemValue('name',item)}}</h2>
+                            <div>{{getItemValue('name',item)}}</div>
                             <div *ngFor="let field of config.fieldMapping">{{getMappingField(item, field)}}</div>       
                         </div>
                     </div>
                 </ng-template>
                 <ng-template #horizontalDescription>
                     <div nz-row nzGutter="8">
-                    <div class="text-right h6" style="margin-bottom: 10px; margin-right: 10px">
+                    <div class="text-right h6" style="margin-bottom: 10px; margin-right: 10px;">
                         {{getItemValue('title', item)}}
                     </div >
                     <div nz-col nzSpan="24" style="text-align: center">
@@ -72,8 +75,8 @@
                                             <i nz-icon style="font-size:5em" [iconfont]="getItemValue('icon',item)?getItemValue('icon',item):'icon-constructionworker'"></i>
                                         </div>  
                                         <div nz-col nzSpan="16">
-                                            <h2 class="h4">{{getItemValue('name',item)}}</h2>
-                                            <div *ngFor="let field of config.fieldMapping" [ngClass]="[field.formatter ? setCellFont(getMappingField(item, field) ? getMappingField(item, field): '', field.formatter):'']">{{getMappingField(item, field)}}</div>       
+                                            <div style="font-size:1.5em;color:rgb(0,0,0,0.85); font-weight: 600;padding-bottom:8px">{{getItemValue('name',item)}}</div>
+                                            <div *ngFor="let field of config.fieldMapping" style="font-size:1.3em; padding-bottom:4px" [ngClass]="[field.formatter ? setCellFont(getMappingField(item, field) ? getMappingField(item, field): '', field.formatter):'']">{{getMappingField(item, field)}}</div>       
                                         </div>
                                     </div>
                             </ng-template>     

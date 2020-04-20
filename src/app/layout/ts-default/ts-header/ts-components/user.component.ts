@@ -58,8 +58,8 @@ import { NzModalService } from 'ng-zorro-antd';
     template: `        
         <nz-dropdown nzPlacement="bottomRight">
             <div class="item d-flex align-items-center px-sm" nz-dropdown>
-                <nz-avatar [nzSrc]="'../assets/img/user.svg'" nzSize="small" class="mr-sm"></nz-avatar>
-                {{userInfo?.accountName ? userInfo?.accountName: '用户'}}
+                <nz-avatar [nzSrc]="'../assets/img/user.svg'" nzSize="large" class="mr-sm"></nz-avatar>
+                <span style="font-size: 1.3em">{{userInfo?.accountName ? userInfo?.accountName: '用户'}}</span>
             </div>
             <div nz-menu class="width-sm">
                 <div nz-menu-item [nzDisabled]="true"><i class="anticon anticon-user mr-sm"></i>个人中心</div>

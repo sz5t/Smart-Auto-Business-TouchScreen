@@ -2,7 +2,7 @@
     <span *ngFor="let toolbar of toolbarConfig">
 
         <span class="toolbarGroup" *ngIf="toolbar.group">
-                <nz-button-group>
+                <!-- <nz-button-group> -->
                     <button
                         [nzSize]="size ? size : 'default'"
                         [nzType]="btn.style ? btn.style : 'default'"
@@ -11,9 +11,9 @@
                         (click)="toolbarAction(btn,$event)"
                         [attr.disabled]="btn.disabled">
                             <!-- <strong><i class="{{btn.icon}} {{btn.color}}"></i> {{btn.text}}</strong> -->
-                            <i nz-icon [type]="btn.icon" [theme]="btn.theme ? btn.theme : 'outline'"></i>{{btn.text}}
+                            <i style="font-size:1.3em;" nz-icon [type]="btn.icon" [theme]="btn.theme ? btn.theme : 'outline'"></i> <span style="font-size:1.2em;">{{btn.text}}</span>
                     </button>
-                </nz-button-group>
+                <!-- </nz-button-group> -->
         </span>
         <span class="toolbarGroup" *ngIf="toolbar.dropdown">
                 <nz-dropdown *ngFor="let btn of toolbar.dropdown">

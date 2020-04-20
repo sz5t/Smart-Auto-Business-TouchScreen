@@ -28,12 +28,12 @@
         </page-header> -->
 
         <nz-page-header class="templateHeader" [nzBackIcon]="backIcon">
-                <nz-page-header-title>工作中心</nz-page-header-title>
+                <nz-page-header-title><span style="font-size:1.3em">工作中心</span></nz-page-header-title>
                 <!-- <nz-page-header-subtitle></nz-page-header-subtitle> -->
                 <nz-page-header-extra>
-                        <button nz-button nzType="primary" (click)="logout()">退出登录</button>
-                        <nz-avatar [nzSrc]="'../assets/img/user.svg'" nzSize="small" class="mr-sm"></nz-avatar>
-                        {{userInfo?.accountName ? userInfo?.accountName : '用户'}}
+                        <button style="font-size:1.3em" nz-button nzType="primary" (click)="logout()">退出登录</button>
+                        <nz-avatar [nzSrc]="'../assets/img/user.svg'" nzSize="large" class="mr-sm"></nz-avatar>
+                        <span style="font-size:1.3em">{{userInfo?.accountName ? userInfo?.accountName : '用户'}}</span>
                 </nz-page-header-extra>
         </nz-page-header>
         <ng-template #backIcon>

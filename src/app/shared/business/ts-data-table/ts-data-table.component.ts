@@ -137,6 +137,15 @@ export class TsDataTableComponent extends CnComponentBase
         this._tplConfirmFooterRef = value;
     }
 
+    @ViewChild('tplDeleteConfirmFooter')
+    private _tplDeleteConfirmFooterRef: TemplateRef<any>;
+    public get tplDeleteConfirmFooterRef(): TemplateRef<any> {
+        return this._tplDeleteConfirmFooterRef;
+    }
+    public set tplDeleteConfirmFooterRef(value: TemplateRef<any>) {
+        this._tplDeleteConfirmFooterRef = value;
+    }
+
     @ViewChild('tplInnerConfirmFooter')
     private _tplInnerConfirmFooterRef: TemplateRef<any>;
     public get tplInnerConfirmFooterRef(): TemplateRef<any> {
@@ -472,7 +481,7 @@ export class TsDataTableComponent extends CnComponentBase
                                     data.data;
                             }
                         }
-                    }
+                     }
                 })();
             }
             // liu 20181022 特殊处理行定位
@@ -2338,50 +2347,79 @@ export class TsDataTableComponent extends CnComponentBase
         });
     }
 
+    // 自定义弹出确认删除按钮的确认操作
+    public deleteConfirmObj() {
+        const newData = [];
+        const serverData = [];
+        this.dataList.forEach(item => {
+            if (
+                item.checked === true &&
+                item['row_status'] === 'adding'
+            ) {
+                // 删除新增临时数据
+                newData.push(item.key);
+            }
+            if (item.checked === true) {
+                // 删除服务端数据
+                serverData.push(item.Id);
+            }
+        });
+        if (newData.length > 0) {
+            newData.forEach(d => {
+                this.dataList.splice(
+                    this.dataList.indexOf(d),
+                    1
+                );
+            });
+        }
+        if (serverData.length > 0) {
+            // 目前对应单个操作可以正确执行，多个操作由于异步的问题，需要进一步调整实现方式
+            if (this.innerConfirmExecuteObj['delConfig']) {
+                this._executeDelete(this.innerConfirmExecuteObj['delConfig'], serverData);
+            }
+            
+        }
+    }
+
     public deleteRow(option) {
         if (this.dataList.filter(item => item.checked === true).length <= 0) {
             // this.baseMessage.create('info', '请选择要删除的数据');
             this.createMessageTemplateModal2('info', '提示' , '请选择要删除的数据');
         } else {
+            this.innerConfirmExecuteObj = {};
+            this.innerConfirmExecuteObj = ['option'];
+
             if (
                 option.ajaxConfig.delete &&
                 option.ajaxConfig.delete.length > 0
             ) {
                 option.ajaxConfig.delete.map(async delConfig => {
-                    this.baseModal.confirm({
-                        nzTitle: delConfig.title ? delConfig.title : '提示',
-                        nzContent: delConfig.message ? delConfig.message : '',
-                        nzOnOk: () => {
-                            const newData = [];
-                            const serverData = [];
-                            this.dataList.forEach(item => {
-                                if (
-                                    item.checked === true &&
-                                    item['row_status'] === 'adding'
-                                ) {
-                                    // 删除新增临时数据
-                                    newData.push(item.key);
-                                }
-                                if (item.checked === true) {
-                                    // 删除服务端数据
-                                    serverData.push(item.Id);
-                                }
-                            });
-                            if (newData.length > 0) {
-                                newData.forEach(d => {
-                                    this.dataList.splice(
-                                        this.dataList.indexOf(d),
-                                        1
-                                    );
-                                });
-                            }
-                            if (serverData.length > 0) {
-                                // 目前对应单个操作可以正确执行，多个操作由于异步的问题，需要进一步调整实现方式
-                                this._executeDelete(delConfig, serverData);
-                            }
-                        },
-                        nzOnCancel: () => { }
-                    });
+                    this.msgTitle = delConfig.title ? delConfig.title : '提示',
+                    this.msgContent =  delConfig.message ? delConfig.message : '';
+
+                    const opts = {
+                        nzTitle: this.tplTitleRef,
+                        nzContent: this.tplContentRef,
+                        nzFooter: this.tplConfirmFooterRef
+                    }
+
+                    this.innerConfirmExecuteObj = {};
+                    
+                    this.innerConfirmExecuteObj['delConfig'] = delConfig;
+
+                    this.destoryTplModal();
+                    this.createConfirmTemplateModal(opts);
+
+                    
+
+                    // this.baseModal.confirm({
+                    //     nzTitle: delConfig.title ? delConfig.title : '提示',
+                    //     nzContent: delConfig.message ? delConfig.message : '',
+                    //     nzOnOk: () => {
+                            
+                    //     },
+                    //     nzOnCancel: () => { }
+                    // });
                 });
             }
         }
@@ -2389,43 +2427,56 @@ export class TsDataTableComponent extends CnComponentBase
 
     public deleteRowSelected(option, row) {
         if (this.dataList.filter(item => item.key === row.key).length <= 0) {
-            this.baseMessage.create('info', '请选择要删除的数据');
+            // this.baseMessage.create('info', '请选择要删除的数据');
+            this.createMessageTemplateModal2('info', '系统提示', '请选择要删除的数据');
         } else {
             if (option.ajaxConfig.length > 0) {
                 option.ajaxConfig.map(async delConfig => {
-                    this.baseModal.confirm({
-                        nzTitle: delConfig.title ? delConfig.title : '提示',
-                        nzContent: delConfig.message ? delConfig.message : '',
-                        nzOnOk: () => {
-                            const newData = [];
-                            const serverData = [];
-                            this.dataList.forEach(item => {
-                                if (item.key === row.key) {
-                                    if (item['row_status'] === 'adding') {
-                                        // 删除新增临时数据
-                                        newData.push(item.key);
-                                    } else {
-                                        // 删除服务端数据
-                                        serverData.push(item.Id);
-                                    }
-                                }
+                    this.msgTitle = delConfig.title ? delConfig.title : '提示',
+                    this.msgContent =  delConfig.message ? delConfig.message : '';
 
-                            });
-                            if (newData.length > 0) {
-                                newData.forEach(d => {
-                                    this.dataList.splice(
-                                        this.dataList.indexOf(d),
-                                        1
-                                    );
-                                });
-                            }
-                            if (serverData.length > 0) {
-                                // 目前对应单个操作可以正确执行，多个操作由于异步的问题，需要进一步调整实现方式
-                                this._executeDelete(delConfig, serverData);
-                            }
-                        },
-                        nzOnCancel: () => { }
-                    });
+                    const opts = {
+                        nzTitle: this.tplTitleRef,
+                        nzContent: this.tplContentRef,
+                        nzFooter: this.tplConfirmFooterRef
+                    }
+
+                    this.destoryTplModal();
+                    this.createConfirmTemplateModal(opts);
+
+                    // this.baseModal.confirm({
+                    //     nzTitle: delConfig.title ? delConfig.title : '提示',
+                    //     nzContent: delConfig.message ? delConfig.message : '',
+                    //     nzOnOk: () => {
+                    //         const newData = [];
+                    //         const serverData = [];
+                    //         this.dataList.forEach(item => {
+                    //             if (item.key === row.key) {
+                    //                 if (item['row_status'] === 'adding') {
+                    //                     // 删除新增临时数据
+                    //                     newData.push(item.key);
+                    //                 } else {
+                    //                     // 删除服务端数据
+                    //                     serverData.push(item.Id);
+                    //                 }
+                    //             }
+
+                    //         });
+                    //         if (newData.length > 0) {
+                    //             newData.forEach(d => {
+                    //                 this.dataList.splice(
+                    //                     this.dataList.indexOf(d),
+                    //                     1
+                    //                 );
+                    //             });
+                    //         }
+                    //         if (serverData.length > 0) {
+                    //             // 目前对应单个操作可以正确执行，多个操作由于异步的问题，需要进一步调整实现方式
+                    //             this._executeDelete(delConfig, serverData);
+                    //         }
+                    //     },
+                    //     nzOnCancel: () => { }
+                    // });
                 });
             }
         }

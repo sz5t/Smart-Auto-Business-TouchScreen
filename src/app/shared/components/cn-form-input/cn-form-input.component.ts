@@ -58,6 +58,15 @@ export class CnFormInputComponent implements OnInit {
 
   public onblur(e?, type?) {
     // console.log('onblur：', type, 'beginValue', this.beginValue, 'endValue', this.endValue);
+    if (this.config.showButton) {
+      return;
+    }
+    this.assemblyValue();
+
+  }
+
+  public submit(e?, type?) {
+    // console.log('onblur：', type, 'beginValue', this.beginValue, 'endValue', this.endValue);
     this.assemblyValue();
 
   }

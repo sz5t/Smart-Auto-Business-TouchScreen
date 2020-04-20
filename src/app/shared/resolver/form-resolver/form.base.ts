@@ -561,7 +561,7 @@ export class CnFormBase extends CnComponentBase {
                     nzFooter: this.tplConfirmFooterRef
                 }
                 this.createConfirmTemplateModal(confirmObj);
-            }
+            // }
             // if (c.message) {
             //     this.baseModal.confirm({
             //         nzTitle: c.title ? c.title : '提示',
@@ -597,31 +597,31 @@ export class CnFormBase extends CnComponentBase {
             //         },
             //         nzOnCancel() { }
             //     });
-            // } else {
-            //     (async () => {
-            //         const response = await this.execute(url, c.ajaxType, params);
-            //         // 处理输出参数
-            //         if (c.outputParams) {
-            //             this.outputParametersResolver(
-            //                 c,
-            //                 response,
-            //                 ajaxConfigs,
-            //                 () => {
-            //                     if (callback) {
-            //                         callback();
-            //                     }
-            //                 }
-            //             );
-            //         } else {
-            //             // 没有输出参数，进行默认处理
-            //             this.showAjaxMessage(response, '操作成功', () => {
-            //                 if (callback) {
-            //                     callback();
-            //                 }
-            //             });
-            //         }
-            //     })();
-            // }
+            } else {
+                (async () => {
+                    const response = await this.execute(url, c.ajaxType, params);
+                    // 处理输出参数
+                    if (c.outputParams) {
+                        this.outputParametersResolver(
+                            c,
+                            response,
+                            ajaxConfigs,
+                            () => {
+                                if (callback) {
+                                    callback();
+                                }
+                            }
+                        );
+                    } else {
+                        // 没有输出参数，进行默认处理
+                        this.showAjaxMessage(response, '操作成功', () => {
+                            if (callback) {
+                                callback();
+                            }
+                        });
+                    }
+                })();
+            }
         }
     }
 

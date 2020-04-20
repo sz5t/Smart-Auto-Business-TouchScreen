@@ -32,3 +32,4 @@
         <i nz-icon type="{{config.perfix}}" theme="outline"></i>
     </button>
 </ng-template>
+<button nz-button nzType="primary" *ngIf="config.showButton" (click)="submit($event,'end')">确定</button>

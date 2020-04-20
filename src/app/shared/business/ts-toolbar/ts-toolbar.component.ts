@@ -30,13 +30,11 @@ import {
             }
 
             .table-operations-ts button{
-                margin-bottom: 10px;
-                padding-top: 25px;
-                padding-left:40px;
-                padding-right:40px;
+                padding-top: 20px;
+                padding-left:30px;
+                padding-right:30px;
                 padding-bottom: 50px;
-                font: weight 800;
-                font-size:1.5em;
+                font-size:1.3em;
             }
 
             .table-operations-ts [nz-icon] {

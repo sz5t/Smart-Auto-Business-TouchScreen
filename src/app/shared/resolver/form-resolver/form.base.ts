@@ -366,7 +366,9 @@ export class CnFormBase extends CnComponentBase {
             if (msgObj && msgObj.length > 1) {
                 const messageType = msgObj[0];
                 let options;
-                this.destoryTplModal();
+                if (this.tplModal) {
+                    this.destoryTplModal();
+                }
                 switch (messageType) {
                     case 'info':
                         options = {

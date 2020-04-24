@@ -1,5 +1,5 @@
 
-<nz-card nzBordered="false" [nzBodyStyle]="config.bodyStyle?config.bodyStyle:{height: '300px'}">
+<nz-card nzBordered="false" [nzBodyStyle]="config.cardStyle?config.cardStyle:{height: '300px'}" [ngStyle]="{overflow: 'auto',height: config.scrollHeight, width: config.scrollWidth}">
     <nz-spin [nzSpinning]="isLoading" nzTip='加载中...'>
         <div nz-row class="selectionOperation">
             <div nz-col [nzSpan]="12" class="text-right">
@@ -31,8 +31,8 @@
                             <i nz-icon style="font-size:5em" [iconfont]="getItemValue('icon',item)?getItemValue('icon',item):'icon-constructionworker'"></i>
                         </div>  
                         <div nz-col nzSpan="16">
-                            <div>{{getItemValue('name',item)}}</div>
-                            <div *ngFor="let field of config.fieldMapping">{{getMappingField(item, field)}}</div>       
+                            <div style="font-size:1.3em;color:rgb(0,0,0,0.85); font-weight: 600;padding-bottom:8px">{{getItemValue('name',item)}}</div>
+                            <div style="font-size:1.2em; padding-bottom:4px" *ngFor="let field of config.fieldMapping" [ngClass]="[field.formatter ? setCellFont(getMappingField(item, field) ? getMappingField(item, field): '', field.formatter):'']">{{getMappingField(item, field)}}</div>       
                         </div>
                     </div>
                 </ng-template>

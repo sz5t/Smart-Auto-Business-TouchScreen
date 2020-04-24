@@ -271,7 +271,7 @@ export class BsnCardListComponent extends CnComponentBase
                                 this.outputParametersResolver(
                                     c,
                                     response,
-                                    option.ajaxConfig1,
+                                    option.ajaxConfig,
                                     () => {
                                         this.load();
                                     }
@@ -475,13 +475,16 @@ export class BsnCardListComponent extends CnComponentBase
                 //     }
                 // }
             }
+            this.isLoading = false;
             if (valueObj) {
                 this.returnValue = valueObj;
                 const childrenConfig = ajaxConfig.filter(
                     f => f.parentName && f.parentName === c.name
                 );
                 //  目前紧支持一次执行一个分之步骤
+                if (childrenConfig.length > 0) {
                 this._getAjaxConfig(childrenConfig[0], ajaxConfig);
+                }
             }
 
         } else {

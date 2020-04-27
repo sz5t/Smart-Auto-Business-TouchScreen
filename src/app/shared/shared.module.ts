@@ -111,6 +111,7 @@ import { BsnInlineCardSwipeComponent } from './business/bsn-inline-card-swipe/bs
 import { CnGridRadioGroupComponent } from './components/cn-grid-radio-group/cn-grid-radio-group.component';
 import { BsnInlineFaceRecognitionComponent } from './business/bsn-inline-face-recognition/bsn-inline-face-recognition.component';
 import { BsnChartComponent } from './business/bsn-chart/bsn-chart.component';
+import { BsnCETACTESTX15Component } from './business/bsn-cetac-test-x15/bsn-cetac-test-x15.component';
 // import { CnFormSocketComponent } from './components/cn-form-socket/cn-form-socket.component';
 
 
@@ -245,7 +246,8 @@ const DIRECTIVES = [
         ...COMPONENTS,
         ...DIRECTIVES,
         BtnTableFieldLimit,
-        SafeUrlPipe
+        SafeUrlPipe,
+        BsnCETACTESTX15Component
         
     ],
     exports: [

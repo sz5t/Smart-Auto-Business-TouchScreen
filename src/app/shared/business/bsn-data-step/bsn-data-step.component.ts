@@ -153,6 +153,7 @@ export class BsnDataStepComponent extends CnComponentBase
                         nodeData['color'] = element['color'];
                         this.formatNode.push({Id: nodeData['Id'], color: element['color']})
                         if (nodeData[this.config.processNode['field']] === this.config.processNode['selected']) {
+                            nodeData['color'] = this.sNodeClickColor;
                             // nodeData['style'] = { stroke: '#000' };
                             this.tempValue['_selectedNode'] = nodeData;
                             if (this.config.componentType && this.config.componentType.parent === true) {

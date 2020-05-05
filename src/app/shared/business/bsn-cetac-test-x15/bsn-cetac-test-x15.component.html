@@ -1,9 +1,133 @@
-<nz-card [nzBodyStyle]="config.style ? config.style : {}" [nzTitle]="config.title ? config.title : false" [nzBordered]="config.border ? config.border : false">
-  <form nz-form [formGroup]="formGroup">
+<nz-spin [nzSpinning]="loading" [nzTip]="'正在等待检测结果，请稍后...'">
+<nz-card [nzBodyStyle]="config.style ? config.style : {}" [nzTitle]="title" [nzBordered]="config.border ? config.border : false">
+  <form nz-form [formGroup]="form">
     <div nz-row [nzGutter]="24">
-      <div nz-col>
-        
+      <div nz-col nzSpan="18">
+        <nz-form-label nzSpan="3">
+          连接状态
+      </nz-form-label>
+      <nz-form-control [formGroup]="form" nzSpan="21">
+        <input nz-input formControlName="connStatus"
+               placeholder=""/>
+               <nz-form-extra></nz-form-extra>
+      </nz-form-control>
+      </div>
+      <div nz-col nzSpan="6">
+      <nz-form-control [formGroup]="form">
+        <button nz-button nzType="primary" nzBlock="true" style="height:40px;font-size:16px" (click)="beginConnectionSocket()">连接设备</button>
+               <nz-form-extra></nz-form-extra>
+      </nz-form-control>
+      </div>
+    </div>
+    <div nz-row [nzGutter]="24">
+      <div nz-col nzSpan="24">
+        <nz-form-label nzSpan="3">
+          产品码
+      </nz-form-label>
+      <nz-form-control [formGroup]="form" nzSpan="21">
+        <input nz-input formControlName="singleCode"/>
+          <nz-form-extra></nz-form-extra>
+          <!-- <nz-form-explain
+              *ngIf="formGroup.get('singlecode').dirty && formGroup.get('scanCode').errors || formGroup.get('scanCode').pending ">
+              <ng-container *ngFor="let valid of config.validations">
+                  <span style="margin-top:3px" *ngIf="formGroup.get('scanCode').hasError(valid.validator.toLowerCase())">{{valid.errorMessage}}</span>
+              </ng-container>
+          </nz-form-explain> -->
+      </nz-form-control>
+      <nz-form-control [formGroup]="form">
+        <input nz-input formControlName="Id" hidden="true"/>
+      </nz-form-control>
+      </div>
+    </div>
+    <div nz-row [nzGutter]="24">
+      <div nz-col nzSpan="12">
+        <nz-form-label nzSpan="6">
+          测试结果
+      </nz-form-label>
+      <nz-form-control [formGroup]="form" nzSpan="18">
+        <input nz-input formControlName="result" placeholder=""/>
+               <nz-form-extra></nz-form-extra>
+          <nz-form-explain
+              *ngIf="form.get('result').dirty && form.get('result').errors || form.get('result').pending ">
+              <ng-container *ngFor="let valid of config.validations">
+                  <span style="margin-top:3px" *ngIf="form.get('result').hasError(valid.validator.toLowerCase())">{{valid.errorMessage}}</span>
+              </ng-container>
+          </nz-form-explain>
+      </nz-form-control>
+      </div>
+      <div nz-col nzSpan="12">
+        <nz-form-label nzSpan="6">
+          测试模式
+      </nz-form-label>
+      <nz-form-control [formGroup]="form" nzSpan="18">
+        <input nz-input formControlName="testMode"/>
+          <nz-form-extra></nz-form-extra>
+      </nz-form-control>
+      </div>
+    </div>
+    <div nz-row [nzGutter]="24">
+      <div nz-col nzSpan="12">
+        <nz-form-label nzSpan="6">
+          充气压力
+      </nz-form-label>
+      <nz-form-control [formGroup]="form" nzSpan="18">
+        <input nz-input formControlName="fillPress"/>
+               <nz-form-extra></nz-form-extra>
+      </nz-form-control>
+      </div>
+      <div nz-col nzSpan="12">
+        <nz-form-label nzSpan="6">
+          稳定压力
+      </nz-form-label>
+      <nz-form-control [formGroup]="form" nzSpan="18">
+        <input nz-input formControlName="stablePress"/>
+               <nz-form-extra></nz-form-extra>
+      </nz-form-control>
+      </div>
+    </div>
+    <div nz-row [nzGutter]="24">
+      <div nz-col nzSpan="12">
+        <nz-form-label nzSpan="6">
+          测试数据
+      </nz-form-label>
+      <nz-form-control [formGroup]="form" nzSpan="18">
+        <input nz-input formControlName="testData"/>
+               <nz-form-extra></nz-form-extra>
+      </nz-form-control>
+      </div>
+      <div nz-col nzSpan="12">
+        <nz-form-label nzSpan="6">
+          排气压力
+      </nz-form-label>
+      <nz-form-control [formGroup]="form" nzSpan="18">
+        <input nz-input formControlName="vent"/>
+               <nz-form-extra></nz-form-extra>
+      </nz-form-control>
+      </div>
+    </div>
+    <div nz-row [nzGutter]="24">
+      <div nz-col nzSpan="12">
+        <nz-form-label nzSpan="6">
+          稳定时间
+      </nz-form-label>
+      <nz-form-control [formGroup]="form" nzSpan="18">
+        <input nz-input formControlName="stableTime"/>
+               <nz-form-extra></nz-form-extra>
+      </nz-form-control>
+      </div>
+      <div nz-col nzSpan="12">
+        <nz-form-label nzSpan="6">
+          测试时长
+      </nz-form-label>
+      <nz-form-control [formGroup]="form" nzSpan="18">
+        <input nz-input formControlName="testTime"/>
+               <nz-form-extra></nz-form-extra>
+      </nz-form-control>
       </div>
     </div>
   </form>
+  <ng-template #title>
+    <span style="font-size: 20px;font-weight: 600;">{{config.title ? config.title : ''}}</span>
+  </ng-template>
 </nz-card>
+</nz-spin>

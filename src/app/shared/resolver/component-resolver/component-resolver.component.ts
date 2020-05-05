@@ -45,6 +45,7 @@ import { BsnShowImageComponent } from '@shared/business/bsn-show-image/bsn-show-
 import { BsnInlineCardSwipeComponent } from '@shared/business/bsn-inline-card-swipe/bsn-inline-card-swipe.component';
 import { BsnInlineFaceRecognitionComponent } from '@shared/business/bsn-inline-face-recognition/bsn-inline-face-recognition.component';
 import { BsnChartComponent } from '@shared/business/bsn-chart/bsn-chart.component';
+import { BsnCETACTESTX15Component } from '@shared/business/bsn-cetac-test-x15/bsn-cetac-test-x15.component';
 const components: { [type: string]: Type<any> } = {
     code_edit: CnCodeEditComponent,
     bsnTable: BsnTableComponent,
@@ -75,7 +76,8 @@ const components: { [type: string]: Type<any> } = {
     bsnShowImage: BsnShowImageComponent,
     bsnChart: BsnChartComponent,
     bsnInlineswipe: BsnInlineCardSwipeComponent,
-    bsnInlinesface: BsnInlineFaceRecognitionComponent
+    bsnInlinesface: BsnInlineFaceRecognitionComponent,
+    bsnCETACT: BsnCETACTESTX15Component
 };
 @Component({
     // tslint:disable-next-line:component-selector

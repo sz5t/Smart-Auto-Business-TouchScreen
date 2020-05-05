@@ -26,11 +26,7 @@
     </nz-select>
 </ng-template>
 <ng-template #suffixTemplate>
-    <!-- <i nz-icon type="close-circle" theme="fill"></i> -->
-    <!-- <i nz-icon style="width: 50px" type="edit" theme="outline" (click)="showModal()"></i> -->
-      <button nz-button nzSearch nzType="primary" (click)="showModal()" style="height: 40px; width: 70px;">
-        <!-- <i nz-icon type="{{config.perfix}}" theme="outline"></i> -->
-        确认
-    </button>
+      <button nz-button nzType="primary" (click)="showModal()" style="height: 40px; width: 70px;">确认</button>
 </ng-template>
 <button nz-button nzType="primary" *ngIf="config.showButton" (click)="submit($event,'end')">确定</button>
+ 

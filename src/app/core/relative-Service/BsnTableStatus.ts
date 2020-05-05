@@ -39,7 +39,8 @@ export const BSN_COMPONENT_MODES = {
     // form
     FORM_ADD: 'formAdd',
     FORM_EDIT: 'formEdit',
-    FORM_LOAD: 'formLoad'
+    FORM_LOAD: 'formLoad',
+    FORM_TECTA_TEST: 'tectaTest'
 };
 
 export const BSN_FORM_STATUS = {

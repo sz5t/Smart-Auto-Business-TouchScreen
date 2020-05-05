@@ -216,7 +216,8 @@ const COMPONENTS = [
     BsnInlineCardSwipeComponent,
     CnGridRadioGroupComponent,
     BsnInlineFaceRecognitionComponent,
-    BsnChartComponent
+    BsnChartComponent,
+    BsnCETACTESTX15Component
     // CnFormSocketComponent
 ];
 const DIRECTIVES = [

@@ -28,6 +28,10 @@ import { CacheService } from '@delon/cache';
       cursor: pointer;
     }
 
+    .ant-input-affix-wrapper .ant-input-suffix {
+      right:0px;
+    }
+
     `
   ]
 })

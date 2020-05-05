@@ -42,10 +42,12 @@ import { ITokenService, DA_SERVICE_TOKEN } from '@delon/auth';
 import { create } from 'domain';
 import { timeout } from 'q';
 import { setTimeout } from 'core-js';
+import { BsnCETACTESTX15Component } from '../bsn-cetac-test-x15/bsn-cetac-test-x15.component';
 const component: { [type: string]: Type<any> } = {
     layout: LayoutResolverComponent,
     form: CnFormWindowResolverComponent,
-    upload: BsnUploadComponent
+    upload: BsnUploadComponent,
+    cetacTest: BsnCETACTESTX15Component
 };
 
 @Component({
@@ -594,6 +596,11 @@ export class TsDataTableComponent extends CnComponentBase
                         this.beforeOperation.operationItemData = this._selectRow;
                         !this.beforeOperation.beforeItemDataOperation(option) &&
                             this.windowDialog(option);
+                        break;
+                    case BSN_COMPONENT_MODES.FORM_TECTA_TEST: // 检漏仪表单弹出
+                        this.beforeOperation.operationItemData = this._selectRow;
+                        !this.beforeOperation.beforeItemDataOperation(option) &&
+                            this.formCETACDialog(option);
                         break;
                     case BSN_COMPONENT_MODES.FORM:
                         this.beforeOperation.operationItemData = this._selectRow;
@@ -3717,6 +3724,70 @@ export class TsDataTableComponent extends CnComponentBase
             });
         }
     }
+
+     /**
+     * 弹出检漏仪表单页面
+     * @param dialog
+     * @returns {boolean}
+     */
+    private showCETACForm(dialog) {
+        let obj;
+        // if (dialog.type === 'add') {
+        // } else if (dialog.type === 'edit') {
+            
+        // }
+        const t = Object.getOwnPropertyNames(this._selectRow);
+        if (t.length <= 0) {
+            this.createMessageTemplateModal2('warning', '提示信息', '请先扫描产品码！');
+            return false;
+        }
+
+        obj = {
+            ...this.tempValue,
+            ...this._selectRow,
+            _id: this._selectRow[dialog.keyId]
+                ? this._selectRow[dialog.keyId]
+                : ''
+        };
+
+        const footer = [];
+        const modal = this.baseModal.create({
+            // nzTitle: dialog.title ? dialog.title : null,
+            nzWidth: '80%',
+            nzContent: component['cetacTest'],
+            nzComponentParams: {
+                config: dialog,
+                tempValue: obj,
+                // editable: dialog.type === 'add' ? 'post' : 'put'
+            },
+            nzFooter: footer
+        });
+
+        if (dialog.buttons) {
+            dialog.buttons.forEach(btn => {
+                const button = {};
+                button['label'] = btn.text;
+                button['type'] = btn.type ? btn.type : 'default';
+                button['onClick'] = componentInstance => {
+                    if (btn['name'] === 'save') {
+                        componentInstance.buttonAction(
+                            btn,
+                            () => {
+                                modal.close();
+                                this.load();
+                            }
+                        );
+                    } else if (btn['name'] === 'close') {
+                        this.load();
+                        modal.close();
+                    } else if (btn['name'] === 'reset') {
+                        this._resetForm(componentInstance);
+                    }
+                };
+                footer.push(button);
+            });
+        }
+    }
     /**
      * 重置表单
      * @param comp
@@ -3855,6 +3926,16 @@ export class TsDataTableComponent extends CnComponentBase
             this.openUploadDialog(this.config.uploadDialog[index]);
         }
     }
+    
+    public formCETACDialog(option) {
+        if (this.config.formDialog && this.config.formDialog.length > 0) {
+            const index = this.config.formDialog.findIndex(
+                item => item.name === option.actionName
+            );
+            this.showCETACForm(this.config.formDialog[index]);
+        }
+    }
+
     /**
      * 弹出表单
      * @param option
@@ -3918,6 +3999,7 @@ export class TsDataTableComponent extends CnComponentBase
 
         return fontColor;
     }
+
     // "formatter": [
     //     {
     //         caseValue: { type: "selectValue", valueName: "value", regular: "^1$" }, // 哪个字段的值触发，正则表达 type：selectValue （当前值） selectObjectValue（当前选中对象）

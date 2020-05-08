@@ -41,8 +41,8 @@ export class CnFormBase extends CnComponentBase {
     public set tplTitleRef(value: TemplateRef<any>) {
         this._tplTitleRef = value;
     }
-    
-    
+
+
     @ViewChild('tplContent')
     private _tplContentRef: TemplateRef<any>;
     public get tplContentRef(): TemplateRef<any> {
@@ -60,7 +60,7 @@ export class CnFormBase extends CnComponentBase {
     public set tplFooterRef(value: TemplateRef<any>) {
         this._tplFooterRef = value;
     }
-    
+
     @ViewChild('tplConfirmFooter')
     private _tplConfirmFooterRef: TemplateRef<any>;
     public get tplConfirmFooterRef(): TemplateRef<any> {
@@ -295,6 +295,7 @@ export class CnFormBase extends CnComponentBase {
             tempValue: this.tempValue,
             initValue: this.initValue,
             cacheValue: this.cacheValue,
+            routerValue: this.cacheValue,
             returnValue: this.returnValue
         });
         return params;
@@ -309,19 +310,20 @@ export class CnFormBase extends CnComponentBase {
                 initValue: this.initValue,
                 cacheValue: this.cacheValue,
             });
-            url = 'http://' + ip['IP'] + ':' + ip['sort'] + '/' + urlConfig ;
+            url = 'http://' + ip['IP'] + ':' + ip['sort'] + '/' + urlConfig;
         } else {
-        if (CommonTools.isString(urlConfig)) {
-            url = urlConfig;
-        } else {
-            const pc = CommonTools.parametersResolver({
-                params: urlConfig.params,
-                tempValue: this.tempValue,
-                initValue: this.initValue,
-                cacheValue: this.cacheValue
-            });
-            url = `${urlConfig.url['parent']}/${pc}/${urlConfig.url['child']}`;
-        }}
+            if (CommonTools.isString(urlConfig)) {
+                url = urlConfig;
+            } else {
+                const pc = CommonTools.parametersResolver({
+                    params: urlConfig.params,
+                    tempValue: this.tempValue,
+                    initValue: this.initValue,
+                    cacheValue: this.cacheValue
+                });
+                url = `${urlConfig.url['parent']}/${pc}/${urlConfig.url['child']}`;
+            }
+        }
         return url;
     }
 
@@ -369,6 +371,7 @@ export class CnFormBase extends CnComponentBase {
                 if (this.tplModal) {
                     this.destoryTplModal();
                 }
+                this.returnValue = valueObj;
                 switch (messageType) {
                     case 'info':
                         options = {
@@ -391,7 +394,7 @@ export class CnFormBase extends CnComponentBase {
                     case 'confirm':
                         this.msgTitle = '确认提示';
                         this.msgContent = msgObj[1];
-                        
+
                         const opts = {
                             nzTitle: this.tplTitleRef,
                             nzContent: this.tplContentRef,
@@ -405,7 +408,7 @@ export class CnFormBase extends CnComponentBase {
 
                         this.innerConfirmExecuteObj['c'] = childrenConfig[0];
                         this.innerConfirmExecuteObj['ajaxConfig'] = ajaxConfig,
-                        this.innerConfirmExecuteObj['callback'] = callback;
+                            this.innerConfirmExecuteObj['callback'] = callback;
 
                         // options = {
                         //     nzTitle: '提示',
@@ -448,11 +451,16 @@ export class CnFormBase extends CnComponentBase {
                             nzContent: msgObj[1]
                         };
                         // this.baseMessage.success(msgObj[1]);
+                        if (this.tplModal) {
+                            this.destoryTplModal();
+                        }
                         this.createMessageTemplateModal2('success', '成功提示', msgObj[1]);
-                        callback && callback();
+                        if (!this.returnValue) {
+                            callback && callback();
+                        }
                         break;
                 }
-                
+
                 // if(options) {
                 //     this.modalService[messageType](options);
                 //
@@ -461,13 +469,12 @@ export class CnFormBase extends CnComponentBase {
                 //         callback && callback();
                 //     }
                 // }
-            } 
+            }
             // else {
             //     this.baseMessage.error(
             //         '存储过程返回结果异常：未获得输出的消息内容'
             //     );
             // }
-            this.returnValue = valueObj;
             if (this.returnValue) {
                 const childrenConfig = ajaxConfig.filter(
                     f => f.parentName && f.parentName === c.name
@@ -476,7 +483,7 @@ export class CnFormBase extends CnComponentBase {
                     //  目前紧支持一次执行一个分之步骤
                     this.getAjaxConfig(childrenConfig[0], ajaxConfig, callback);
                 } else {
-                    callback();
+                    callback(this.returnValue);
                 }
             }
 
@@ -487,8 +494,8 @@ export class CnFormBase extends CnComponentBase {
         }
     }
 
-    public executeInnerConfirmDialogOK () {
-         
+    public executeInnerConfirmDialogOK() {
+
     }
 
     /**
@@ -513,7 +520,7 @@ export class CnFormBase extends CnComponentBase {
             if (rs.success) {
                 // this.baseMessage.success(message);
                 this.createMessageTemplateModal2('success', '消息提示', message);
-                
+
                 suc = true;
             } else {
                 // this.baseMessage.error(rs.msg.join('<br/>'));
@@ -532,7 +539,7 @@ export class CnFormBase extends CnComponentBase {
         if (suc && callback) {
             callback();
         }
-        if(this.tplModal) {
+        if (this.tplModal) {
             this.tplModal.destroy();
         }
     }
@@ -541,7 +548,7 @@ export class CnFormBase extends CnComponentBase {
         return this.apiResource[method](url, body).toPromise();
     }
 
-   
+
     public getAjaxConfig(c, ajaxConfigs, callback?) {
         if (c) {
             const url = this.buildUrl(c.url);
@@ -553,8 +560,6 @@ export class CnFormBase extends CnComponentBase {
                 this.confirmExecuteObj['params'] = params;
                 this.confirmExecuteObj['ajaxConfigs'] = ajaxConfigs;
                 callback && (this.confirmExecuteObj['callback'] = callback);
-
-
                 this.msgTitle = '提示';
                 this.msgContent = c.message // c.message;
                 const confirmObj = {
@@ -563,42 +568,42 @@ export class CnFormBase extends CnComponentBase {
                     nzFooter: this.tplConfirmFooterRef
                 }
                 this.createConfirmTemplateModal(confirmObj);
-            // }
-            // if (c.message) {
-            //     this.baseModal.confirm({
-            //         nzTitle: c.title ? c.title : '提示',
-            //         nzContent: c.message ? c.message : '',
-            //         nzOnOk: () => {
-            //             (async () => {
-            //                 const response = await this.execute(url, c.ajaxType, params);
-            //                 // 处理输出参数
-            //                 if (c.outputParams) {
-            //                     this.outputParametersResolver(
-            //                         c,
-            //                         response,
-            //                         ajaxConfigs,
-            //                         () => {
-            //                             if (callback) {
-            //                                 callback();
-            //                             }
-            //                         }
-            //                     );
-            //                 } else {
-            //                     // 没有输出参数，进行默认处理
-            //                     this.showAjaxMessage(
-            //                         response,
-            //                         '操作成功',
-            //                         () => {
-            //                             if (callback) {
-            //                                 callback();
-            //                             }
-            //                         }
-            //                     );
-            //                 }
-            //             })();
-            //         },
-            //         nzOnCancel() { }
-            //     });
+                // }
+                // if (c.message) {
+                //     this.baseModal.confirm({
+                //         nzTitle: c.title ? c.title : '提示',
+                //         nzContent: c.message ? c.message : '',
+                //         nzOnOk: () => {
+                //             (async () => {
+                //                 const response = await this.execute(url, c.ajaxType, params);
+                //                 // 处理输出参数
+                //                 if (c.outputParams) {
+                //                     this.outputParametersResolver(
+                //                         c,
+                //                         response,
+                //                         ajaxConfigs,
+                //                         () => {
+                //                             if (callback) {
+                //                                 callback();
+                //                             }
+                //                         }
+                //                     );
+                //                 } else {
+                //                     // 没有输出参数，进行默认处理
+                //                     this.showAjaxMessage(
+                //                         response,
+                //                         '操作成功',
+                //                         () => {
+                //                             if (callback) {
+                //                                 callback();
+                //                             }
+                //                         }
+                //                     );
+                //                 }
+                //             })();
+                //         },
+                //         nzOnCancel() { }
+                //     });
             } else {
                 (async () => {
                     const response = await this.execute(url, c.ajaxType, params);
@@ -608,17 +613,17 @@ export class CnFormBase extends CnComponentBase {
                             c,
                             response,
                             ajaxConfigs,
-                            () => {
+                            (returnValue) => {
                                 if (callback) {
-                                    callback();
+                                    callback(returnValue);
                                 }
                             }
                         );
                     } else {
                         // 没有输出参数，进行默认处理
-                        this.showAjaxMessage(response, '操作成功', () => {
+                        this.showAjaxMessage(response, '操作成功', (returnValue) => {
                             if (callback) {
-                                callback();
+                                callback(returnValue);
                             }
                         });
                     }
@@ -671,9 +676,9 @@ export class CnFormBase extends CnComponentBase {
                     c,
                     response,
                     ajaxConfigs,
-                    () => {
+                    (returnValue) => {
                         if (this.confirmExecuteObj.callback) {
-                            this.confirmExecuteObj.callback();
+                            this.confirmExecuteObj.callback(returnValue);
                         }
                     }
                 );
@@ -682,9 +687,9 @@ export class CnFormBase extends CnComponentBase {
                 this.showAjaxMessage(
                     response,
                     '操作成功',
-                    () => {
+                    (returnValue) => {
                         if (this.confirmExecuteObj.callback) {
-                            this.confirmExecuteObj.callback();
+                            this.confirmExecuteObj.callback(returnValue);
                         }
                     }
                 );
@@ -695,8 +700,8 @@ export class CnFormBase extends CnComponentBase {
     public innerConfirmDialogOK() {
         if (this.innerConfirmExecuteObj) {
             this.getAjaxConfig(
-                this.innerConfirmExecuteObj.c, 
-                this.innerConfirmExecuteObj.ajaxConfig, 
+                this.innerConfirmExecuteObj.c,
+                this.innerConfirmExecuteObj.ajaxConfig,
                 this.innerConfirmExecuteObj.callback
             );
         }

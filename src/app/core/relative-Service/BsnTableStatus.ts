@@ -40,7 +40,8 @@ export const BSN_COMPONENT_MODES = {
     FORM_ADD: 'formAdd',
     FORM_EDIT: 'formEdit',
     FORM_LOAD: 'formLoad',
-    FORM_TECTA_TEST: 'tectaTest'
+    FORM_TECTA_TEST: 'tectaTest',
+    EXECUTE_AND_LINK: 'execute_and_link'
 };
 
 export const BSN_FORM_STATUS = {

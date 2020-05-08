@@ -159,11 +159,24 @@ export class FormResolverComponent extends CnFormBase
             } else {
                 this.load();
             }
-        } else if (this.formValue) {
-            // 表单加载初始化数据
-            this.setFormValue(this.formValue);
-            // console.log('表单加载初始化数据', this.formValue);
-        }
+        } else {
+            if (this.config.staticData &&
+                (this.formState === BSN_FORM_STATUS.EDIT || this.formState === BSN_FORM_STATUS.TEXT)) {
+                    const data = this.buildParameter(this.config.staticData);
+                    this.setFormValue(data);
+            } else {
+                if (this.formValue) {
+                    // 表单加载初始化数据
+                    this.setFormValue(this.formValue);
+                    // console.log('表单加载初始化数据', this.formValue);
+                }
+            }
+        } 
+        // else if (this.formValue) {
+        //     // 表单加载初始化数据
+        //     this.setFormValue(this.formValue);
+        //     // console.log('表单加载初始化数据', this.formValue);
+        // }
         // 初始化前置条件验证对象
         this.beforeOperation = new BeforeOperation({
             config: this.config,
@@ -309,6 +322,23 @@ export class FormResolverComponent extends CnFormBase
                         case BSN_COMPONENT_MODES.LOGIN_OUT:
                             this.logout();
                             return;
+                        case BSN_COMPONENT_MODES.EXECUTE_AND_LINK:
+                            if (option.ajaxConfig) {
+                                // 根据表单状态进行具体配置操作
+                                this.resolveAjaxConfig(
+                                    option.ajaxConfig,
+                                    this.formState,
+                                    (returnValue) => {
+                                        setTimeout(() => {
+                                            if (this.tplModal) {
+                                                this.destoryTplModal();
+                                            }
+                                        }, 1000);
+                                        this.linkToPageByReturnValue(option, returnValue);
+                                    }
+                                );
+                            }
+                            break;
                     }
                 }
             }
@@ -413,10 +443,18 @@ export class FormResolverComponent extends CnFormBase
             const params = this.buildParameter(this.config.ajaxConfig.params);
             this.execute(url, this.config.ajaxConfig.ajaxType, params).then(result => {
                 let res;
-                if (Array.isArray(result.data)) {
-                    res = result.data[0]
+                if (!result.data.dataSet1) {
+                    if (Array.isArray(result.data)) {
+                        res = result.data[0]
+                    } else {
+                        res = result.data;
+                    }
                 } else {
-                    res = result.data;
+                    if (Array.isArray(result.data.dataSet1)) {
+                        res = result.data.dataSet1[0]
+                    } else {
+                        res = result.data.dataSet1;
+                    }
                 }
                 this.loadData = res;
                 if (res) {
@@ -1517,8 +1555,8 @@ export class FormResolverComponent extends CnFormBase
                                         sendData[feild.name] =
                                             data[feild.valueName];
                                     }
-                                } else if ( feild['type'] === 'selectObjectValue' ) {
-                                    if (data.dataItem) { 
+                                } else if (feild['type'] === 'selectObjectValue') {
+                                    if (data.dataItem) {
                                         sendData[feild.name] = data.dataItem[feild.valueName];
                                     } else {
                                         sendData[feild.name] = null;
@@ -1968,7 +2006,7 @@ export class FormResolverComponent extends CnFormBase
         }
     }
 
-    
+
 
     public createMessageTemplateModal(tplTitle: TemplateRef<{}>, tplContent: TemplateRef<{}>, tplFooter: TemplateRef<{}>) {
         this.tplModal = this.modalService.create({
@@ -1980,5 +2018,21 @@ export class FormResolverComponent extends CnFormBase
         });
     }
 
-    
+    /**
+     * linkToPageByReturnValue 根据返回值的属性，进行跳转
+     */
+    public linkToPageByReturnValue(option, returnValue) {
+        this.cacheValue.set('routerValue', returnValue);
+        if (Array.isArray(option.link)) {
+            option.link.forEach(elem => {
+                if (returnValue[elem.field] && (returnValue[elem.field] === elem.value)) {
+                    this.router.navigate([elem.linkName], { queryParams: returnValue });
+                }
+            });
+        } else {
+            this.router.navigate([option.link], { queryParams: returnValue });
+        }
+    }
+
+
 }

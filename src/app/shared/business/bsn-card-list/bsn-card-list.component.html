@@ -27,7 +27,7 @@
                 <nz-card-meta [nzDescription]="config.layout==='vertical' ? verticalDescription: horizontalDescription"></nz-card-meta>
                 <ng-template #verticalDescription>
                     <div nz-row nzGutter="8">
-                        <div nz-col nzSpan="8" style="text-align: center">
+                        <div nz-col nzSpan="8" *ngIf="config.showPicture" style="text-align: center">
                             <i nz-icon style="font-size:5em" [iconfont]="getItemValue('icon',item)?getItemValue('icon',item):'icon-constructionworker'"></i>
                         </div>  
                         <div nz-col nzSpan="16">
@@ -71,7 +71,7 @@
                           [nzDescription]="nzDescription1">
                           <ng-template #nzDescription1>
                                 <div nz-row nzGutter="8">
-                                        <div nz-col nzSpan="8" style="text-align: center">
+                                        <div *ngIf="config.showPicture" nz-col nzSpan="8" style="text-align: center">
                                             <i nz-icon style="font-size:5em" [iconfont]="getItemValue('icon',item)?getItemValue('icon',item):'icon-constructionworker'"></i>
                                         </div>  
                                         <div nz-col nzSpan="16">

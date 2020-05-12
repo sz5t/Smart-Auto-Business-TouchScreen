@@ -86,6 +86,7 @@ export class BsnCardListComponent extends CnComponentBase
         // this.formConfig['forms'] = this.config.forms;
         // this.formConfig['editable'] = 'text';
         this.initValue = this.initData ? this.initData : {};
+        this.config.showPicture = this.config.showPicture === 'noPicture' ? false : true
         this.load();
         this.resolverRelation();
         // 初始化前置条件验证对象

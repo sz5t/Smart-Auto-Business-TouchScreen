@@ -355,8 +355,8 @@
                 <!--<ng-template #footer>-->
                 <!--&nbsp;-->
                 <!--</ng-template> -->
-                <nz-switch *ngIf="config.autoPlaySwitch" [ngModel]="true" nzCheckedChildren="开始滚动"
-                    nzUnCheckedChildren="暂停滚动" (ngModelChange)="startAutoPlay()"></nz-switch>
+                <nz-switch *ngIf="config.autoPlaySwitch" [ngModel]="true" [nzCheckedChildren]="config.CheckedText?config.CheckedText:'开始滚动'"
+                    [nzUnCheckedChildren]="config.UnCheckedText?config.UnCheckedText:'暂停滚动'" (ngModelChange)="startAutoPlay()"></nz-switch>
                     <ng-template #showTotal let-total>
                         共 {{total}} 条
                     </ng-template>

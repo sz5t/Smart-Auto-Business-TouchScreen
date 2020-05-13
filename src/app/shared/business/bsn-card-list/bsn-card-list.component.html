@@ -1,5 +1,5 @@
 
-<nz-card nzBordered="false" [nzBodyStyle]="config.cardStyle?config.cardStyle:{height: '300px'}" [ngStyle]="{overflow: 'auto',height: config.scrollHeight, width: config.scrollWidth}">
+<nz-card nzBordered="false" [nzTitle]="config.title?config.title:''" [nzBodyStyle]="config.cardStyle?config.cardStyle:{height: '300px'}" [ngStyle]="{overflow: 'auto',height: config.scrollHeight, width: config.scrollWidth}">
     <nz-spin [nzSpinning]="isLoading" nzTip='加载中...'>
         <div nz-row class="selectionOperation">
             <div nz-col [nzSpan]="12" class="text-right">

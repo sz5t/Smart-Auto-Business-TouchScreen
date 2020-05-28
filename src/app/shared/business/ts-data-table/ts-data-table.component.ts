@@ -2452,8 +2452,9 @@ export class TsDataTableComponent extends CnComponentBase
                         nzContent: this.tplContentRef,
                         nzFooter: this.tplConfirmFooterRef
                     }
-
-                    this.destoryTplModal();
+                    if (this.tplModal) {
+                        this.destoryTplModal();
+                    }
                     this.createConfirmTemplateModal(opts);
 
                     // this.baseModal.confirm({

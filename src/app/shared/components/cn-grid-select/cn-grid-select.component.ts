@@ -169,6 +169,8 @@ export class CnGridSelectComponent implements OnInit, AfterViewInit, OnChanges {
                         return null;
                     }
                     // params[param.name] = this.cascadeValue[param.valueName];
+                } else if (param.type === 'rowValue') {
+                    params[param.name] = this.rowData[param.valueName];
                 }
             });
 

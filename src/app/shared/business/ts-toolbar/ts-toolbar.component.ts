@@ -158,7 +158,8 @@ export class TsToolbarComponent implements OnInit, OnDestroy {
                     name: btn.name ? btn.name : '',
                     actionName: btn.actionName ? btn.actionName : null,
                     ajaxConfig: btn.ajaxConfig ? btn.ajaxConfig : null,
-                    link: btn.link ? btn.link : ''
+                    link: btn.link ? btn.link : '',
+                    builtInAction: btn.builtInAction ? btn.builtInAction : null
                 })
             );
         });

@@ -68,7 +68,7 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
     }
 
     public ngOnInit() {
-
+        // console.log(this.config);
     }
     public ngAfterViewInit() {
 

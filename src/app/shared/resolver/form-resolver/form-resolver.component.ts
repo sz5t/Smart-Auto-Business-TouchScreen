@@ -162,8 +162,8 @@ export class FormResolverComponent extends CnFormBase
         } else {
             if (this.config.staticData &&
                 (this.formState === BSN_FORM_STATUS.EDIT || this.formState === BSN_FORM_STATUS.TEXT)) {
-                    const data = this.buildParameter(this.config.staticData);
-                    this.setFormValue(data);
+                const data = this.buildParameter(this.config.staticData);
+                this.setFormValue(data);
             } else {
                 if (this.formValue) {
                     // 表单加载初始化数据
@@ -171,7 +171,7 @@ export class FormResolverComponent extends CnFormBase
                     // console.log('表单加载初始化数据', this.formValue);
                 }
             }
-        } 
+        }
         // else if (this.formValue) {
         //     // 表单加载初始化数据
         //     this.setFormValue(this.formValue);
@@ -338,6 +338,9 @@ export class FormResolverComponent extends CnFormBase
                                     }
                                 );
                             }
+                            break;
+                        case BSN_COMPONENT_MODES.EXECUTE_FOCUS:
+                            this.focusItem(option);
                             break;
                     }
                 }
@@ -1049,6 +1052,14 @@ export class FormResolverComponent extends CnFormBase
                             dataTypeItem['relation'] =
                                 item.data.relation_data.option;
                         }
+                        if (item.data.type === 'focus') {
+                            // 组件聚焦
+                            this.cascadeList[c.name][cobj.cascadeName][
+                                'focus'
+                            ] = item.data.focus_option.option;
+                            dataTypeItem['focus'] =
+                                item.data.focus_option.option;
+                        }
 
                         dataType.push(dataTypeItem);
                     });
@@ -1134,7 +1145,6 @@ export class FormResolverComponent extends CnFormBase
     }
 
     public valueChange(data?) {
-        // debugger;
         // console.log('当前表单数据：', data);
         // 第一步，知道是谁发出的级联消息（包含信息： field、json、组件类别（类别决定取值））
         // { name: this.config.name, value: name }
@@ -1287,6 +1297,13 @@ export class FormResolverComponent extends CnFormBase
                                                 setValuedata['data']
                                             );
                                         }
+                                    }
+                                    if (caseItem['type'] === 'focus') {
+                                        control.autofocus = true;
+                                            control = JSON.parse(
+                                                JSON.stringify(control)
+                                            );
+                                            changeConfig_new.push(control);
                                     }
 
                                     // endregion  解析结束
@@ -2032,6 +2049,61 @@ export class FormResolverComponent extends CnFormBase
         } else {
             this.router.navigate([option.link], { queryParams: returnValue });
         }
+    }
+
+    /**
+     * focusItem 发消息让组件聚焦
+     */
+    public focusItem(option) {
+        // console.log(option);
+        const action = option.builtInAction ? option.builtInAction : null
+        if (action && action.content.length > 0) {
+            action.content.forEach(c => {
+                if (c.type === 'focus') {
+                    this.focusElement(c.option, c.type);
+                }
+            })
+        }
+    }
+
+    /**
+     * focusElement 元素聚焦
+     */
+    public focusElement(option, type) {
+        const name = option.focusControlName;
+        // const data = {'type': type}
+        // const cascadeValueItems = [data];
+        // const CascadeObjects = [{'cascadeName': name, 'cascadeValueItems': cascadeValueItems}]
+        // const valueChangeConfig = {'name': name, 'CascadeObjects': CascadeObjects}
+        this.valueChange({'name': name});
+        // {
+        //     "name": "workNo1",
+        //         "CascadeObjects": [
+        //             {
+        //                 "cascadeName": "workNo1",
+        //                 "cascadeValueItems": [
+        //                     {
+        //                         "caseValue": {
+        //                             "type": "selectObjectValue",
+        //                             "valueName": "num",
+        //                             "regular": "^0$"
+        //                         },
+        //                         "data": {
+        //                             "type": "message",
+        //                             "message_data": {
+        //                                 "option": {
+        //                                     "messageType": "warning",
+        //                                     "type": "selectObjectValue",
+        //                                     "valueName": "msg"
+        //                                 }
+        //                             }
+        //                         }
+        //                     }
+        //                 ],
+        //                 "cascadeDataItems": []
+        //             }
+        //         ]
+        // }
     }
 
 

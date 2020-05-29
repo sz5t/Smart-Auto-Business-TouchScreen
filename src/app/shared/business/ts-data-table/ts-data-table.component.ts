@@ -206,6 +206,8 @@ export class TsDataTableComponent extends CnComponentBase
     public loadAutoTimeByTab;
     // 前置条件集合
     public beforeOperation;
+    // confirm执行的配置
+    public executeConfirmConfig;
 
 
     // 提示框对象
@@ -2444,6 +2446,7 @@ export class TsDataTableComponent extends CnComponentBase
         } else {
             if (option.ajaxConfig.length > 0) {
                 option.ajaxConfig.map(async delConfig => {
+                    this.executeConfirmConfig = delConfig;
                     this.msgTitle = delConfig.title ? delConfig.title : '提示',
                     this.msgContent =  delConfig.message ? delConfig.message : '';
 
@@ -5689,38 +5692,57 @@ export class TsDataTableComponent extends CnComponentBase
     }
 
     public confirmDialogOK() {
-        // (async () => {
-        //     const url = this.confirmExecuteObj.url;
-        //     const c = this.confirmExecuteObj.c;
-        //     const params = this.confirmExecuteObj.params;
-        //     const ajaxConfigs = this.confirmExecuteObj.ajaxConfigs;
+        // console.log(this.executeConfirmConfig);
+        (async () => {
+            const url = this.executeConfirmConfig.url;
+            // const c = this.executeConfirmConfig.c;
+            const params = this.executeConfirmConfig.params;
+            const ajaxConfigs = this.executeConfirmConfig;
+            const handleData =  this._getSelectedItem();
 
-        //     const response = await this.execute(url, c.ajaxType, params);
-        //     // 处理输出参数
-        //     if (c.outputParams) {
-        //         this.outputParametersResolver(
-        //             c,
-        //             response,
-        //             ajaxConfigs,
-        //             () => {
-        //                 if (this.confirmExecuteObj.callback) {
-        //                     this.confirmExecuteObj.callback();
-        //                 }
-        //             }
-        //         );
-        //     } else {
-        //         // 没有输出参数，进行默认处理
-        //         this.showAjaxMessage(
-        //             response,
-        //             '操作成功',
-        //             () => {
-        //                 if (this.confirmExecuteObj.callback) {
-        //                     this.confirmExecuteObj.callback();
-        //                 }
-        //             }
-        //         );
-        //     }
-        // })();
+            const response = await this._executeAjaxConfig(ajaxConfigs, handleData);
+            // 处理输出参数
+            if (ajaxConfigs.outputParams) {
+                this.outputParametersResolver(
+                    ajaxConfigs,
+                    response,
+                    ajaxConfigs,
+                    () => {
+                        this.cascade.next(
+                            new BsnComponentMessage(
+                                BSN_COMPONENT_CASCADE_MODES.REFRESH,
+                                this.config.viewId
+                            )
+                        );
+                        this.focusIds = this._getFocusIds(
+                            response.data
+                        );
+                        if (this.config.ajaxConfig.ajaxType === 'proc') {
+                            this.loadbydynamictable();
+                        } else {
+                            this.load();
+                        }
+                    }
+                );
+            } else {
+                // 没有输出参数，进行默认处理
+                this.showAjaxMessage(
+                    response,
+                    '操作成功',
+                    () => {
+                        this.cascade.next(
+                            new BsnComponentMessage(
+                                BSN_COMPONENT_CASCADE_MODES.REFRESH,
+                                this.config.viewId
+                            )
+                        );
+                        this.focusIds = this._getFocusIds(response.data);
+                        this.load();
+                    }
+                );
+            }
+        })();
+        this.destoryTplModal();
     }
 
     public innerConfirmDialogOK() {
@@ -5745,7 +5767,8 @@ export class TsDataTableComponent extends CnComponentBase
             nzContent: this.tplContentRef,
             nzFooter: this.tplFooterRef,
             nzMaskClosable: true,
-            nzClosable: false
+            nzClosable: false,
+
         });
     }
 

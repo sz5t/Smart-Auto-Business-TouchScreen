@@ -4,7 +4,7 @@
 <nz-form-control [formGroup]="formGroup" [nzSpan]="config.controlSize">
     <nz-input-group nzAddOnAfterIcon="{{config.addOnAfterIcon}}" nzAddOnBeforeIcon="{{config.addOnBeforeIcon}}"
         [nzCompact]="false" [nzSize]="'default'" [nzSuffix]="suffixTemplate" [nzPrefixIcon]="config.perfix">
-        <input nz-input #scanInput [ngClass]="{scan : true}" type="{{config.inputType}}"
+        <input nz-input #scanInput [ngClass]="{scan : true}" type="{{config.inputType}}" autofocus="{{config.autofocus}}"
             formControlName="{{config.name}}" [nzSize]="config.size" placeholder="{{config.placeholder}}"
             disabled="{{config.disabled}}" [(ngModel)]="_value" (keyup)="onKeyPress($event)"
             (ngModelChange)="initLoadValue($event)" />

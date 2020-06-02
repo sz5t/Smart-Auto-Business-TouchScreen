@@ -446,17 +446,19 @@ export class FormResolverComponent extends CnFormBase
             const params = this.buildParameter(this.config.ajaxConfig.params);
             this.execute(url, this.config.ajaxConfig.ajaxType, params).then(result => {
                 let res;
-                if (!result.data.dataSet1) {
-                    if (Array.isArray(result.data)) {
-                        res = result.data[0]
+                if (result.data) {
+                    if (!result.data.dataSet1) {
+                        if (Array.isArray(result.data)) {
+                            res = result.data[0]
+                        } else {
+                            res = result.data;
+                        }
                     } else {
-                        res = result.data;
-                    }
-                } else {
-                    if (Array.isArray(result.data.dataSet1)) {
-                        res = result.data.dataSet1[0]
-                    } else {
-                        res = result.data.dataSet1;
+                        if (Array.isArray(result.data.dataSet1)) {
+                            res = result.data.dataSet1[0]
+                        } else {
+                            res = result.data.dataSet1;
+                        }
                     }
                 }
                 this.loadData = res;

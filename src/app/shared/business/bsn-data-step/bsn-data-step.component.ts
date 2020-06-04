@@ -123,7 +123,9 @@ export class BsnDataStepComponent extends CnComponentBase
                     } else {
                         this.graph.read({ nodes: crNodes });
                     }
-                    this._lastNode = this.graph._cfg._itemMap[crNodes[0].Id];
+                    if (!this._lastNode) {
+                        this._lastNode = this.graph._cfg._itemMap[crNodes[0].Id];
+                    }
                     this.isLoading = false;
                 }
             });
@@ -152,18 +154,6 @@ export class BsnDataStepComponent extends CnComponentBase
                     if (element['value'] === nodeData[this.config.processNode['field']]) {
                         nodeData['color'] = element['color'];
                         this.formatNode.push({ Id: nodeData['Id'], color: element['color'] })
-                        if (this._lastNode) {
-                            this.tempValue['_selectedNode'] = this._lastNode;
-                            this._lastNode['color'] = this.sNodeClickColor;
-                            this._lastNode['style'] = { stroke: '#000' };
-                        } else {
-                            const selectField = this.config.processNode['selectField'] ? this.config.processNode['selectField'] : this.config.processNode['field']
-                            if (nodeData[selectField] === this.config.processNode['selected']) {
-                                nodeData['color'] = this.sNodeClickColor;
-                                // nodeData['style'] = { stroke: '#000' };
-                                this.tempValue['_selectedNode'] = nodeData;
-                            }
-                        }
                         if (this.tempValue['_selectedNode']) {
                             if (this.config.componentType && this.config.componentType.parent === true) {
                                 this.cascade.next(new BsnComponentMessage(BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD, this.config.viewId, {
@@ -204,70 +194,85 @@ export class BsnDataStepComponent extends CnComponentBase
                             }
                         }
                     }
+                    if (this._lastNode) {
+                        this.tempValue['_selectedNode'] = this._lastNode.model;
+                        if (nodeData['Id'] === this._lastNode['id']) {
+                            nodeData['color'] = this.sNodeClickColor;
+                            nodeData['style'] = { stroke: '#000' };
+                        }
+                    } else {
+                        const selectField = this.config.processNode['selectField'] ? this.config.processNode['selectField'] : this.config.processNode['field']
+                        if (nodeData[selectField] === this.config.processNode['selected']) {
+                            nodeData['color'] = this.sNodeClickColor;
+                            // nodeData['style'] = { stroke: '#000' };
+                            this.tempValue['_selectedNode'] = nodeData;
+                        }
+                    }
                 });
-                if (!this.tempValue['_selectedNode']) {
-                    this.tempValue['_selectedNode'] = resultNodes[0];
-                    resultNodes[0]['color'] = this.sNodeClickColor;
-                    resultNodes[0]['style'] = { stroke: '#000' };
-                    if (this.config.componentType && this.config.componentType.parent === true) {
-                        this.cascade.next(new BsnComponentMessage(BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD, this.config.viewId, {
-                            data: this.tempValue['_selectedNode']
-                        }));
-                    }
-                    if (this.config.componentType && this.config.componentType.sub === true) {
-                        this.tempValue['_selectedNode'] && this.cascade.next(
-                            new BsnComponentMessage(
-                                BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD,
-                                this.config.viewId,
-                                {
-                                    data: this.tempValue['_selectedNode'],
-                                    tempValue: this.tempValue,
-                                    subViewId: () => {
-                                        let id = '';
-                                        if (Array.isArray(this.config.subMapping) &&
-                                            this.config.subMapping.length > 0
-                                        ) {
-                                            this.config.subMapping.forEach(sub => {
-                                                const mappingVal = this.tempValue['_selectedNode'][sub['field']];
-                                                if (sub.mapping) {
-                                                    sub.mapping.forEach(m => {
-                                                        if (m.value === mappingVal) {
-                                                            id = m.subViewId;
-                                                        }
-                                                    }
-                                                    );
-                                                }
-                                            }
-                                            );
-                                        }
-                                        return id;
-                                    }
-                                }
-                            )
-                        );
-                    }
+            }
+            if (!this.tempValue['_selectedNode']) {
+                this.tempValue['_selectedNode'] = resultNodes[0];
+                resultNodes[0]['color'] = this.sNodeClickColor;
+                resultNodes[0]['style'] = { stroke: '#000' };
+                if (this.config.componentType && this.config.componentType.parent === true) {
+                    this.cascade.next(new BsnComponentMessage(BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD, this.config.viewId, {
+                        data: this.tempValue['_selectedNode']
+                    }));
                 }
-            } else {
-                if (i === 0) {
-                    nodeData['color'] = this.sNodeClickColor;
-                    nodeData['style'] = { 'stroke': '#000' };
-                    this.tempValue['_selectedNode'] = nodeData;
-                    if (
-                        this.config.componentType &&
-                        this.config.componentType.parent === true
-                    ) {
-                        this.cascade.next(
-                            new BsnComponentMessage(
-                                BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
-                                this.config.viewId,
-                                {
-                                    data: this.tempValue['_selectedNode']
+                if (this.config.componentType && this.config.componentType.sub === true) {
+                    this.tempValue['_selectedNode'] && this.cascade.next(
+                        new BsnComponentMessage(
+                            BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD,
+                            this.config.viewId,
+                            {
+                                data: this.tempValue['_selectedNode'],
+                                tempValue: this.tempValue,
+                                subViewId: () => {
+                                    let id = '';
+                                    if (Array.isArray(this.config.subMapping) &&
+                                        this.config.subMapping.length > 0
+                                    ) {
+                                        this.config.subMapping.forEach(sub => {
+                                            const mappingVal = this.tempValue['_selectedNode'][sub['field']];
+                                            if (sub.mapping) {
+                                                sub.mapping.forEach(m => {
+                                                    if (m.value === mappingVal) {
+                                                        id = m.subViewId;
+                                                    }
+                                                }
+                                                );
+                                            }
+                                        }
+                                        );
+                                    }
+                                    return id;
                                 }
-                            )
-                        );
-                    }
+                            }
+                        )
+                    );
                 }
             }
+            // else {
+            // if (i === 0) {
+            //     nodeData['color'] = this.sNodeClickColor;
+            //     nodeData['style'] = { 'stroke': '#000' };
+            //     this.tempValue['_selectedNode'] = nodeData;
+            //     if (
+            //         this.config.componentType &&
+            //         this.config.componentType.parent === true
+            //     ) {
+            //         this.cascade.next(
+            //             new BsnComponentMessage(
+            //                 BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD,
+            //                 this.config.viewId,
+            //                 {
+            //                     data: this.tempValue['_selectedNode']
+            //                 }
+            //             )
+            //         );
+            //     }
+            // }
+            // }
             if (this.config.direction === 'horizontal') {
                 nodeData['x'] =
                     this.config.startX * i === 0
@@ -527,6 +532,32 @@ export class BsnDataStepComponent extends CnComponentBase
             }
         });
 
+        G6.registerNode('customNode', {
+            draw: (item) => {
+                const group = item.getGraphicGroup();
+                group.addShape('text', {
+                    attrs: {
+                        x: 0,
+                        y: -13,
+                        fill: '#333',
+                        text: item.model.label,
+                        fontSize: '100px'
+                    }
+                });
+                return group.addShape('rect', {
+                    attrs: {
+                        x: 0,
+                        y: -12,
+                        width: 25,
+                        height: 25,
+                        stroke: '#333',
+                        fill: '#eee',
+                        label: item.model.label
+                    }
+                });
+            }
+        });
+
         G6.registerBehaviour('mouseEnterColor', graph => {
             graph.behaviourOn('node:mouseenter', ev => {
                 this.bNodeColor = ev.item.model.color;
@@ -656,7 +687,10 @@ export class BsnDataStepComponent extends CnComponentBase
             mode: 'red'
         });
 
-        this.load();
+        if (this.config.componentType &&
+            this.config.componentType.own === true) {
+            this.load();
+        }
     }
 
     public ngOnDestroy() {

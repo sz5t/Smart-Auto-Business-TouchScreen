@@ -61,7 +61,7 @@ export class BsnDataStepComponent extends CnComponentBase
     public bNodeColor;
     public sNodeColor = '#eee';
     public sNodeEnterColor = '#00B2EE';
-    public sNodeClickColor = '#9BCD9C';
+    public sNodeClickColor;
     public _lastNode;
     public _statusSubscription;
     public _cascadeSubscription;
@@ -95,6 +95,7 @@ export class BsnDataStepComponent extends CnComponentBase
     }
 
     public ngOnInit() {
+        this.sNodeClickColor = this.config.selectedColor ? this.config.selectedColor : '#9BCD9C'
         this.initValue = this.initData ? this.initData : {};
         this.resolverRelation();
     }
@@ -595,6 +596,9 @@ export class BsnDataStepComponent extends CnComponentBase
                             this.lastNodeColor = e.color
                         }
                     })
+                    if (!this.lastNodeColor) {
+                        this.lastNodeColor = '#ccc'
+                    }
                     graph.update(ev.item, {
                         color: this.sNodeClickColor,
                         style: { stroke: '#000' }

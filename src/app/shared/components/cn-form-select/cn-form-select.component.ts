@@ -98,7 +98,7 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
         if (this.config.valueType && this.config.valueType === 'list') {
             const labels = this.config.labelName.split('.');
             const values = this.config.valueName.split('.');
-            result.data.forEach(d => {
+            result.data && result.data.length > 0 && result.data.forEach(d => {
                 d[this.config.valueName].forEach(v => {
                     this._options.push({
                         label: v.ParameterName,
@@ -107,7 +107,7 @@ export class CnFormSelectComponent implements OnInit, AfterViewInit, OnChanges {
                 });
             });
         } else {
-            result.data.forEach(d => {
+            result.data && result.data.length > 0 && result.data.forEach(d => {
                 this._options.push({
                     label: d[this.config.labelName],
                     value: d[this.config.valueName]

@@ -39,7 +39,7 @@ export class BsnTabsComponent extends CnComponentBase implements OnInit, OnDestr
         private cascade: Observer<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascadeEvents: Observable<BsnComponentMessage>,
-        
+
     ) {
         super();
         this.cacheValue = this.cacheService;
@@ -49,7 +49,12 @@ export class BsnTabsComponent extends CnComponentBase implements OnInit, OnDestr
         this.initValue = this.initData ? this.initData : {};
         this.resolverRelation();
         this.config = CommonTools.deepCopy(this.config);
-
+        for (let i = 0; i < this.config.tabs.length; i++) {
+            if (this.config.tabs[i].active) {
+                this._currentIndex = i;
+                return
+            }
+        }
         // const activeIndex = this.config.tabs.findIndex(tab => tab.active);
         // this.cascade.next(
         //     new BsnComponentMessage(
@@ -111,7 +116,7 @@ export class BsnTabsComponent extends CnComponentBase implements OnInit, OnDestr
 
                                 const mode =
                                     BSN_COMPONENT_CASCADE_MODES[
-                                        relation.cascadeMode
+                                    relation.cascadeMode
                                     ];
                                 // 获取传递的消息数据
                                 const option = cascadeEvent.option;
@@ -134,7 +139,7 @@ export class BsnTabsComponent extends CnComponentBase implements OnInit, OnDestr
                                             // 刷新当前页签，重新设置激活状态
                                             this.config = CommonTools.deepCopy(this.config);
                                         }
-                                    break;
+                                        break;
                                     case BSN_COMPONENT_CASCADE_MODES.START_AUTO_PLAY:
                                         if (option.data.mappingData) {
                                             // 解析参数
@@ -153,7 +158,7 @@ export class BsnTabsComponent extends CnComponentBase implements OnInit, OnDestr
                                             // 刷新当前页签，重新设置激活状态
                                             this.config = CommonTools.deepCopy(this.config);
                                         }
-                                    break;
+                                        break;
                                     case BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD:
                                         // 获取相关配置，该配置获取所有标签页
                                         // 找出标签页中设置替换刷新的配置标签
@@ -186,7 +191,7 @@ export class BsnTabsComponent extends CnComponentBase implements OnInit, OnDestr
                                         //     //     }
                                         //     // });
                                         // }
-                                    break;
+                                        break;
                                 }
                             }
                         });

@@ -1,5 +1,5 @@
-<nz-tabset [nzTabPosition]="config.tabPosition" [nzType]="config.tabType" [nzSize]="config.size" (nzSelectChange)="tabChange($event)">
-    <nz-tab *ngFor="let tab of config.tabs" [nzTitle]="header" (nzDeselect)="tabDisactive(tab)" (nzSelect)="tabActive(tab)">
+<nz-tabset [nzTabPosition]="config.tabPosition" [nzType]="config.tabType" [nzSize]="config.size" (nzSelectChange)="tabChange($event)" [nzSelectedIndex] = "_currentIndex">
+    <nz-tab *ngFor="let tab of config.tabs" [nzTitle]="header" (nzDeselect)="tabDisactive(tab)" (nzSelect)="tabActive(tab)" >
         <ng-container *ngIf="tab.rows;else tabView">
             <div *ngIf="tab.active">
                     <cn-layout-resolver [config]="tab" [initData] = "initData" [tempValue] = "tempValue" [permissions] = "permissions ? permissions : []" ></cn-layout-resolver>

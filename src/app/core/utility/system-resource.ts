@@ -17,11 +17,11 @@ export const SystemResource_1 = {
     'url_localhost_4200': {
         localResourceUrl: 'localhost:4200',
         /** 后台服务 */
-        settingSystemServer: '192.168.1.111:8081',
+        settingSystemServer: '192.168.1.111:8081',//'10.129.150.111:8081',
         /** 后台服务 */
-        appSystemServer: '192.168.1.111:8081',
+        appSystemServer: '192.168.1.111:8081', //,'10.129.150.111:8081'
         /**报表  */
-        reportServerUrl: '192.168.1.111:8088'
+        reportServerUrl: '10.129.150.111:8084',//'192.168.1.111:8088'
     },
     'url_192_168_1_111_8084': {
         localResourceUrl: '192.168.1.111:8084',
@@ -176,7 +176,7 @@ export class SystemResource {
 
 
     public static reportServer = {
-        // url: 'http://192.168.1.111:8081/api.cfg/files/reportTemplate/',
+        // url: 'http://192.168.1.111:8081/api.cfg/files/reportTemplate/',         
         // url: 'http://127.0.0.1:8081/api.cfg/files/reportTemplate/',
         // url: 'http://192.168.1.111:8088/ReportServer.ashx'
         url: SystemResourceConfig.SysRconfig.reportServerUrl

@@ -128,7 +128,11 @@ export class DefaultInterceptor implements HttpInterceptor {
         const reg = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/;
         const reg_port = /:\d{1,5}/;
         const reg_all = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d{1,5}/
-        const ip = reg_all.exec(oldUrl)[0];
+        let ip = null;
+        const regOldUrlIp = reg_all.exec(oldUrl);
+        if(regOldUrlIp && Array.isArray(regOldUrlIp) && regOldUrlIp.length > 0) {
+            ip = regOldUrlIp[0];
+        }
 
         const href = window.location.href;
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Inject } from '@angular/core';
+import { Component, OnInit, Input, Inject, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ApiService } from '@core/utility/api-service';
 import { CacheService } from '@delon/cache';
@@ -18,7 +18,7 @@ import { CommonTools } from '@core/utility/common-tools';
   templateUrl: './bsn-cetac-test-x15.component.html',
   styleUrls: ['./bsn-cetac-test-x15.component.less']
 })
-export class BsnCETACTESTX15Component extends CnFormBase implements  OnInit {
+export class BsnCETACTESTX15Component extends CnFormBase implements  OnInit, OnDestroy {
   @Input() 
   public config: any;
 
@@ -34,6 +34,10 @@ export class BsnCETACTESTX15Component extends CnFormBase implements  OnInit {
 
   public loading = false;
 
+  public wsconfig: any;
+
+  private equipmentParams: any;
+  private result: any;
     
   constructor(
     private builder: FormBuilder,
@@ -58,6 +62,9 @@ export class BsnCETACTESTX15Component extends CnFormBase implements  OnInit {
         this.baseModal = this.modalService;
         this.apiResource = this.apiService;
         this.cacheValue = this.cacheService;
+  }
+
+  public ngOnDestroy () {
   }
 
   public ngOnInit() {
@@ -102,7 +109,7 @@ export class BsnCETACTESTX15Component extends CnFormBase implements  OnInit {
         }
       ]
     };
-    this.form.get('connStatus').setValue('设备连接中...');
+    this.form.get('connStatus').setValue('设备连接中...，请稍后');
     this.loadEquipment(ajaxConfig);
   }
 
@@ -117,48 +124,133 @@ export class BsnCETACTESTX15Component extends CnFormBase implements  OnInit {
       if (loadData.data.length > 0) {
         const data = loadData.data[0];
         console.log('CEATETEST CONFIG=========>', data);
-        const wsconfig = 'ws://' + data['webSocketIp'] + ':' + data['webSocketPort'] + '/' + data['connEntry'];
+        this.wsconfig = 'ws://' + data['webSocketIp'] + ':' + data['webSocketPort'] + '/' + data['connEntry'];
         
         try {
-          const ws = new WebSocket(wsconfig);
-          this.connectEquipment(ws);
+          
+          this.changeProgram();
+          // this.connectEquipment(this.ws);
         } catch (e) {
             console.log(e);
         }
-        
-        
-        
       }
     }
   }
 
-  private connectEquipment(ws) {
+  public getProgramParams() {
+    const ws = new WebSocket(this.wsconfig);
     const that = this;
     ws.onopen = function() {
-      that.form.get('connStatus').setValue('设备连接成功，等待检测结果');
-      ws.send('begin');
+      that.loading = true;
+      // send command
+      const cmd = {CommandName: 'GET_PARAMS', CommandContent: '0D 01 09 01', IsReturnData: true};
+      ws.send(JSON.stringify(cmd));
+    }
+    ws.onmessage = function(evt) {
+      const msg = evt.data;
+      const params = JSON.parse(msg);
+      if (params) {
+        that.form.get('TestTime').setValue(params.TestTime);
+        that.form.get('Fill').setValue(params.Fill);
+        that.form.get('FillTime').setValue(params.FillTime);
+        that.form.get('FillUpper').setValue(params.FillUpper);
+        that.form.get('FillLower').setValue(params.FillLower);
+        that.form.get('Stabilisation').setValue(params.Stabilisation);
+        that.form.get('VentTime').setValue(params.VentTime);
+        that.form.get('Delay').setValue(params.Delay);
+      }
+      console.log('参数======>', params)
+      ws.close();
+      that.loading = false;
+      // 
+      that.startTest();
+    }
+    ws.onclose = function() {
+      console.log('参数接受 socket 关闭');
+      that.loading = false;
+
+    }
+    ws.onerror = function(evt) {
+      that.form.get('connStatus').setValue('连接异常,请重试...');
+      that.loading = false;
+      console.log(evt);
+    }
+  }
+
+  private changeProgram() {
+    const that = this;
+    const ws = new WebSocket(this.wsconfig);
+    ws.onopen = function () {
+      that.form.get('connStatus').setValue('准备检测程序...，请稍后');
+      console.log('send change program command');
+      // 发送程序跳转命令
+      const cmd = {CommandName: 'CHANGE_PROGRAM', CommandContent: '0D 02 08 01 FF', IsReturnData: true};
+      ws.send(JSON.stringify(cmd));
+      that.loading = true;
+    }
+
+    ws.onmessage = function(evt) {
+      const msg = evt.data;
+      console.log('change program ======>', msg);
+      that.form.get('connStatus').setValue('检测程序完成');
+      ws.close();
+      that.loading = false;
+    }
+
+    ws.onclose = function() {
+      console.log('程序转换 socket 关闭');
+      that.loading = false;
+    }
+
+    ws.onerror = function (evt) {
+      that.form.get('connStatus').setValue('连接异常,请重试...');
+      that.loading = false;
+      console.log(evt);
+    }
+    
+  }
+
+  public startTest() {
+    const ws = new WebSocket(this.wsconfig);
+    const that = this;
+    ws.onopen = function() {
+      that.form.get('connStatus').setValue('检测中...，请稍后');
+      const cmd = {CommandName: 'START', CommandContent: '0D 00 05', IsReturnData: true};
+      ws.send(JSON.stringify(cmd));
       that.loading = true;
     }
     ws.onmessage = function(evt) {
       console.log(evt.data);
       const eqmData = JSON.parse(evt.data);
-      console.log(eqmData);
-      if(evt.data) {
-        that.form.get('result').setValue(eqmData.Result);
-        that.form.get('testMode').setValue(eqmData.TestMode);
-        that.form.get('fillPress').setValue(eqmData.Fill);
-        that.form.get('stablePress').setValue(eqmData.Stabilisation);
-        that.form.get('testData').setValue(eqmData.MeasurementResult);
-        that.form.get('vent').setValue(eqmData.VentPressure);
-        that.form.get('connStatus').setValue('检测完成');
+      if (eqmData) {
+        that.form.get('TestMode').setValue(eqmData.TestMode);
+        that.form.get('ResultStabilisation').setValue(eqmData.ResultStabilisation);
+        that.form.get('ResultVent').setValue(eqmData.ResultVent);
+        that.form.get('ResultMeasurement').setValue(eqmData.ResultMeasurement);
+        that.form.get('TestResult').setValue(eqmData.TestResult);
       }
-
+      console.log(eqmData);
+      // if(evt.data) {
+      //   that.form.get('result').setValue(eqmData.Result);
+      //   that.form.get('testMode').setValue(eqmData.TestMode);
+      //   that.form.get('fillPress').setValue(eqmData.Fill);
+      //   that.form.get('stablePress').setValue(eqmData.Stabilisation);
+      //   that.form.get('testData').setValue(eqmData.MeasurementResult);
+      //   that.form.get('vent').setValue(eqmData.VentPressure);
+      //   that.form.get('connStatus').setValue('检测完成');
+      // }
+      ws.close();
       that.loading = false;
       
     }
-
     ws.onclose = function () {
       that.form.get('connStatus').setValue('设备连接断开');
+      that.loading = false;
+    }
+    ws.onerror = function(evt) {
+      that.form.get('connStatus').setValue('连接异常,请重试...');
+      that.loading = false;
+      console.log(evt);
     }
 
   }
@@ -226,15 +318,21 @@ export class BsnCETACTESTX15Component extends CnFormBase implements  OnInit {
 
     group.addControl('Id', this.createFormControl({name: 'Id'}));
     group.addControl('singleCode', this.createFormControl({name: 'singleCode'}));
-    group.addControl('result', this.createFormControl({name: 'result'}));
     group.addControl('connStatus', this.createFormControl({name: 'connStatus'}));
-    group.addControl('fillPress', this.createFormControl({name: 'fill'}));
-    group.addControl('stablePress', this.createFormControl({name: 'stablePress'}));
-    group.addControl('testData', this.createFormControl({name: 'testData'}));
-    group.addControl('testMode', this.createFormControl({name: 'testMode'}));
-    group.addControl('vent', this.createFormControl({name: 'vent'}));
-    group.addControl('stableTime', this.createFormControl({name: 'stableTime'}));
-    group.addControl('testTime', this.createFormControl({name: 'testTime'}));
+
+    group.addControl('Delay', this.createFormControl({name: 'Delay'}));
+    group.addControl('TestMode', this.createFormControl({name: 'TestMode'}));
+    group.addControl('Fill', this.createFormControl({name: 'Fill'}));
+    group.addControl('FillTime', this.createFormControl({name: 'FillTime'}));
+    group.addControl('FillUpper', this.createFormControl({name: 'FillUpper'}));
+    group.addControl('FillLower', this.createFormControl({name: 'FillLower'}));
+    group.addControl('ResultStabilisation', this.createFormControl({name: 'ResultStabilisation'}));
+    group.addControl('Stabilisation', this.createFormControl({name: 'Stabilisation'}));
+    group.addControl('ResultVent', this.createFormControl({name: 'ResultVent'}));
+    group.addControl('VentTime', this.createFormControl({name: 'VentTime'}));
+    group.addControl('ResultMeasurement', this.createFormControl({name: 'ResultMeasurement'}));
+    group.addControl('TestTime', this.createFormControl({name: 'TestTime'}));
+    group.addControl('TestResult', this.createFormControl({name: 'TestResult'}));
 
     return group;
   }

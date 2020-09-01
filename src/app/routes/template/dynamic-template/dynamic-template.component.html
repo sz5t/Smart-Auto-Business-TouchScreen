@@ -28,20 +28,22 @@
         </page-header> -->
 
         <nz-page-header class="templateHeader" [nzBackIcon]="backIcon">
-                <nz-page-header-title>{{config.title}}</nz-page-header-title>
+                <nz-page-header-title>
+                        <nz-avatar [nzSrc]="'../assets/img/user.svg'" nzSize="large" class="mr-sm"></nz-avatar>
+                       <span style="font-size:1.5em">{{userInfo?.accountName ? userInfo?.accountName: '用户'}} {{config.title}}</span> 
+                       
+                </nz-page-header-title>
                 <nz-page-header-subtitle></nz-page-header-subtitle>
                 <nz-page-header-extra>
                         <bsn-toolbar style="float:left" *ngIf="config.toolbar" [config]="config.toolbar" [viewId]="config.targetViewId"></bsn-toolbar>
                         <button *ngIf="config.siderLayout" nz-button (click)="isCollapsed=!isCollapsed"><i class="trigger" nz-icon [type]="isCollapsed?'menu-unfold':'menu-fold'"></i></button>
-                        <nz-avatar [nzSrc]="'../assets/img/user.svg'" nzSize="small" class="mr-sm"></nz-avatar>
-                       <span style="font-size:1.3em">{{userInfo?.accountName ? userInfo?.accountName: '用户'}}</span> 
                 </nz-page-header-extra>
                 <!-- <nz-page-header-content>
                         {{config.desc}}
                 </nz-page-header-content> -->
         </nz-page-header>
         <ng-template #backIcon>
-                <i nz-icon style="font-size:16px" type="schedule" theme="outline"></i>
+                <i nz-icon style="font-size:1.5em" type="schedule" theme="outline"></i>
         </ng-template>
         
         <div class="workplace">

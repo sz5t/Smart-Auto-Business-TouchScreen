@@ -1,5 +1,5 @@
 
-<nz-card nzBordered="false" [nzTitle]="config.title?config.title:''" [nzBodyStyle]="config.cardStyle?config.cardStyle:{height: '300px'}" [ngStyle]="{overflow: 'auto',height: config.scrollHeight, width: config.scrollWidth}">
+<nz-card nzBordered="false" [nzTitle]="config.title?config.title:''" [nzBodyStyle]="config.cardStyle?config.cardStyle:{height: '300px',background: 'none'}" [ngStyle]="{background: 'none',overflow: 'auto',height: config.scrollHeight, width: config.scrollWidth}">
     <nz-spin [nzSpinning]="isLoading" nzTip='加载中...'>
         <div nz-row class="selectionOperation">
             <div nz-col [nzSpan]="12" class="text-right">
@@ -28,7 +28,7 @@
                 <ng-template #verticalDescription>
                     <div nz-row nzGutter="8">
                         <div nz-col nzSpan="8" *ngIf="config.showPicture" style="text-align: center">
-                            <i nz-icon style="font-size:5em" [iconfont]="getItemValue('icon',item)?getItemValue('icon',item):'icon-constructionworker'"></i>
+                            <i nz-icon style="font-size:5em" [iconfont]="getItemValue('icon',item)?getItemValue('icon',item):'icon-renwu6'"></i>
                         </div>  
                         <div nz-col nzSpan="16">
                             <div style="font-size:1.3em;color:rgb(0,0,0,0.85); font-weight: 600;padding-bottom:8px">{{getItemValue('name',item)}}</div>
@@ -43,7 +43,7 @@
                     </div >
                     <div nz-col nzSpan="24" style="text-align: center">
                         <div style="margin-bottom:10px">
-                            <i nz-icon style="font-size:7em" [iconfont]="getItemValue('icon',item)?getItemValue('icon',item):'icon-constructionworker'"></i>  
+                            <i nz-icon style="font-size:7em" [iconfont]="getItemValue('icon',item)?getItemValue('icon',item):'icon-renwu6'"></i>  
                         </div>
                         <h2 class="h3">{{getItemValue('name', item)}}</h2>
                         <div *ngFor="let field of config.fieldMapping">{{getMappingField(item, field)}}</div>    
@@ -70,9 +70,9 @@
                           *ngIf="item"
                           [nzDescription]="nzDescription1">
                           <ng-template #nzDescription1>
-                                <div nz-row nzGutter="8">
+                                <div nz-row nzGutter="12">
                                         <div *ngIf="config.showPicture" nz-col nzSpan="8" style="text-align: center">
-                                            <i nz-icon style="font-size:5em" [iconfont]="getItemValue('icon',item)?getItemValue('icon',item):'icon-constructionworker'"></i>
+                                            <i nz-icon style="font-size:5em" [iconfont]="getItemValue('icon',item)?getItemValue('icon',item):'icon-renwu6'"></i>
                                         </div>  
                                         <div nz-col nzSpan="16">
                                             <div style="font-size:1.5em;color:rgb(0,0,0,0.85); font-weight: 600;padding-bottom:8px">{{getItemValue('name',item)}}</div>
@@ -104,7 +104,7 @@
                       <ng-template #nzDescription1>
                         <div nz-row nzGutter="8">
                           <div nz-col nzSpan="8" style="text-align: center">
-                            <i nz-icon style="font-size:8em" [iconfont]="'icon-constructionworker'"></i>
+                            <i nz-icon style="font-size:8em" [iconfont]="'icon-renwu6'"></i>
                           </div>  
                           <div nz-col nzSpan="16">
                               <h2 class="h3">{{item.name.title}}</h2>

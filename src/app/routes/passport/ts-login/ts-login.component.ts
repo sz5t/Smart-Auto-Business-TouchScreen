@@ -42,6 +42,7 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     public _currentSystem;
     public isCardLogin = false;
     public isFaceLogin = false;
+    public isNormalLogin = false;
     private ajax = {
         url: 'open/getEquipment',
         ajaxType: 'get',
@@ -112,17 +113,16 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
         this.tokenService.clear();
         this.cacheService.clear();
         this.menuService.clear();
-        this.titleService.setTitle('SmartOne');
-        this.cacheService.set('AppName', 'SmartOne');
         this.cacheService.set('currentConfig', SystemResource.settingSystem);
     }
 
     public async  ngAfterViewInit() {
-
         if (this.isFaceLogin) {
             this.getMedia();
         } else if (this.isCardLogin) {
             this.getCard();
+        } else {
+            this.isNormalLogin = true;
         }
     }
 
@@ -170,48 +170,51 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     public async FaceRecognition(image?) {
-        const that = this;
-        const clientIp = await this.loadClientIP();
-        this.faceAjax.params[1]['value'] = clientIp;
-        const wsString = await this.loadWsConfig(2);
-        this.ws = new WebSocket(wsString);
-        this.ws.onopen = function () {
-            // Web Socket 已连接上，使用 send() 方法发送数据
-            // 连接服务端socket
-            that.ws.send(image);
-            console.log('数据发送中...');
-        };
-        this.ws.onmessage = function (evt) {
-            const received_msg = evt.data;
-            console.log('数据已接收...', received_msg);
-            that.apiService.login('common/login2', { Id: received_msg })
-                .toPromise()
-                .then(user => {
-                    if (user.isSuccess) {
-                        // this.fullScreen();
-                        console.log(user.data);
-                        that.closeMedia();
-                        clearTimeout(that.timeout);
-                        that.cacheService.set('userInfo', user.data);
-                        const token: ITokenModel = { token: user.data.token };
-                        that.tokenService.set(token); // 后续projectId需要进行动态获取
-                        // let url = user.data.modules[0].link;
-                        let url = '/ts/entry';
-                        that.ws.close();
-                        that.ws = null;
-                        that.router.navigate([`${url}`]);
-                    } else {
-                        that.showError(user.message);
-                        that.ws.send('reload');
-                    }
+        this._faceIdentify(image).then(user => {
+            console.log(user);
+        });
+        // const that = this;
+        // const clientIp = await this.loadClientIP();
+        // this.faceAjax.params[1]['value'] = clientIp;
+        // const wsString = await this.loadWsConfig(2);
+        // this.ws = new WebSocket(wsString);
+        // this.ws.onopen = function () {
+        //     // Web Socket 已连接上，使用 send() 方法发送数据
+        //     // 连接服务端socket
+        //     that.ws.send(image);
+        //     console.log('数据发送中...');
+        // };
+        // this.ws.onmessage = function (evt) {
+        //     const received_msg = evt.data;
+        //     console.log('数据已接收...', received_msg);
+        //     that.apiService.login('common/login2', { Id: received_msg })
+        //         .toPromise()
+        //         .then(user => {
+        //             if (user.isSuccess) {
+        //                 // this.fullScreen();
+        //                 console.log(user.data);
+        //                 that.closeMedia();
+        //                 clearTimeout(that.timeout);
+        //                 that.cacheService.set('userInfo', user.data);
+        //                 const token: ITokenModel = { token: user.data.token };
+        //                 that.tokenService.set(token); // 后续projectId需要进行动态获取
+        //                 // let url = user.data.modules[0].link;
+        //                 let url = '/ts/entry';
+        //                 that.ws.close();
+        //                 that.ws = null;
+        //                 that.router.navigate([`${url}`]);
+        //             } else {
+        //                 that.showError(user.message);
+        //                 that.ws.send('reload');
+        //             }
 
-                });
+        //         });
 
-        };
-        this.ws.onclose = function () {
-            // 关闭 websocket
-            console.log('连接已关闭...');
-        };
+        // };
+        // this.ws.onclose = function () {
+        //     // 关闭 websocket
+        //     console.log('连接已关闭...');
+        // };
     }
 
     public getMedia() {
@@ -244,7 +247,6 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
             video: true, // 使用摄像头对象
             audio: false  // 不适用音频
         }, function (MediaStream) {
-            // console.log(MediaStream, MediaStream.getTracks());
             that.mediaStreamTrack = typeof MediaStream.stop === 'function' ? MediaStream : MediaStream.getTracks()[0];
             video.srcObject = MediaStream;
             // video.src = vendorUrl.createObjectURL(strem);
@@ -256,22 +258,24 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
 
         this.timeout = setTimeout(() => {
             this.takePhoto();
-        }, 3000);
+        }, 2000);
     }
 
     public takePhoto() {
         // 获得Canvas对象
-        let video = <HTMLVideoElement>document.getElementById('video');
-        let canvas = <HTMLCanvasElement>document.getElementById('canvas');
-        let ctx = canvas.getContext('2d');
+        const video = <HTMLVideoElement>document.getElementById('video');
+        const canvas = <HTMLCanvasElement>document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
         ctx.drawImage(video, 0, 0, 500, 500);
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.6)
-        // console.log(dataUrl);
+        const dataUrl = canvas.toBlob(function(callback) {
+            console.log(callback);
+        });
+        console.log(dataUrl);
+        
         this.FaceRecognition(dataUrl);
     }
 
     public closeMedia() {
-        // console.log(this.mediaStreamTrack);
         this.mediaStreamTrack && this.mediaStreamTrack.stop();
     }
 
@@ -317,10 +321,10 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
         return wsString;
     }
 
-
     private async _load(url, params) {
         return this.apiService.get(url, params).toPromise();
     }
+
     private _buildURL(ajaxUrl) {
         let url = '';
         if (ajaxUrl && this.isString(ajaxUrl)) {
@@ -329,6 +333,7 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         return url;
     }
+
     private _buildParameters(paramsConfig) {
         let params = {};
         if (paramsConfig) {
@@ -340,10 +345,6 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
         return params;
     }
 
-
-    private chooseLogin() {
-        this.isCardLogin = !this.isCardLogin;
-    }
     // region: fields
 
     get userName() {
@@ -352,94 +353,35 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     get password() {
         return this.form.controls.password;
     }
-    get uName() {
-        return this.form.controls.uName;
-    }
-    get uPassword() {
-        return this.form.controls.uPassword;
-    }
+
 
     // endregion
 
-    // private switchLogin(ret: any) {
-    //     this.type = ret.index;
-    //     if (ret.index === 0) {
-    //         this.titleService.setTitle('SmartOne配置平台');
-    //     } else {
-    //         this.titleService.setTitle('SmartOne运行平台');
-    //         this.cacheService.set('AppName', 'SmartOne');
-    //     }
-    // }
-
-    // region: get captcha
-
-    // count = 0;
-    // interval$: any;
-
-    // getCaptcha() {
-    //     this.count = 59;
-    //     this.interval$ = setInterval(() => {
-    //         this.count -= 1;
-    //         if (this.count <= 0)
-    //             clearInterval(this.interval$);
-    //     }, 1000);
-    // }
-
-    // endregion
 
     public submit() {
         this.error = '';
         this.errorApp = '';
         this.loading = true;
-        this.reuseTabService.clear();
 
         const userLogin = new UserLogin();
-        const cacheInfo = new CacheInfo();
         // 重置表单状态
         this._remarkLoginForm();
         // 构建用户登录信息
         this._buildOnlineUser(userLogin);
 
-        this.login(userLogin);
+        if (this.isNormalLogin) {
+            this.login(userLogin);
+        }
     }
 
     public async login(userLogin) {
         const user = await this._userLogin(userLogin);
         if (user.isSuccess) {
-            // this.fullScreen();
             console.log(user.data);
             this.cacheService.set('userInfo', user.data);
             const token: ITokenModel = { token: user.data.token };
-            this.tokenService.set(token); // 后续projectId需要进行动态获取
-
-            let menus;
-            let url;
-            if (!this.isCardLogin) {
-                // 配置平台
-                // const localAppDataResult = await this._getLocalAppData();
-                // menus = localAppDataResult.menu;
-                // url = user.data.modules[0].link;
-                url = '/ts/entry';
-            } else {
-                // 解析平台
-                // const projModule = await this._loadProjectModule();
-                // menus = [
-                //     {
-                //         text: '功能导航',
-                //         i18n: '',
-                //         group: true,
-                //         hideInBreadcrumb: true,
-                //         children: []
-                //     }
-                // ];
-                // // menus[0].children = this.arrayToTree(projModule.data, null);
-                // menus[0].children = user.data.modules;
-                url = '/ts/entry';
-            }
-
-            // this.cacheService.set('Menus', menus);
-            // this.menuService.add(menus);
-
+            this.tokenService.set(token); // 后续projectId需要进行动态获取\
+            const url = '/ts/entry';
             this.router.navigate([`${url}`]);
         } else {
             this.showError(user.message);
@@ -447,37 +389,33 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
         this.loading = false;
     }
 
+
+
     public changeTab($event: NzTabChangeEvent) {
-        if ($event.index === 2) {
+        if ($event.tab.nzTitle === '刷脸登录') {
+            this.isCardLogin = false;
+            this.isNormalLogin = false;
             this.getMedia();
-        }
-        if ($event.index !== 2) {
-            this.isFaceLogin = false
+        } else if ($event.tab.nzTitle === '刷卡登录') {
+            this.isFaceLogin = false;
+            this.isNormalLogin = false;
+            this.getCard();
+            this.closeMedia();
+        } else if ($event.tab.nzTitle === '账户登录') {
+            this.isCardLogin = false;
+            this.isFaceLogin = false;
+            this.isNormalLogin = true;
             this.closeMedia();
         }
-        if ($event.index === 1) {
-            this.isCardLogin = true
-            this.getCard();
-        }
-        if ($event.index !== 1) {
-            this.isCardLogin = false
-        }
-    }
-
-    private cencleTab() {
-        this.ws.close();
-    }
-
-    public async _loadProjectModule() {
-        return this.apiService
-            .get(
-                'common/ComProjectModule/null/ComProjectModule?refProjectId=7fe971700f21d3a796d2017398812dcd&_recursive=true&_deep=3'
-            )
-            .toPromise();
+        this.errorApp = null;
     }
 
     public async _userLogin(userLogin) {
         return this.apiService.login('common/login', userLogin).toPromise();
+    }
+
+    public async _faceIdentify(imageFlow) {
+        return this.apiService.faceLogin('file/loginByFace', imageFlow).toPromise();
     }
 
     public async _getLocalAppData() {
@@ -490,35 +428,18 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
             .toPromise();
     }
 
-    // async _getAppPermission() {
-    //     return this.apiService
-    //         .get(APIResource.AppPermission + "/Func.SinoForceWeb前端")
-    //         .toPromise();
-    // }
-
     public async _getAppConfig() {
         return this.httpClient.get('assets/app-config.json').toPromise();
     }
 
     public _buildOnlineUser(onlineUser: UserLogin) {
-        if (!this.isCardLogin) {
+        if (this.isNormalLogin) {
             onlineUser.loginName = this.userName.value;
             onlineUser.loginPwd = this.password.value;
-            // Md5.hashStr(this.password.value).toString().toUpperCase();
-            // environment.SERVER_URL = APIResource.SettingUrl;
-            // environment.COMMONCODE = APIResource.SettingCommonCode;
-
             this.cacheService.set(
                 'currentConfig',
                 SystemResource.settingSystem
             );
-        } else {
-            onlineUser.loginName = this.uName.value;
-            onlineUser.loginPwd = this.uPassword.value;
-            // Md5.hashStr(this.uPassword.value).toString().toUpperCase();
-            // environment.SERVER_URL = APIResource.LoginUrl;
-            // environment.COMMONCODE = APIResource.LoginCommonCode;
-            this.cacheService.set('currentConfig', SystemResource.appSystem);
         }
     }
 
@@ -530,90 +451,15 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
             this.password.markAsDirty();
             this.password.updateValueAndValidity();
             if (this.userName.invalid || this.password.invalid) return;
-        } else {
-            // 解析平台
-            this.uName.markAsDirty();
-            this.uName.updateValueAndValidity();
-            this.uPassword.markAsDirty();
-            this.uPassword.updateValueAndValidity();
-            if (this.uName.invalid || this.uPassword.invalid) return;
         }
     }
-
-    // public appPerMerge(data) {
-    //     const menus: any[] = this.cacheService.getNone('Menus');
-    //     if (data['FuncResPermission']) {
-    //         const permis =
-    //             data['FuncResPermission'].SubFuncResPermissions[0]
-    //                 .SubFuncResPermissions;
-    //         this.seachModule(menus, permis);
-    //         this.cacheService.set('Menus', menus);
-
-    //         this.menuService.add(menus);
-    //         this.router.navigate(['/dashboard/analysis']);
-    //     } else {
-    //         this.showError('该用户没有任何权限');
-    //     }
-    // }
-
-    // public seachModule(menus, data) {
-    //     menus.forEach(item => {
-    //         const strPer = JSON.stringify(this.searchAppper(item.id, data));
-
-    //         const subStr = strPer.substring(
-    //             strPer.indexOf('[{'),
-    //             strPer.lastIndexOf('}]') + 2
-    //         );
-    //         if (subStr.length > 5) {
-    //             const Perer = JSON.parse(subStr);
-    //             switch (Perer[0].Permission) {
-    //                 case 'Invisible':
-    //                     // console.log(111, item.hide);
-    //                     item.hide = true;
-    //                     // console.log(222, item.hide);
-    //                     break;
-    //                 case 'Permitted':
-    //                     // console.log(333, item.hide);
-    //                     item.hide = false;
-    //                     // console.log(444, item.hide);
-    //                     break;
-    //                 default:
-    //                 // console.log(555, item.hide);
-    //             }
-    //             if (item.children) {
-    //                 this.seachModule(item.children, data);
-    //             }
-    //         } else {
-    //             item.hide = true;
-    //         }
-    //     });
-    // }
-
-    // public searchAppper(moduleId, data): string {
-    //     const OpPer: any = [];
-    //     if (data && data.length > 0) {
-    //         data.forEach(item => {
-    //             if (item.Id === moduleId) {
-    //                 OpPer.push(item.OpPermissions);
-    //             } else {
-    //                 const getAppper = this.searchAppper(
-    //                     moduleId,
-    //                     item.SubFuncResPermissions
-    //                 );
-    //                 if (getAppper && item.Name.length > 0)
-    //                     OpPer.push(getAppper);
-    //             }
-    //         });
-    //     }
-    //     return OpPer;
-    // }
 
     public showError(errmsg) {
         this.errorApp = errmsg;
     }
 
     public ngOnDestroy(): void {
-        // if (this.interval$) clearInterval(this.interval$);
+        
     }
 
     public fullScreen() {
@@ -629,29 +475,4 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
 
         }
     }
-
-    // public arrayToTree(data, parentid): any[] {
-    //     const result = [];
-    //     let temp;
-    //     for (let i = 0; i < data.length; i++) {
-    //         if (data[i].parentId === parentid) {
-    //             const obj = {
-    //                 text: data[i].name,
-    //                 id: data[i].Id,
-    //                 // group: JSON.parse(data[i].ConfigData).group,
-    //                 link: data[i].url ? data[i].url : '',
-    //                 icon: data[i].icon,
-    //                 hide: data[i].isEnabled ? false : true
-    //             };
-    //             temp = this.arrayToTree(data[i].children, data[i].Id);
-    //             if (temp.length > 0) {
-    //                 obj['children'] = temp;
-    //             } else {
-    //                 obj['isLeaf'] = true;
-    //             }
-    //             result.push(obj);
-    //         }
-    //     }
-    //     return result;
-    // }
 }

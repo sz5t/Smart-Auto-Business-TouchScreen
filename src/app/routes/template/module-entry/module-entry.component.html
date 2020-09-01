@@ -28,16 +28,18 @@
         </page-header> -->
 
         <nz-page-header class="templateHeader" [nzBackIcon]="backIcon">
-                <nz-page-header-title><span style="font-size:1.3em">工作中心</span></nz-page-header-title>
+                <nz-page-header-title>
+                        <nz-avatar [nzSrc]="'../assets/img/user.svg'" nzSize="large" class="mr-sm"></nz-avatar>
+                        <span style="font-size:1.5em">{{userInfo?.accountName ? userInfo?.accountName : '用户'}}</span>
+                        <span style="font-size:1.5em">的工作中心</span>
+                </nz-page-header-title>
                 <!-- <nz-page-header-subtitle></nz-page-header-subtitle> -->
                 <nz-page-header-extra>
-                        <button style="font-size:1.3em" nz-button nzType="primary" (click)="logout()">退出登录</button>
-                        <nz-avatar [nzSrc]="'../assets/img/user.svg'" nzSize="large" class="mr-sm"></nz-avatar>
-                        <span style="font-size:1.3em">{{userInfo?.accountName ? userInfo?.accountName : '用户'}}</span>
+                        <button style="font-size:1.5em" nz-button nzType="primary" (click)="logout()">退出登录</button>
                 </nz-page-header-extra>
         </nz-page-header>
         <ng-template #backIcon>
-                <i nz-icon style="font-size:16px" type="schedule" theme="outline"></i>
+                <i nz-icon style="font-size:1.5em" type="schedule" theme="outline"></i>
         </ng-template>
         
         <div class="workplace">

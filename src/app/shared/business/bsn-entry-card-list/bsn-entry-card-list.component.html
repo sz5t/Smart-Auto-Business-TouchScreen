@@ -1,6 +1,6 @@
 
-<nz-card nzBordered="false" [nzBodyStyle]="{'min-height':'800px'}">    
-        <nz-list [nzDataSource]="data" [nzRenderItem]="item" [nzGrid]="{gutter:32, xs: 12, sm: 12, md: 8, lg: 8, xl: 6}">
+<nz-card nzBordered="false" [nzBodyStyle]="{'background':'inherit','background-attachment':'fixed'}">    
+        <nz-list [nzDataSource]="data" [nzRenderItem]="item" [nzGrid]="{gutter:32, xs: 12, sm: 12, md: 12, lg: 12, xl: 12}">
             <ng-template #item let-item>
                 <nz-card [ngClass]="{selectedItem: item.selected, unselectedItem: !item.selected, listItem: true}" 
                     nzHoverable
@@ -12,10 +12,10 @@
                           <ng-template #nzDescription1>
                                 <div nz-row nzGutter="32">
                                         <div nz-col nzSpan="24" style="text-align: center;margin-top:10px">
-                                            <i nz-icon style="font-size:5em" [iconfont]="'icon-constructionworker'"></i>
+                                            <i nz-icon style="font-size:5em;color:cornflowerblue" [iconfont]="item.icon?item.icon:'icon-renwu6'"></i>
                                         </div>  
                                         <div nz-col nzSpan="24" style="text-align: center;margin-top:20px">
-                                            <h2 class="h3">{{item.text}}</h2>
+                                            <h2 class="h1">{{item.text}}</h2>
                                         </div>
                                     </div>
                             </ng-template>     

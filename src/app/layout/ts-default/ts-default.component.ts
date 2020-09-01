@@ -10,6 +10,9 @@ import { ScrollService, MenuService, SettingsService } from '@delon/theme';
     .ts-content {
         margin:0;
     }
+    .wrapper {
+        background: url(../../../assets/img/gen2.svg);
+    }
         
     `]
 })

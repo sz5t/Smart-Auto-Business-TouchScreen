@@ -267,9 +267,10 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
         const canvas = <HTMLCanvasElement>document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         ctx.drawImage(video, 0, 0, 500, 500);
-        const dataUrl = canvas.toBlob(function(callback) {
-            console.log(callback);
-        });
+        const dataUrl = canvas.toDataURL()
+        // const dataUrl = canvas.toBlob(function(callback) {
+        //     console.log(callback);
+        // });
         console.log(dataUrl);
         
         this.FaceRecognition(dataUrl);

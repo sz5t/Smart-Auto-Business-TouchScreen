@@ -35,7 +35,8 @@ export class ApiService {
             // const userToken = JSON.parse(this.tokenService.get().token);
             return new HttpHeaders()
                 .set('X-Requested-With', 'XMLHttpRequest')
-                .set('_projectId', '7fe971700f21d3a796d2017398812dcf');
+                .set('_projectId', '7fe971700f21d3a796d2017398812dcf')
+                .set('Content-type', 'application/x-www-form-urlencoded');
         }
     }
 
@@ -46,7 +47,6 @@ export class ApiService {
             return new HttpHeaders()
                 .set('_token', token ? token : '')
                 .set('X-Requested-With', 'XMLHttpRequest')
-                .set('Content-type', 'application/x-www-form-urlencoded');
         }       
     }
 

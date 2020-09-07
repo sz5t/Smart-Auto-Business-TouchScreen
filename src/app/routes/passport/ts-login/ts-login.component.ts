@@ -171,7 +171,19 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
 
     public async FaceRecognition(image?) {
         this._faceIdentify(image).then(user => {
-            console.log(user);
+            if (user.isSuccess) {
+                this.cacheService.set('userInfo', user.data);
+            const token: ITokenModel = { token: user.data.token };
+            this.tokenService.set(token); // 后续projectId需要进行动态获取
+            const url = '/ts/entry';
+            this.router.navigate([`${url}`]);
+            this.closeMedia();
+            } else {
+                this.showError(user.message);
+                this.getMedia();
+            }
+            
+            
         });
         // const that = this;
         // const clientIp = await this.loadClientIP();

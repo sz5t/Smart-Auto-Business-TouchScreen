@@ -1,6 +1,7 @@
 
 
-
+<nz-layout>
+  <nz-content>
 <div nz-row nzGutter="8" style="position:relative;">
   <div nz-col nzSpan="16" nzOffset="4">
       <nz-steps class="steps-header" [nzCurrent]="_current" [nzSize]="config.size">
@@ -45,7 +46,8 @@
   </div>
   
 </div>
-
+</nz-content>
+</nz-layout>
 <!--<ng-template #progressTemplate let-dot let-status="status" let-index="index">-->
     <!--<nz-popover nzContent="steps {{index}} status: {{status}}">-->
         <!--<span nz-popover style="margin-left: -100%;">-->

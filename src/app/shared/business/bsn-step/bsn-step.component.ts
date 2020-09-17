@@ -8,7 +8,7 @@ import {
     Input,
     OnDestroy,
     Type,
-    Inject
+    Inject, ElementRef, ViewChild, AfterViewInit
 } from '@angular/core';
 import { Observable, Observer, Subscription } from 'rxjs/index';
 import {
@@ -33,13 +33,14 @@ import { callbackify } from 'util';
         `bsn-step.component.less`
     ]
 })
-export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestroy {
+export class BsnStepComponent extends CnComponentBase implements OnInit, AfterViewInit, OnDestroy {
     @Input()
     public config;
     @Input()
     public viewId;
     @Input()
     public initData;
+    @ViewChild('customStep') public stepElement: ElementRef;
     public viewCfg;
     // public _tempValue = {};
     public _current = 0;
@@ -84,6 +85,21 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, OnDestr
         } else {
             // 加载固定步骤
             this.getViewCfg();
+        }
+    }
+
+    public ngAfterViewInit() {
+        if (this.stepElement) {
+            this.stepElement.nativeElement.style.height = this.config.bodyStyle['height']
+            this.stepElement.nativeElement.style['margin-top'] = '40px'
+            this.stepElement.nativeElement.style['border'] = '1px solid #e9e9e9'
+            this.stepElement.nativeElement.style['border-radius'] = '6px'
+            this.stepElement.nativeElement.style['background-color'] = '#fafafa'
+            this.stepElement.nativeElement.style['padding-top'] = '6px'
+            this.stepElement.nativeElement.style['padding-left'] = '6px'
+            this.stepElement.nativeElement.style['padding-right'] = '6px'
+            this.stepElement.nativeElement.style['overflow'] = 'scroll'
+            this.stepElement.nativeElement.style['min-height'] = '200px'
         }
     }
 

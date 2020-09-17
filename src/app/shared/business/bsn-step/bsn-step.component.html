@@ -4,7 +4,7 @@
   <nz-content>
 <div nz-row nzGutter="8" style="position:relative;">
   <div nz-col nzSpan="16" nzOffset="4">
-      <nz-steps class="steps-header" [nzCurrent]="_current" [nzSize]="config.size">
+      <nz-steps class="steps-header"  [nzCurrent]="_current" [nzSize]="config.size">
           <nz-step
           *ngFor="let step of config.steps"
           [nzTitle]="step.title"
@@ -22,8 +22,10 @@
       </span>
     </nz-popover>
   </ng-template> -->
- 
-  <div class="steps-content">
+  <div *ngIf="config.bodyStyle" #customStep>
+    <cn-component-resolver [config]="stepConfig" [initData]="initValue" *ngFor="let stepConfig of viewCfg" (updateValue)="handleStep($event)"></cn-component-resolver>
+  </div>
+  <div class="steps-content" *ngIf="!config.bodyStyle">
     <cn-component-resolver [config]="stepConfig" [initData]="initValue" *ngFor="let stepConfig of viewCfg" (updateValue)="handleStep($event)"></cn-component-resolver>
   </div>
 

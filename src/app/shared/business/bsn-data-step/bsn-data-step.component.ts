@@ -17,7 +17,8 @@ import {
     BSN_COMPONENT_MODES,
     BsnComponentMessage,
     BSN_COMPONENT_CASCADE,
-    BSN_COMPONENT_CASCADE_MODES
+    BSN_COMPONENT_CASCADE_MODES,
+    BSN_COMPONENT_MODE
 } from '@core/relative-Service/BsnTableStatus';
 import { Observable, Observer } from 'rxjs';
 import { CommonTools } from '@core/utility/common-tools';
@@ -77,7 +78,7 @@ export class BsnDataStepComponent extends CnComponentBase
         private _apiService: ApiService,
         private _cacheService: CacheService,
         private nzDropdownService: NzDropdownService,
-        @Inject(BSN_COMPONENT_MODES)
+        @Inject(BSN_COMPONENT_MODE)
         private stateEvents: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascade: Observer<BsnComponentMessage>,

@@ -15,7 +15,7 @@ import { CnComponentBase } from '@shared/components/cn-component-base';
 import { CommonTools } from '@core/utility/common-tools';
 import { Subscription, Observable, Observer } from 'rxjs';
 import { CacheService } from '@delon/cache';
-import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE, BSN_COMPONENT_CASCADE_MODES } from '@core/relative-Service/BsnTableStatus';
+import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE, BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_MODE } from '@core/relative-Service/BsnTableStatus';
 
 declare var rubylong: any;
 
@@ -48,7 +48,7 @@ export class BsnReportComponent extends CnComponentBase implements OnInit, After
     constructor(
         private _api: ApiService,
         private _cacheService: CacheService,
-        @Inject(BSN_COMPONENT_MODES)
+        @Inject(BSN_COMPONENT_MODE)
         private stateEvents: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascade: Observer<BsnComponentMessage>,

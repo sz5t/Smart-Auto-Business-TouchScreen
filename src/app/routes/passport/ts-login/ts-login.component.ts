@@ -180,7 +180,12 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
             this.closeMedia();
             } else {
                 this.showError(user.message);
-                this.getMedia();
+                // this.getMedia();
+                setTimeout(() => {
+                    this.takePhoto();
+                },
+                2000);
+                
             }
             
             
@@ -241,36 +246,38 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
         // then()是Promise对象里的方法
         // then()方法是异步执行，当then()前的方法执行完后再执行then()内部的程序
         // 避免数据没有获取到
-        // const promise = navigator.mediaDevices.getUserMedia(constraints);
+        const promise = window.navigator.mediaDevices.getUserMedia(constraints);
         const that = this;
-        // promise.then(function (MediaStream) {
-        //     console.log(that.mediaStreamTrack);
-        //     //  this.mediaStreamTrack = MediaStream.getTracks()[0];
-        //     that.mediaStreamTrack = typeof MediaStream['stop'] === 'function' ? MediaStream : MediaStream.getTracks()[1];
-        //     video.srcObject = MediaStream;
-        //     video.play();
-        // });
-
-        window.navigator['getMedia'] = window.navigator.getUserMedia ||
-            window.navigator['webkitGetUserMedia'] ||
-            window.navigator['mozGetUserMedia'] ||
-            window.navigator['msGetUserMedia'];
-        window.navigator['getMedia']({
-            video: true, // 使用摄像头对象
-            audio: false  // 不适用音频
-        }, function (MediaStream) {
-            that.mediaStreamTrack = typeof MediaStream.stop === 'function' ? MediaStream : MediaStream.getTracks()[0];
+        promise.then(function (MediaStream) {
+            console.log(that.mediaStreamTrack);
+            //  this.mediaStreamTrack = MediaStream.getTracks()[0];
+            that.mediaStreamTrack = typeof MediaStream['stop'] === 'function' ? MediaStream : MediaStream.getTracks()[1];
             video.srcObject = MediaStream;
-            // video.src = vendorUrl.createObjectURL(strem);
             video.play();
-
-        }, function (error) {
-            console.log(error);
         });
 
-        this.timeout = setTimeout(() => {
-            this.takePhoto();
-        }, 2000);
+        // window.navigator['getMedia'] = window.navigator.getUserMedia ||
+        //     window.navigator['webkitGetUserMedia'] ||
+        //     window.navigator['mozGetUserMedia'] ||
+        //     window.navigator['msGetUserMedia'];
+        // window.navigator['getMedia']({
+        //     video: true, // 使用摄像头对象
+        //     audio: false  // 不适用音频
+        // }, function (MediaStream) {
+        //     that.mediaStreamTrack = typeof MediaStream.stop === 'function' ? MediaStream : MediaStream.getTracks()[0];
+        //     video.srcObject = MediaStream;
+        //     // video.src = vendorUrl.createObjectURL(strem);
+        //     video.play();
+
+        // }, function (error) {
+        //     console.log(error);
+        // });
+
+        // this.timeout = setTimeout(() => {
+        //     this.takePhoto();
+        // }, 2000);
+
+        this.takePhoto();
     }
 
     public takePhoto() {

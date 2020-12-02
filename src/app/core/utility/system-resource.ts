@@ -17,18 +17,18 @@ export const SystemResource_1 = {
     'url_localhost_4200': {
         localResourceUrl: 'localhost:4200',
         /** 后台服务 */
-        settingSystemServer: '192.168.1.105:8080',//'10.129.150.111:8081',
+        settingSystemServer: '192.168.1.111:8082', // '10.129.150.111:8081',
         /** 后台服务 */
-        appSystemServer: '192.168.1.105:8080', //,'10.129.150.111:8081'
+        appSystemServer: '192.168.1.111:8082', // ,'10.129.150.111:8081'
         /**报表  */
-        reportServerUrl: '10.129.150.111:8084',//'192.168.1.111:8088'
+        reportServerUrl: '192.168.1.111:8088', // '192.168.1.111:8088'
     },
     'url_192_168_1_111_8084': {
         localResourceUrl: '192.168.1.111:8084',
         /** 后台服务 */
-        settingSystemServer: '192.168.1.111:8081',
+        settingSystemServer: '192.168.1.111:8082',
         /** 后台服务 */
-        appSystemServer: '192.168.1.111:8081',
+        appSystemServer: '192.168.1.111:8082',
         /**报表  */
         reportServerUrl: '192.168.1.111:8088'
     },
@@ -141,6 +141,33 @@ export const SystemResource_1 = {
         appSystemServer: '39.101.168.200:8030',
         /**报表  */
         reportServerUrl: '39.101.168.200:8032'
+      },
+      'url_10_16_6_224_8084': {
+        localResourceUrl: '10.16.6.224:8084',
+        /** 后台服务 */
+        settingSystemServer: '10.16.6.224:8081',
+        /** 后台服务 */
+        appSystemServer: '10.16.6.224:8081',
+        /**报表  */
+        reportServerUrl: '10.16.6.224:8088'
+      },
+      'url_10_129_198_30_8084': {
+        localResourceUrl: '10.129.198.30:8084',
+        /** 后台服务 */
+        settingSystemServer: '10.129.198.30:8081',
+        /** 后台服务 */
+        appSystemServer: '10.129.198.30:8081',
+        /**报表  */
+        reportServerUrl: '10.129.198.30:8088'
+      },
+      'url_10_103_3_222_8308': {
+        localResourceUrl: '10.103.3.222:8308',
+        /** 后台服务 */
+        settingSystemServer: '10.103.3.222:8310',
+        /** 后台服务 */
+        appSystemServer: '10.103.3.222：8310',
+        /**报表  */
+        reportServerUrl: '10.103.3.222:8311'
       }
 }
 

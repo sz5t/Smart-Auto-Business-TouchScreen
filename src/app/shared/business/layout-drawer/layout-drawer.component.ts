@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { instantiateDefaultStyleNormalizer } from '@angular/platform-browser/animations/src/providers';
 import { Subscription, Observable, Observer } from 'rxjs';
-import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_CASCADE } from '@core/relative-Service/BsnTableStatus';
+import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_CASCADE, BSN_COMPONENT_MODE } from '@core/relative-Service/BsnTableStatus';
 import { NzTabComponent, NzTabChangeEvent } from 'ng-zorro-antd';
 @Component({
     // tslint:disable-next-line:component-selector
@@ -28,7 +28,7 @@ export class LayoutDrawerComponent extends CnComponentBase implements OnInit, On
     public initData;
     public visible = false;
     constructor(
-        @Inject(BSN_COMPONENT_MODES)
+        @Inject(BSN_COMPONENT_MODE)
         private stateEvents: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascade: Observer<BsnComponentMessage>,

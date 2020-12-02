@@ -1,4 +1,4 @@
-import { BSN_COMPONENT_MODES } from './../../../core/relative-Service/BsnTableStatus';
+import { BSN_COMPONENT_MODE, BSN_COMPONENT_MODES } from './../../../core/relative-Service/BsnTableStatus';
 import { CnFormBase } from './form.base';
 import { BeforeOperation } from './../../business/before-operation.base';
 import { LayoutResolverComponent } from './../layout-resolver/layout-resolver.component';
@@ -130,7 +130,7 @@ export class FormResolverComponent extends CnFormBase
         private message: NzNotificationService,
         private modalService: NzModalService,
         private _messageService: RelativeService,
-        @Inject(BSN_COMPONENT_MODES)
+        @Inject(BSN_COMPONENT_MODE)
         private stateEvents: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascade: Observer<BsnComponentMessage>,

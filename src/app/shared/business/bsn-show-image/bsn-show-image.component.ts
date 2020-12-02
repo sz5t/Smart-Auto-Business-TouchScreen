@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, Input, ViewChild, Inject, ElementRef 
 import { SystemResource } from '@core/utility/system-resource';
 import { ApiService } from '@core/utility/api-service';
 import { CacheService } from '@delon/cache';
-import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE } from '@core/relative-Service/BsnTableStatus';
+import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE, BSN_COMPONENT_MODE } from '@core/relative-Service/BsnTableStatus';
 import { Observable, Observer, Subscriber, from } from 'rxjs';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 import { CommonTools } from '@core/utility/common-tools';
@@ -32,7 +32,7 @@ export class BsnShowImageComponent extends CnComponentBase
   constructor(
     private _apiService: ApiService,
     private _cacheService: CacheService,
-    @Inject(BSN_COMPONENT_MODES)
+    @Inject(BSN_COMPONENT_MODE)
     private stateEvents: Observable<BsnComponentMessage>,
     @Inject(BSN_COMPONENT_CASCADE)
     private cascade: Observer<BsnComponentMessage>,

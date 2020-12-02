@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ElementRef, Inject } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE, BSN_COMPONENT_CASCADE_MODES } from '@core/relative-Service/BsnTableStatus';
+import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE, BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_MODE } from '@core/relative-Service/BsnTableStatus';
 import { Observable, Observer } from 'rxjs';
 import { ApiService } from '@core/utility/api-service';
 import { BsnStaticTableComponent } from '@shared/business/bsn-data-table/bsn-static-table.component';
@@ -31,7 +31,7 @@ export class CnFormGridComponent implements OnInit {
   _value = [];
   @ViewChild("table")
   table: BsnStaticTableComponent;
-  constructor(@Inject(BSN_COMPONENT_MODES)
+  constructor(@Inject(BSN_COMPONENT_MODE)
   private stateEvents: Observable<BsnComponentMessage>,
     @Inject(BSN_COMPONENT_CASCADE)
     private cascade: Observer<BsnComponentMessage>,

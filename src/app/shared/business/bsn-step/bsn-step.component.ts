@@ -17,7 +17,8 @@ import {
     BsnComponentMessage,
     BSN_EXECUTE_ACTION,
     BSN_COMPONENT_CASCADE_MODES,
-    BSN_OUTPOUT_PARAMETER_TYPE
+    BSN_OUTPOUT_PARAMETER_TYPE,
+    BSN_COMPONENT_MODE
 } from '@core/relative-Service/BsnTableStatus';
 import { ApiService } from '@core/utility/api-service';
 import { NzMessageService, NzModalService } from 'ng-zorro-antd';
@@ -59,7 +60,7 @@ export class BsnStepComponent extends CnComponentBase implements OnInit, AfterVi
         private _message: NzMessageService,
         private _cache: CacheService,
         private _route: Router,
-        @Inject(BSN_COMPONENT_MODES)
+        @Inject(BSN_COMPONENT_MODE)
         private eventStatus: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascade: Observer<BsnComponentMessage>,

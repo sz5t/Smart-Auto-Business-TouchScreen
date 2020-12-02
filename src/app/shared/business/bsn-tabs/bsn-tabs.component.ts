@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { instantiateDefaultStyleNormalizer } from '@angular/platform-browser/animations/src/providers';
 import { Subscription, Observable, Observer } from 'rxjs';
-import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_CASCADE } from '@core/relative-Service/BsnTableStatus';
+import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_CASCADE, BSN_COMPONENT_MODE } from '@core/relative-Service/BsnTableStatus';
 import { NzTabComponent, NzTabChangeEvent } from 'ng-zorro-antd';
 import { CommonTools } from '@core/utility/common-tools';
 import { CacheService } from '@delon/cache';
@@ -33,7 +33,7 @@ export class BsnTabsComponent extends CnComponentBase implements OnInit, OnDestr
     public handleIndexs;
     constructor(
         private cacheService: CacheService,
-        @Inject(BSN_COMPONENT_MODES)
+        @Inject(BSN_COMPONENT_MODE)
         private stateEvents: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascade: Observer<BsnComponentMessage>,

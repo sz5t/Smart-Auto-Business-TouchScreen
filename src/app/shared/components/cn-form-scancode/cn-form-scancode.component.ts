@@ -13,7 +13,8 @@ import {
     BSN_COMPONENT_MODES,
     BsnComponentMessage,
     BSN_COMPONENT_CASCADE,
-    BSN_COMPONENT_CASCADE_MODES
+    BSN_COMPONENT_CASCADE_MODES,
+    BSN_COMPONENT_MODE
 } from '@core/relative-Service/BsnTableStatus';
 import { Observable, Observer } from 'rxjs';
 import { ApiService } from '@core/utility/api-service';
@@ -29,7 +30,7 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
     @Input()
     public config;
     @Input()
-    value;
+    public value;
     @Input()
     public bsnData;
     @Input()
@@ -53,8 +54,9 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
     public isScan = true;
     public oldvalue = null;
     public isload = true;
+    public hiddenValue: any;
     constructor(
-        @Inject(BSN_COMPONENT_MODES)
+        @Inject(BSN_COMPONENT_MODE)
         private stateEvents: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascade: Observer<BsnComponentMessage>,
@@ -69,6 +71,7 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
 
     public ngOnInit() {
         // console.log(this.config);
+       
     }
     public ngAfterViewInit() {
 
@@ -80,12 +83,12 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
     public async onKeyPress(e) {
        // this._value = this._value + e.target.value;
         // console.log('onKeyPress', e, '******' , e.code, e.target.value);
-        if (e.code === 'Enter') {
+        if (e.keyCode === 13) {
             this.isScan = false;
             this.oldvalue = this._value;
             // console.log("huiche", this._value);
-            let resultData;
-            let resultCard = {};
+             let resultData;
+            const resultCard = {};
             const cardresult = await this.asyncLoad(
                 this.config.cardConfig ? this.config.cardConfig : null
             )
@@ -99,7 +102,7 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
             }
             if (this.config.ajaxConfig) {
                 if (this.config.ajaxConfig.ajaxType === 'proc') {
-                    const backData = result.data.dataSet1 ? result.data.dataSet1 : [];
+                    const backData = result.data && result.data.dataSet1 ? result.data.dataSet1 : [];
                     //  console.log('backData:', backData);
                     if (backData.length > 0) {
                         const _data = { data: backData[0] };
@@ -237,7 +240,9 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
             backValue['dataItem'] = dataItem.data;
             backValue['cardValue'] = dataItem.resultCard;
         }
+      
         this.updateValue.emit(backValue);
+        this.isScan = true;
     }
 
 
@@ -252,7 +257,7 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
                 this.isScan = false;
                 this.oldvalue = this._value;
                 let resultData;
-                let resultCard = {};
+                const resultCard = {};
                 const cardresult = await this.asyncLoad(
                     this.config.cardConfig ? this.config.cardConfig : null
                 )
@@ -291,7 +296,11 @@ export class CnFormScancodeComponent implements OnInit, AfterViewInit {
             if (v !== undefined)
             this.isload = false;
         }
+
+        this.oldvalue = v;
+     
     }
+
 
 
 

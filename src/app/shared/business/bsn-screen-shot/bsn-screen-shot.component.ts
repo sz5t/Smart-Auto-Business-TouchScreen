@@ -6,7 +6,7 @@ import { SystemResource } from '@core/utility/system-resource';
 import { checkAndUpdateBinding } from '@angular/core/src/view/util';
 import { CacheService } from '@delon/cache';
 import { Router } from '@angular/router';
-import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE, BSN_COMPONENT_CASCADE_MODES } from '@core/relative-Service/BsnTableStatus';
+import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE, BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_MODE } from '@core/relative-Service/BsnTableStatus';
 import { Observable, Observer, Subscription } from 'rxjs';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 
@@ -42,7 +42,7 @@ export class BsnScreenShotComponent extends CnComponentBase implements OnInit, A
       private cacheService: CacheService,
       private router: Router,
       private drawerService: NzDrawerService,
-      @Inject(BSN_COMPONENT_MODES)
+      @Inject(BSN_COMPONENT_MODE)
       private stateEvents: Observable<BsnComponentMessage>,
       @Inject(BSN_COMPONENT_CASCADE)
       private cascade: Observer<BsnComponentMessage>,

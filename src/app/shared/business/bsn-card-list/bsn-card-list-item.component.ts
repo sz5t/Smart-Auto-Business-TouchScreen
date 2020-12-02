@@ -2,57 +2,34 @@ import {
     Component,
     OnInit,
     Input,
-    OnDestroy,
-    Type,
-    Inject,
     AfterViewInit
-} from "@angular/core";
-import { ApiService } from "@core/utility/api-service";
-import { CacheService } from "@delon/cache";
-import {
-    BSN_COMPONENT_MODES,
-    BsnComponentMessage,
-    BSN_COMPONENT_CASCADE,
-    BSN_COMPONENT_CASCADE_MODES
-} from "@core/relative-Service/BsnTableStatus";
-import { Observable, Observer } from "rxjs";
-import { CnComponentBase } from "@shared/components/cn-component-base";
-import { initDomAdapter } from "@angular/platform-browser/src/browser";
-import { CommonTools } from "@core/utility/common-tools";
-import { FormGroup } from "@angular/forms";
-import { valueFunctionProp } from "ng-zorro-antd";
+} from '@angular/core';
+import { CnComponentBase } from '@shared/components/cn-component-base';
+import { FormGroup } from '@angular/forms';
 @Component({
-    selector: "bsn-card-list-item",
-    templateUrl: "./bsn-card-list-item.component.html",
+    selector: 'bsn-card-list-item',
+    templateUrl: './bsn-card-list-item.component.html',
     styles: [``]
 })
 export class BsnCardListItemComponent extends CnComponentBase
     implements OnInit, AfterViewInit {
     @Input()
-    config;
+    public config;
     @Input()
-    value;
-    form: FormGroup;
-    isLoading = true;
-    data;
-    _statusSubscription;
-    _cascadeSubscription;
+    public value;
+    public form: FormGroup;
+    public isLoading = true;
+    public data;
+    public _statusSubscription;
+    public _cascadeSubscription;
     constructor(
-        private _apiService: ApiService,
-        private _cacheService: CacheService,
-        @Inject(BSN_COMPONENT_MODES)
-        private stateEvents: Observable<BsnComponentMessage>,
-        @Inject(BSN_COMPONENT_CASCADE)
-        private cascade: Observer<BsnComponentMessage>,
-        @Inject(BSN_COMPONENT_CASCADE)
-        private cascadeEvents: Observable<BsnComponentMessage>
-    ) {
+            ) {
         super();
     }
 
-    ngOnInit() {}
+    public ngOnInit() {}
 
-    ngAfterViewInit() {
+    public ngAfterViewInit() {
         // debugger;
         if (this.value) {
             this.form.setValue(this.value);

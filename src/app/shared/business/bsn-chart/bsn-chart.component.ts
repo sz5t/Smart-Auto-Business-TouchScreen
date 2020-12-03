@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter, 
 import { ApiService } from '@core/utility/api-service';
 import { NzMessageService, NzModalService, NzDropdownService } from 'ng-zorro-antd';
 import { CacheService } from '@delon/cache';
-import { BSN_COMPONENT_MODES, BSN_COMPONENT_CASCADE, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES } from '@core/relative-Service/BsnTableStatus';
+import { BSN_COMPONENT_MODES, BSN_COMPONENT_CASCADE, BsnComponentMessage, BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_MODE } from '@core/relative-Service/BsnTableStatus';
 import { Observer, Observable, Subscription, config } from 'rxjs';
 import { CnComponentBase } from '@shared/components/cn-component-base';
 import { CommonTools } from '@core/utility/common-tools';
@@ -52,7 +52,7 @@ export class BsnChartComponent extends CnComponentBase implements OnInit, AfterV
     private modalService: NzModalService,
     private cacheService: CacheService,
     private _dropdownService: NzDropdownService,
-    @Inject(BSN_COMPONENT_MODES) private stateEvents: Observable<BsnComponentMessage>,
+    @Inject(BSN_COMPONENT_MODE) private stateEvents: Observable<BsnComponentMessage>,
     @Inject(BSN_COMPONENT_CASCADE) private cascade: Observer<BsnComponentMessage>,
     @Inject(BSN_COMPONENT_CASCADE) private cascadeEvents: Observable<BsnComponentMessage>
   ) {

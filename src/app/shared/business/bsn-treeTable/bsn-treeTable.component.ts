@@ -12,6 +12,7 @@ import {
     BsnComponentMessage,
     BSN_COMPONENT_CASCADE,
     BSN_COMPONENT_CASCADE_MODES,
+    BSN_COMPONENT_MODE,
     BSN_COMPONENT_MODES
 } from '@core/relative-Service/BsnTableStatus';
 import { CommonTools } from '@core/utility/common-tools';
@@ -107,7 +108,7 @@ export class BsnAsyncTreeTableComponent extends GridBase
         private _msg: NzMessageService,
         private _modal: NzModalService,
         private _cacheService: CacheService,
-        @Inject(BSN_COMPONENT_MODES)
+        @Inject(BSN_COMPONENT_MODE)
         private stateEvents: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascade: Observer<BsnComponentMessage>,

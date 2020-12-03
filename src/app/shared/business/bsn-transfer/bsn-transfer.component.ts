@@ -6,7 +6,8 @@ import {Observer} from 'rxjs';
 import {Subscription} from 'rxjs';
 import {
     BSN_COMPONENT_CASCADE, BSN_COMPONENT_CASCADE_MODES, BSN_COMPONENT_MODES,
-    BsnComponentMessage
+    BsnComponentMessage,
+    BSN_COMPONENT_MODE
 } from '@core/relative-Service/BsnTableStatus';
 import {CommonTools} from '@core/utility/common-tools';
 import {CnComponentBase} from '@shared/components/cn-component-base';
@@ -24,7 +25,7 @@ export class BsnTransferComponent extends CnComponentBase implements OnInit, OnD
     constructor(private _apiService: ApiService,
                 private _message: NzMessageService,
                 private modalService: NzModalService,
-                @Inject(BSN_COMPONENT_MODES) private stateEvents: Observable<BsnComponentMessage>,
+                @Inject(BSN_COMPONENT_MODE) private stateEvents: Observable<BsnComponentMessage>,
                 @Inject(BSN_COMPONENT_CASCADE) private cascade: Observer<BsnComponentMessage>,
                 @Inject(BSN_COMPONENT_CASCADE) private cascadeEvents: Observable<BsnComponentMessage>) {
         super();

@@ -1,5 +1,5 @@
 import { LodopService, ReuseTabService, ReuseTabStrategy } from '@delon/abc';
-import { NgModule, LOCALE_ID, APP_INITIALIZER, Injector } from '@angular/core';
+import { NgModule, LOCALE_ID, APP_INITIALIZER } from '@angular/core';
 import {
     HttpClient,
     HTTP_INTERCEPTORS,
@@ -27,22 +27,15 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ALAIN_I18N_TOKEN } from '@delon/theme';
 import { I18NService } from '@core/i18n/i18n.service';
 // third
-import { UEditorModule } from 'ngx-ueditor';
-import { NgxTinymceModule } from 'ngx-tinymce';
+// import { UEditorModule } from 'ngx-ueditor';
+// import { NgxTinymceModule } from 'ngx-tinymce';
 import { ApiService } from '@core/utility/api-service';
-import {
-    RelativeService,
-    RelativeResolver,
-    BsnToolbarRelativeMessage
-} from '@core/relative-Service/relative-service';
-import {
-    BsnComponentMessage,
-    BSN_COMPONENT_CASCADE,
-    BSN_COMPONENT_MODES
-} from '@core/relative-Service/BsnTableStatus';
+
 import { Subject } from 'rxjs';
 import { RouteReuseStrategy } from '@angular/router';
 import { DataService } from './model/app-data.service';
+import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE, BSN_COMPONENT_MODE } from '@core/relative-Service/BsnTableStatus';
+import { RelativeService, RelativeResolver } from '@core/relative-Service/relative-service';
 // JSON-Schema form
 // import { JsonSchemaModule } from '@shared/json-schema/json-schema.module';
 
@@ -115,7 +108,7 @@ export function StartupServiceFactory(
             multi: true
         },
         {
-            provide: BSN_COMPONENT_MODES,
+            provide: BSN_COMPONENT_MODE,
             useValue: new Subject<BsnComponentMessage>()
         },
         {

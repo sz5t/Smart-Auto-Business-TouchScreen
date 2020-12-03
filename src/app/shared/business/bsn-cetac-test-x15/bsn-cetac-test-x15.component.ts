@@ -4,7 +4,7 @@ import { ApiService } from '@core/utility/api-service';
 import { CacheService } from '@delon/cache';
 import { NzNotificationService, NzModalService } from 'ng-zorro-antd';
 import { RelativeService } from '@core/relative-Service/relative-service';
-import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE } from '@core/relative-Service/BsnTableStatus';
+import { BSN_COMPONENT_MODES, BsnComponentMessage, BSN_COMPONENT_CASCADE, BSN_COMPONENT_MODE } from '@core/relative-Service/BsnTableStatus';
 import { Observable, Observer } from 'rxjs';
 import { Router } from '@angular/router';
 import { MenuService } from '@delon/theme';
@@ -46,7 +46,7 @@ export class BsnCETACTESTX15Component extends CnFormBase implements  OnInit, OnD
     private message: NzNotificationService,
     private modalService: NzModalService,
     private _messageService: RelativeService,
-    @Inject(BSN_COMPONENT_MODES)
+    @Inject(BSN_COMPONENT_MODE)
     private stateEvents: Observable<BsnComponentMessage>,
     @Inject(BSN_COMPONENT_CASCADE)
     private cascade: Observer<BsnComponentMessage>,
@@ -92,7 +92,7 @@ export class BsnCETACTESTX15Component extends CnFormBase implements  OnInit, OnD
     }
   }
 
-  private beginConnectionSocket() {
+  public beginConnectionSocket() {
     const ajaxConfig = {
       url: 'common/getEquipment',
       ajaxType: 'get',

@@ -18,7 +18,8 @@ import {
     BSN_COMPONENT_MODES,
     BsnComponentMessage,
     BSN_COMPONENT_CASCADE,
-    BSN_COMPONENT_CASCADE_MODES
+    BSN_COMPONENT_CASCADE_MODES,
+    BSN_COMPONENT_MODE
 } from '@core/relative-Service/BsnTableStatus';
 import { Observable, Observer } from 'rxjs';
 import { CommonTools } from '@core/utility/common-tools';
@@ -50,8 +51,8 @@ export class BsnCarouselComponent extends CnComponentBase
     public config;
     @Input()
     public initData;
-    @Input()
-    public tempValue;
+    // @Input()
+    // public tempValue;
     @ViewChild('carousel')
     private carousel: NzCarouselComponent;
     public isLoading = true;
@@ -62,7 +63,7 @@ export class BsnCarouselComponent extends CnComponentBase
     constructor(
         private _apiService: ApiService,
         private _cacheService: CacheService,
-        @Inject(BSN_COMPONENT_MODES)
+        @Inject(BSN_COMPONENT_MODE)
         private stateEvents: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascade: Observer<BsnComponentMessage>,
@@ -120,6 +121,7 @@ export class BsnCarouselComponent extends CnComponentBase
                                 imgItem[element['name']] = (d[element['field']]).replace('/^\\/$', function (s) {
                                     return s = '/';
                                 });
+                                // imgItem[element['name']] = imgItem[element['name']];
                                 imgItem[element['name']] = this._replaceCurrentURL(this.serverPath + imgItem[element['name']]);
                             }
                         } else {

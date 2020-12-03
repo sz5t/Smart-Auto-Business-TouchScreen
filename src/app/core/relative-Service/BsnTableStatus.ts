@@ -1,6 +1,51 @@
-import { InjectionToken } from '@angular/core';
+import { Injectable, InjectionToken } from '@angular/core';
 
-export const BSN_COMPONENT_MODES = {
+export class ComponentModes {
+    // grid
+    public CREATE: string;
+    public CREATE_CHILD: string;
+    public EDIT: string;
+    public DELETE: string
+    public DELETE_SELECTED: string;
+    public DIALOG: string;
+    public WINDOW: string;
+    public SAVE: string;
+    public CANCEL: string;
+    public CANCEL_SELECTED: string;
+    public FORM: string;
+    public EXECUTE_SELECTED: string;
+    public EXECUTE_CHECKED: string;
+    public SEARCH: string;
+    public UPLOAD: string;
+    public REFRESH: string;
+    public ADD_ROW_DATA: string;
+    public FORM_BATCH: string;
+    public LINK: string;
+    public EXECUTE_SELECTED_LINK: string;
+    public EXECUTE_SELECTED_ID_LINK: string;
+    public EXECUTE_CHECKED_ID_LINK: string;
+    public LOGIN_OUT: string;
+    public WORK_CENTER: string;
+    public AUTO_PLAY: string;
+    public CALL_INTERFACE: string;
+    
+    // tree
+    public ADD_NODE: string;
+    public EDIT_NODE: string;
+    public DELETE_NODE: string;
+    public SAVE_NODE: string;
+    public EXECUTE: string;
+    
+    // form
+    public FORM_ADD: string;
+    public FORM_EDIT: string;
+    public FORM_LOAD: string;
+    public FORM_TECTA_TEST: string;
+    public EXECUTE_AND_LINK: string;
+    public EXECUTE_FOCUS: string;
+};
+
+export const BSN_COMPONENT_MODES: ComponentModes = {
     // grid
     CREATE: 'create',
     CREATE_CHILD: 'create_child',
@@ -128,6 +173,10 @@ export const BSN_COMPONENT_CASCADE_MODES = {
     // data
     RECEIVE_DATA: 'receive_data'
 };
+
+export const BSN_COMPONENT_MODE = new InjectionToken<string>(
+    'bsnComponentModes'
+);
 
 export const BSN_COMPONENT_CASCADE = new InjectionToken<string>(
     'bsnComponentCascade'

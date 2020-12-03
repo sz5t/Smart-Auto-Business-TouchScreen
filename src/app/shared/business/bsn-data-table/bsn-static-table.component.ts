@@ -7,7 +7,8 @@ import {
     BSN_COMPONENT_CASCADE,
     BSN_PARAMETER_TYPE,
     BSN_EXECUTE_ACTION,
-    BSN_OUTPOUT_PARAMETER_TYPE
+    BSN_OUTPOUT_PARAMETER_TYPE,
+    BSN_COMPONENT_MODE
 } from '@core/relative-Service/BsnTableStatus';
 
 import { FormResolverComponent } from '@shared/resolver/form-resolver/form-resolver.component';
@@ -128,7 +129,7 @@ export class BsnStaticTableComponent extends CnComponentBase
         private _message: NzMessageService,
         private modalService: NzModalService,
         private cacheService: CacheService,
-        @Inject(BSN_COMPONENT_MODES)
+        @Inject(BSN_COMPONENT_MODE)
         private stateEvents: Observable<BsnComponentMessage>,
         @Inject(BSN_COMPONENT_CASCADE)
         private cascade: Observer<BsnComponentMessage>,

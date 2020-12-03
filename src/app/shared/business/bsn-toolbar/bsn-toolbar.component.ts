@@ -1,4 +1,4 @@
-import { BSN_COMPONENT_CASCADE } from './../../../core/relative-Service/BsnTableStatus';
+import { BSN_COMPONENT_CASCADE, BSN_COMPONENT_MODE } from './../../../core/relative-Service/BsnTableStatus';
 import { BsnComponentMessage } from '@core/relative-Service/BsnTableStatus';
 import { Observable, Observer } from 'rxjs';
 import {
@@ -48,7 +48,7 @@ export class BsnToolbarComponent implements OnInit, OnDestroy {
     public _cascadeState;
     public toolbars;
     constructor(
-        @Inject(BSN_COMPONENT_MODES)
+        @Inject(BSN_COMPONENT_MODE)
         private state: Observer<BsnComponentMessage>
     ) {}
 

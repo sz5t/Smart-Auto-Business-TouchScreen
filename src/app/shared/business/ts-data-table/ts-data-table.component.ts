@@ -110,8 +110,8 @@ export class TsDataTableComponent extends CnComponentBase
     public set tplTitleRef(value: TemplateRef<any>) {
         this._tplTitleRef = value;
     }
-    
-    
+
+
     @ViewChild('tplContent')
     private _tplContentRef: TemplateRef<any>;
     public get tplContentRef(): TemplateRef<any> {
@@ -129,7 +129,7 @@ export class TsDataTableComponent extends CnComponentBase
     public set tplFooterRef(value: TemplateRef<any>) {
         this._tplFooterRef = value;
     }
-    
+
     @ViewChild('tplConfirmFooter')
     private _tplConfirmFooterRef: TemplateRef<any>;
     public get tplConfirmFooterRef(): TemplateRef<any> {
@@ -208,6 +208,7 @@ export class TsDataTableComponent extends CnComponentBase
     public beforeOperation;
     // confirm执行的配置
     public executeConfirmConfig;
+    public buttonTemp;
 
 
     // 提示框对象
@@ -490,7 +491,7 @@ export class TsDataTableComponent extends CnComponentBase
                                     data.data;
                             }
                         }
-                     }
+                    }
                 })();
             }
             // liu 20181022 特殊处理行定位
@@ -634,14 +635,14 @@ export class TsDataTableComponent extends CnComponentBase
                         this.beforeOperation.operationItemsData = itemIds
                         this.cacheValue.set('routerValue', { 'routeCheckedIds': itemIds });
                         !this.beforeOperation.beforeItemsDataOperation(option) &&
-                        this.linkToPage(option, itemIds);
+                            this.linkToPage(option, itemIds);
                         return;
                     case BSN_COMPONENT_MODES.EXECUTE_SELECTED_ID_LINK:
                         const itemId = this._getSelectedItem();
                         this.beforeOperation.operationItemData = itemId
                         this.cacheValue.set('routerValue', { 'routeSelectedItem': itemId });
                         !this.beforeOperation.beforeItemDataOperation(option) &&
-                        this.linkToPage(option, itemId);
+                            this.linkToPage(option, itemId);
                         return;
                     case BSN_COMPONENT_MODES.LINK:
                         this.linkToPage(option, '');
@@ -651,7 +652,7 @@ export class TsDataTableComponent extends CnComponentBase
                         this.cacheValue.set('routerValue', item);
                         this.beforeOperation.operationItemData = item;
                         !this.beforeOperation.beforeItemDataOperation(option) &&
-                        this.linkToPage(option, item);
+                            this.linkToPage(option, item);
                         return;
                     case BSN_COMPONENT_MODES.LOGIN_OUT:
                         this.logout();
@@ -785,6 +786,9 @@ export class TsDataTableComponent extends CnComponentBase
                                         this.load();
                                         break;
                                     case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILD:
+                                        this.load();
+                                        break;
+                                    case BSN_COMPONENT_CASCADE_MODES.REPLACE_AS_CHILD:
                                         this.load();
                                         break;
                                     case BSN_COMPONENT_CASCADE_MODES.REFRESH_AS_CHILDREN:
@@ -1955,7 +1959,7 @@ export class TsDataTableComponent extends CnComponentBase
                                     }
                                 }
                             }
-                            this.editCache[data.key].data[key] =  this.changeConfig_new[rowCasade][key]['setValue'];
+                            this.editCache[data.key].data[key] = this.changeConfig_new[rowCasade][key]['setValue'];
 
                             // endregion  解析结束
                         }
@@ -2158,7 +2162,7 @@ export class TsDataTableComponent extends CnComponentBase
                                     }
                                 }
                             }
-                            this.editCache[data.key].data[key] =  this.changeConfig_new[rowCasade][key]['setValue'];
+                            this.editCache[data.key].data[key] = this.changeConfig_new[rowCasade][key]['setValue'];
                         }
                     );
                 }
@@ -2393,14 +2397,14 @@ export class TsDataTableComponent extends CnComponentBase
             if (this.innerConfirmExecuteObj['delConfig']) {
                 this._executeDelete(this.innerConfirmExecuteObj['delConfig'], serverData);
             }
-            
+
         }
     }
 
     public deleteRow(option) {
         if (this.dataList.filter(item => item.checked === true).length <= 0) {
             // this.baseMessage.create('info', '请选择要删除的数据');
-            this.createMessageTemplateModal2('info', '提示' , '请选择要删除的数据');
+            this.createMessageTemplateModal2('info', '提示', '请选择要删除的数据');
         } else {
             this.innerConfirmExecuteObj = {};
             this.innerConfirmExecuteObj = ['option'];
@@ -2411,7 +2415,7 @@ export class TsDataTableComponent extends CnComponentBase
             ) {
                 option.ajaxConfig.delete.map(async delConfig => {
                     this.msgTitle = delConfig.title ? delConfig.title : '提示',
-                    this.msgContent =  delConfig.message ? delConfig.message : '';
+                        this.msgContent = delConfig.message ? delConfig.message : '';
 
                     const opts = {
                         nzTitle: this.tplTitleRef,
@@ -2420,19 +2424,19 @@ export class TsDataTableComponent extends CnComponentBase
                     }
 
                     this.innerConfirmExecuteObj = {};
-                    
+
                     this.innerConfirmExecuteObj['delConfig'] = delConfig;
 
                     this.destoryTplModal();
                     this.createConfirmTemplateModal(opts);
 
-                    
+
 
                     // this.baseModal.confirm({
                     //     nzTitle: delConfig.title ? delConfig.title : '提示',
                     //     nzContent: delConfig.message ? delConfig.message : '',
                     //     nzOnOk: () => {
-                            
+
                     //     },
                     //     nzOnCancel: () => { }
                     // });
@@ -2450,7 +2454,7 @@ export class TsDataTableComponent extends CnComponentBase
                 option.ajaxConfig.map(async delConfig => {
                     this.executeConfirmConfig = delConfig;
                     this.msgTitle = delConfig.title ? delConfig.title : '提示',
-                    this.msgContent =  delConfig.message ? delConfig.message : '';
+                        this.msgContent = delConfig.message ? delConfig.message : '';
 
                     const opts = {
                         nzTitle: this.tplTitleRef,
@@ -2546,18 +2550,35 @@ export class TsDataTableComponent extends CnComponentBase
             const initCheckedIds = this.initValue['_checkedIds'] ? this.initValue['_checkedIds'] : null;
             const tempCheckedIds = tmpValue['_checkedIds'] ? tmpValue['_checkedIds'] : null;
             const checkedIds = { initCheckedIds: initCheckedIds, tempCheckedIds: tempCheckedIds };
-            const modal = this.baseModal.create({
-                nzTitle: dialog.title,
-                nzWidth: dialog.width,
-                nzContent: component['layout'],
-                nzComponentParams: {
-                    permissions: this.permissions,
-                    config: data,
-                    dialog: dialog,
-                    initData: { ...this.initValue, ...tmpValue, ...selectedRow, ...checkedIds }
-                },
-                nzFooter: footer
-            });
+            let modal;
+            if (dialog.tplButton) {
+                this.buttonTemp = true;
+                this.tplModal = this.baseModal.create({
+                    nzTitle: dialog.title,
+                    nzWidth: dialog.width,
+                    nzContent: component['layout'],
+                    nzComponentParams: {
+                        permissions: this.permissions,
+                        config: data,
+                        dialog: dialog,
+                        initData: { ...this.initValue, ...tmpValue, ...selectedRow, ...checkedIds }
+                    },
+                    nzFooter: this.tplFooterRef
+                });
+            } else {
+                modal = this.baseModal.create({
+                    nzTitle: dialog.title,
+                    nzWidth: dialog.width,
+                    nzContent: component['layout'],
+                    nzComponentParams: {
+                        permissions: this.permissions,
+                        config: data,
+                        dialog: dialog,
+                        initData: { ...this.initValue, ...tmpValue, ...selectedRow, ...checkedIds }
+                    },
+                    nzFooter: footer
+                });
+            }
             if (dialog.buttons) {
                 dialog.buttons.forEach(btn => {
                     const button = {};
@@ -2834,7 +2855,7 @@ export class TsDataTableComponent extends CnComponentBase
                             this.load();
                         });
 
-                        this.returnValue = {...row, 'returnValue': response.data};
+                        this.returnValue = { ...row, 'returnValue': response.data };
                         if (this.returnValue) {
                             const childrenConfig = option.ajaxConfig.filter(
                                 f => f.parentName && f.parentName === c.name
@@ -3068,7 +3089,7 @@ export class TsDataTableComponent extends CnComponentBase
                 const response = await this[option.type](cfg[i].url, params);
                 if (response.isSuccess) {
                     // this.baseMessage.create('success', '执行成功');
-                    this.createMessageTemplateModal2('success', '系统提示' , '执行成功')
+                    this.createMessageTemplateModal2('success', '系统提示', '执行成功')
                     isSuccess = true;
                 } else {
                     // this.baseMessage.create('error', response.message);
@@ -3212,6 +3233,8 @@ export class TsDataTableComponent extends CnComponentBase
             });
         data['selected'] = true;
         this._selectRow = data;
+        // console.log(this.dataList);
+        this.dataList = this.dataList.filter(e => e !== null)
         if (!this.is_Selectgrid) {
             this.value = this._selectRow[
                 this.config.selectGridValueName
@@ -3736,16 +3759,16 @@ export class TsDataTableComponent extends CnComponentBase
         }
     }
 
-     /**
-     * 弹出检漏仪表单页面
-     * @param dialog
-     * @returns {boolean}
-     */
+    /**
+    * 弹出检漏仪表单页面
+    * @param dialog
+    * @returns {boolean}
+    */
     private showCETACForm(dialog) {
         let obj;
         // if (dialog.type === 'add') {
         // } else if (dialog.type === 'edit') {
-            
+
         // }
         const t = Object.getOwnPropertyNames(this._selectRow);
         if (t.length <= 0) {
@@ -3937,7 +3960,7 @@ export class TsDataTableComponent extends CnComponentBase
             this.openUploadDialog(this.config.uploadDialog[index]);
         }
     }
-    
+
     public formCETACDialog(option) {
         if (this.config.formDialog && this.config.formDialog.length > 0) {
             const index = this.config.formDialog.findIndex(
@@ -5700,7 +5723,7 @@ export class TsDataTableComponent extends CnComponentBase
             // const c = this.executeConfirmConfig.c;
             const params = this.executeConfirmConfig.params;
             const ajaxConfigs = this.executeConfirmConfig;
-            const handleData =  this._getSelectedItem();
+            const handleData = this._getSelectedItem();
 
             const response = await this._executeAjaxConfig(ajaxConfigs, handleData);
             // 处理输出参数
@@ -5776,6 +5799,10 @@ export class TsDataTableComponent extends CnComponentBase
 
     public destoryTplModal() {
         this.tplModal.destroy();
+        if (this.buttonTemp) {
+            this.load();
+            this.sendCascadeMessage();
+        }
     }
 }
 

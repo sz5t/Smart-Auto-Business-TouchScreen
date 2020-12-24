@@ -41,7 +41,7 @@ export class TsLoginComponent implements OnInit, AfterViewInit, OnDestroy {
     // 当前选择登录系统的配置项
     public _currentSystem;
     public isCardLogin = false;
-    public isFaceLogin = true;
+    public isFaceLogin = false;
     public isNormalLogin = false;
     private ajax = {
         url: 'open/getEquipment',

@@ -43,6 +43,7 @@ export class LayoutResolverComponent extends CnComponentBase implements OnInit {
     }
 
     public ngOnInit() {
+        console.log('layout init')
         this.resolverRelation();
     }
 

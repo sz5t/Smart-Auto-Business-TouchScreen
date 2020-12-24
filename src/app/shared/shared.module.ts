@@ -112,6 +112,8 @@ import { CnGridRadioGroupComponent } from './components/cn-grid-radio-group/cn-g
 import { BsnInlineFaceRecognitionComponent } from './business/bsn-inline-face-recognition/bsn-inline-face-recognition.component';
 import { BsnChartComponent } from './business/bsn-chart/bsn-chart.component';
 import { BsnCETACTESTX15Component } from './business/bsn-cetac-test-x15/bsn-cetac-test-x15.component';
+import { CnVideoPlayComponent } from './components/cn-video-play/cn-video-play.component';
+import { CnFormLiquidScaleComponent } from './components/cn-form-liquid-scale/cn-form-liquid-scale.component';
 // import { CnFormSocketComponent } from './components/cn-form-socket/cn-form-socket.component';
 
 
@@ -217,7 +219,9 @@ const COMPONENTS = [
     CnGridRadioGroupComponent,
     BsnInlineFaceRecognitionComponent,
     BsnChartComponent,
-    BsnCETACTESTX15Component
+    BsnCETACTESTX15Component,
+    CnVideoPlayComponent,
+    CnFormLiquidScaleComponent
     // CnFormSocketComponent
 ];
 const DIRECTIVES = [
@@ -248,7 +252,8 @@ const DIRECTIVES = [
         ...DIRECTIVES,
         BtnTableFieldLimit,
         SafeUrlPipe,
-        BsnCETACTESTX15Component
+        BsnCETACTESTX15Component,
+        CnFormLiquidScaleComponent
         
     ],
     exports: [

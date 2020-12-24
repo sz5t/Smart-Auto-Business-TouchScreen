@@ -131,7 +131,7 @@ export class CnFormElectronicScaleComponent implements OnInit {
       ws.onopen = function () {
         // Web Socket 已连接上，使用 send() 方法发送数据
         // 连接服务端socket
-        ws.send('客户端以上线');
+        ws.send('');
         console.log('数据发送中...');
       };
 

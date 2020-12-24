@@ -90,16 +90,40 @@ export class DefaultInterceptor implements HttpInterceptor {
     > {
         // 统一加上服务端前缀
         let url = req.url;
-
-        if (!url.startsWith('https://') && !url.startsWith('http://')) {
+        let newReq;
+        if (url.startsWith('http://192.168.1.200')) {
+            // url = this._buildURL() + url;
+            url = this._replaceCurrentURL(url)
+ 
+            newReq = req.clone({
+                url: url
+            });  
+        } else if (url.startsWith('api.push.message')) {
             url = this._buildURL() + url;
+            url = this._replaceCurrentURL(url)
+            url = url.replace('api.cfg/', '');
+
+            newReq = req.clone({
+                url: url
+            });
+        } else if(url.startsWith('api')) {
+
+            url = url;
+            newReq = req.clone({
+                url: url
+            });
+        }  else if (!url.startsWith('https://') && !url.startsWith('http://')) {
+            url = this._buildURL() + url;
+            url = this._replaceCurrentURL(url)
+
+            newReq = req.clone({
+                url: url
+            });     
+        }  else {
+            newReq = req.clone({
+                url: url
+            });
         }
-
-        url = this._replaceCurrentURL(url);
-
-        const newReq = req.clone({
-            url: url
-        });
         return next.handle(newReq).pipe(
             mergeMap((event: any) => {
                 // 允许统一对请求错误处理，这是因为一个请求若是业务上错误的情况下其HTTP请求的状态是200的情况下需要

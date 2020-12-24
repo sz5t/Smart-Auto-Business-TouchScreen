@@ -100,11 +100,11 @@ export const SystemResource_1 = {
     'url_10_10_63_249_8082': {
         localResourceUrl: '10.10.63.249:8082',
         /** 后台服务 */
-        settingSystemServer: '192.168.1.200:8072',
+        settingSystemServer: '10.10.63.249:8072',
         /** 后台服务 */
-        appSystemServer: '192.168.1.200:8072',
+        appSystemServer: '10.10.63.249:8072',
         /**报表  */
-        reportServerUrl: '192.168.1.200:8088'
+        reportServerUrl: '10.10.63.249:8088'
     },
     'url_39_101_168_200_8042': {
         localResourceUrl: '39.101.168.200:8042',
@@ -158,16 +158,25 @@ export const SystemResource_1 = {
         /** 后台服务 */
         appSystemServer: '10.129.198.30:8081',
         /**报表  */
-        reportServerUrl: '10.129.198.30:8088'
+        reportServerUrl: '10.129.198.30:8082'
       },
-      'url_10_103_3_222_8308': {
-        localResourceUrl: '10.103.3.222:8308',
+      'url_10_130_3_222_8308': {
+        localResourceUrl: '10.130.3.222:8308',
         /** 后台服务 */
-        settingSystemServer: '10.103.3.222:8310',
+        settingSystemServer: '10.130.3.222:8310',
         /** 后台服务 */
-        appSystemServer: '10.103.3.222：8310',
+        appSystemServer: '10.130.3.222：8310',
         /**报表  */
-        reportServerUrl: '10.103.3.222:8311'
+        reportServerUrl: '10.130.3.222:8311'
+      },
+      'url_10_20_30_22_8308': { // 42现场
+        localResourceUrl: '10.20.30.22:8308',
+        /** 后台服务 */
+        settingSystemServer: '10.20.30.22:8310',
+        /** 后台服务 */
+        appSystemServer: '10.20.30.22：8310',
+        /**报表  */
+        reportServerUrl: '10.130.3.222:8311'
       }
 }
 

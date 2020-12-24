@@ -1,0 +1,16 @@
+<nz-form-label *ngIf="config.label" [nzSpan]="config.labelSize" [nzRequired]="config.isRequired">
+  {{config.label}}
+</nz-form-label>
+<nz-form-control [formGroup]="formGroup" [nzSpan]="config.controlSize">
+  <nz-input-group [nzAddOnAfter]="suffixTemplate"
+      nzAddOnAfterIcon="{{config.addOnAfterIcon}}" nzAddOnBeforeIcon="{{config.addOnBeforeIcon}}" [nzCompact]="false"
+      [nzSize]="config.size" [nzPrefixIcon]="config.perfix" nzSearch>
+      <input nz-input (blur)="onblur($event,'end')" type="{{config.inputType}}"
+      formControlName="{{config.name}}" [nzSize]="config.size" placeholder="{{config.placeholder}}"
+      disabled="{{config.disabled}}" readonly [(ngModel)]="model" (keyup)="onKeyPress($event)" />
+  </nz-input-group>
+</nz-form-control>
+<ng-template #suffixTemplate>
+  <button nz-button nzSearch nzType="primary" (click)="getValue()">获取</button>
+</ng-template>
+<button nz-button nzType="primary" *ngIf="config.showButton" (click)="submit($event,'end')">提交</button>

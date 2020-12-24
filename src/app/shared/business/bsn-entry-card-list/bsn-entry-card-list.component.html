@@ -1,6 +1,6 @@
 
 <nz-card nzBordered="false" [nzBodyStyle]="{'background':'inherit','background-attachment':'fixed'}">    
-        <nz-list [nzDataSource]="data" [nzRenderItem]="item" [nzGrid]="{gutter:32, xs: 12, sm: 12, md: 12, lg: 12, xl: 12}">
+        <nz-list [nzDataSource]="data" [nzRenderItem]="item" [nzGrid]="{gutter:32, xs: 8, sm: 8, md: 8, lg: 8, xl: 8}">
             <ng-template #item let-item>
                 <nz-card [ngClass]="{selectedItem: item.selected, unselectedItem: !item.selected, listItem: true,'nz-card':true}" 
                     nzHoverable

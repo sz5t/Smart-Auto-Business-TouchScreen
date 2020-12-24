@@ -44,11 +44,13 @@ import { create } from 'domain';
 import { timeout } from 'q';
 import { setTimeout } from 'core-js';
 import { BsnCETACTESTX15Component } from '../bsn-cetac-test-x15/bsn-cetac-test-x15.component';
+import { CnVideoPlayComponent } from '@shared/components/cn-video-play/cn-video-play.component';
 const component: { [type: string]: Type<any> } = {
     layout: LayoutResolverComponent,
     form: CnFormWindowResolverComponent,
     upload: BsnUploadComponent,
-    cetacTest: BsnCETACTESTX15Component
+    cetacTest: BsnCETACTESTX15Component,
+    video: CnVideoPlayComponent
 };
 
 @Component({
@@ -666,6 +668,9 @@ export class TsDataTableComponent extends CnComponentBase
                         return;
                     case BSN_COMPONENT_MODES.CALL_INTERFACE:
                         this.CallInterface(option);
+                        return;
+                    case BSN_COMPONENT_MODES.OPEN_VIDEO:
+                        this.openVideoDialog(option);
                         return;
                 }
             }
@@ -3898,6 +3903,103 @@ export class TsDataTableComponent extends CnComponentBase
         }
     }
 
+    
+    public openVideoDialog(option: any) {
+        if (!this.config.windowDialog
+            ) {
+          return false;
+        }
+        
+
+        const index = this.config.windowDialog.findIndex(
+            item => item.name === option.actionName
+        );
+        if(index > -1) {
+            const videoCfg = this.config.windowDialog[index];
+            const obj = {
+            //_id: this.rowData[this.dialog.keyId],
+            // _parentId: this.tempValue['_parentId'],
+            // Id: this.rowData['Id']
+            };
+            const footer = [];
+            const urlObj = {
+                token: videoCfg.video.token,
+                stream: 'main',
+                session: videoCfg.video.sessionid,
+                playType: videoCfg.video.playType,
+                url: videoCfg.video.url
+            };
+            
+            const modal = this.baseModal.create({
+                nzTitle: videoCfg.title,
+                nzWidth: videoCfg.width,
+                nzContent: CnVideoPlayComponent,
+                nzComponentParams: {
+                  config: urlObj,
+                  // initData: {...obj, ...this.rowData}
+                  initData: {},
+                },
+                nzFooter: footer,
+                nzOnOk: () => {
+                  new Promise(resolve => (setTimeout(resolve, 0)));
+                } 
+              });
+              if (videoCfg.buttons) {
+                videoCfg.buttons.forEach(btn => {
+                    const button = {};
+                    button['label'] = btn.text;
+                    button['type'] = btn.type ? btn.type : 'default';
+                    button['size'] = btn.size ? btn.size : 'default';
+                    button['show'] = true;
+                    button['onClick'] = componentInstance => {
+                        if (btn['name'] === 'save') {
+                            (async () => {
+                                const result = await componentInstance.buttonAction(
+                                    btn,
+                                    () => {
+                                        modal.close();
+                                        // todo: 操作完成当前数据后需要定位
+                                        this.load();
+                                        this.sendCascadeMessage();
+                                    }
+                                );
+                            })();
+                        } else if (btn['name'] === 'saveAndKeep') {
+                            (async () => {
+                                const result = await componentInstance.buttonAction(
+                                    btn,
+                                    () => {
+                                        // todo: 操作完成当前数据后需要定位
+                                        this.load();
+                                        this.sendCascadeMessage();
+                                    }
+                                );
+                                if (result) {
+
+                                }
+                            })();
+                        } else if (btn['name'] === 'close') {
+                            modal.close();
+                            this.load();
+                            this.sendCascadeMessage();
+                        } else if (btn['name'] === 'reset') {
+                            this._resetForm(componentInstance);
+                        } else if (btn['name'] === 'ok') {
+                            modal.close();
+                            // this.load();
+                            // this.sendCascadeMessage();
+                            //
+                        }
+                    };
+                    footer.push(button);
+                });
+            }
+        }
+       
+    
+       
+        
+      }
     /**
   * 弹出页面
   * @param dialog

@@ -28,6 +28,7 @@ export class ComponentModes {
     public WORK_CENTER: string;
     public AUTO_PLAY: string;
     public CALL_INTERFACE: string;
+    public OPEN_VIDEO: string;
     
     // tree
     public ADD_NODE: string;
@@ -73,6 +74,7 @@ export const BSN_COMPONENT_MODES: ComponentModes = {
     WORK_CENTER: 'work_center',
     AUTO_PLAY: 'auto_play',
     CALL_INTERFACE: 'call_interface',
+    OPEN_VIDEO: 'open_video',
     
     // tree
     ADD_NODE: 'addNode',

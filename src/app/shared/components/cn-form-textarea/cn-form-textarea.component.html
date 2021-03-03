@@ -5,7 +5,7 @@
         <nz-input-group [nzAddOnAfterIcon]="config.addOnAfterIcon" [nzAddOnBeforeIcon]="config.addOnBeforeIcon"
                 [nzCompact]="false" [nzSize]="'default'" [nzSuffix]="suffixTemplate" [nzPrefixIcon]="config.perfix">
                 <!-- <textarea #CodeMirror name="code"></textarea> -->
-                <textarea nz-input [nzAutosize]="{ minRows: 2, maxRows: config.autoSize }" formControlName="{{config.name}}" [nzSize]="config.size"
+                <textarea nz-input [nzAutosize]="{ minRows: config.rows, maxRows: config.autoSize }" formControlName="{{config.name}}" [nzSize]="config.size"
                         placeholder="{{config.placeholder}}" [(ngModel)]="model"></textarea>
 
         </nz-input-group>

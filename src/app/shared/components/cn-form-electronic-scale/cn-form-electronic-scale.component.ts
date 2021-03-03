@@ -41,6 +41,7 @@ export class CnFormElectronicScaleComponent implements OnInit {
 
   @Input() public value;
   @Input() public bsnData;
+  @Input() public initValue;
   @Input() public rowData;
   @Input() public dataSet;
   @Output()
@@ -198,7 +199,8 @@ export class CnFormElectronicScaleComponent implements OnInit {
       params = CommonTools.parametersResolver({
         params: paramsConfig,
         cacheValue: this.cacheService,
-        tempValue: this.bsnData
+        tempValue: this.bsnData,
+        initValue: this.initValue
       });
     }
     return params;

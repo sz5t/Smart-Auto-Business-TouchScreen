@@ -7,7 +7,7 @@
                 [nzPageSizeOptions]="config.pageSizeOptions ? config.pageSizeOptions :[]" [nzLoading]="loading"
                 (nzPageIndexChange)="searchData()" (nzPageSizeChange)="searchData(true)"
                 [nzTitle]="this.config.title ? title : false" [nzLoadingDelay]="50"
-                [nzScroll]="config.scroll ? config.scroll : {}">
+                [nzShowPagination]= "this.config.hasOwnProperty('showPagination') ? this.config.showPagination : true" [nzScroll]="config.scroll ? config.scroll : {}">
                 <thead (nzSortChange)="sort($event)" nzSingleSort>
                     <tr>
                         <th [attr.rowspan]="config.checkedConfig.rowspan?config.checkedConfig.rowspan:1"
@@ -158,7 +158,7 @@
                             </tr>
                         </ng-container>
                         <ng-container *ngIf="data.row_status != 'search'">
-                            <tr (click)="selectRow(data, $event)" [ngClass]="{checkedRow:(data.selected?false:data.checked),selectedRow:data.selected}">
+                            <tr (click)="selectRow(data, $event)" [ngClass]="{checkedRow:(data.selected?false:data.checked),selectedRow:(data.selected ? data.selected: false )}">
                                 <ng-container *ngIf="config.checkedConfig">
                                     <!-- <td *ngIf="config.showCheckBox" nzLeft="0px" style="width: 200px; padding: 16px 20px;" [nzWidth]="config.checkedConfig.width?config.checkedConfig.width:'10px'" [(nzChecked)]="data.checked" (nzCheckedChange)="refChecked($event)" [ngClass]="['text-center']"> -->
                                     <td *ngIf="config.showCheckBox" nzLeft="0px"
@@ -185,25 +185,27 @@
                                                 <div *ngIf="!editCache[data.key]['edit']">
                                                     <span>{{!col.dataType?data[col.field]:data[col.field] | date}}</span>
                                                 </div>
-                                                <ng-container *ngIf="_isArray(col.editor)">
-                                                    <!-- <p>调用新的简析方法,将配置简析</p> -->
-                                                    <cn-grid-edit *ngIf="col.editor" [searchConfigType]="'default'"
-                                                        [bsnData]="tempValue" [initData]="initData"
-                                                        [rowData]="editCache[data.key].data" [dataSet]="null"
-                                                        [config]="col"
-                                                        [value]="{key:data.key,name:col.field,data:null,dataText:null}"
-                                                        [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.field]:''"
-                                                        (updateValue)="valueChange($event)"></cn-grid-edit>
-                                                </ng-container>
-                                                <ng-container *ngIf="!_isArray(col.editor)">
-                                                    <ng-container [bsnData]="tempValue" [initData]="initData"
-                                                        [rowData]="editCache[data.key]['data']"
-                                                        [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
-                                                        CnGridEditorDirective *ngIf="editCache[data.key].edit"
-                                                        [config]="col.editor.options"
-                                                        [value]="{key:data.key,name:col.editor.field,data:editCache[data.key].data[col.editor.field],dataText:editCache[data.key].data[col.field]?editCache[data.key].data[col.field]:null}"
-                                                        [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.editor.field]:''"
-                                                        (updateValue)="valueChange($event)">
+                                                <ng-container *ngIf="editCache[data.key]['edit']">
+                                                    <ng-container *ngIf="_isArray(col.editor)">
+                                                        <!-- <p>调用新的简析方法,将配置简析</p> -->
+                                                        <cn-grid-edit *ngIf="col.editor" [searchConfigType]="'default'"
+                                                            [bsnData]="tempValue" [initData]="initData"
+                                                            [rowData]="editCache[data.key].data" [dataSet]="null"
+                                                            [config]="col"
+                                                            [value]="{key:data.key,name:col.field,data:null,dataText:null}"
+                                                            [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.field]:''"
+                                                            (updateValue)="valueChange($event)"></cn-grid-edit>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="!_isArray(col.editor)">
+                                                        <ng-container [bsnData]="tempValue" [initData]="initData"
+                                                            [rowData]="editCache[data.key]['data']"
+                                                            [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
+                                                            CnGridEditorDirective *ngIf="editCache[data.key].edit"
+                                                            [config]="col.editor.options"
+                                                            [value]="{key:data.key,name:col.editor.field,data:editCache[data.key].data[col.editor.field],dataText:editCache[data.key].data[col.field]?editCache[data.key].data[col.field]:null}"
+                                                            [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.editor.field]:''"
+                                                            (updateValue)="valueChange($event)">
+                                                        </ng-container>
                                                     </ng-container>
                                                 </ng-container>
                                             </ng-container>
@@ -240,25 +242,27 @@
                                                 <div *ngIf="!editCache[data.key]['edit']">
                                                     <span>{{!col.dataType?data[col.field]:data[col.field] | date}}</span>
                                                 </div>
-                                                <ng-container *ngIf="_isArray(col.editor)">
-                                                    <!-- <p>调用新的简析方法,将配置简析</p> -->
-                                                    <cn-grid-edit *ngIf="col.editor" [searchConfigType]="'default'"
-                                                        [bsnData]="tempValue" [initData]="initData"
-                                                        [rowData]="editCache[data.key].data" [dataSet]="null"
-                                                        [config]="col"
-                                                        [value]="{key:data.key,name:col.field,data:null,dataText:null}"
-                                                        [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.field]:''"
-                                                        (updateValue)="valueChange($event)"></cn-grid-edit>
-                                                </ng-container>
-                                                <ng-container *ngIf="!_isArray(col.editor)">
-                                                    <ng-container [bsnData]="tempValue" [initData]="initData"
-                                                        [rowData]="editCache[data.key]['data']"
-                                                        [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
-                                                        CnGridEditorDirective *ngIf="editCache[data.key].edit"
-                                                        [config]="col.editor.options"
-                                                        [value]="{key:data.key,name:col.editor.field,data:editCache[data.key].data[col.editor.field],dataText:editCache[data.key].data[col.field]?editCache[data.key].data[col.field]:null}"
-                                                        [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.editor.field]:''"
-                                                        (updateValue)="valueChange($event)">
+                                                <ng-container *ngIf="editCache[data.key]['edit']">
+                                                    <ng-container *ngIf="_isArray(col.editor)">
+                                                        <!-- <p>调用新的简析方法,将配置简析</p> -->
+                                                        <cn-grid-edit *ngIf="col.editor" [searchConfigType]="'default'"
+                                                            [bsnData]="tempValue" [initData]="initData"
+                                                            [rowData]="editCache[data.key].data" [dataSet]="null"
+                                                            [config]="col"
+                                                            [value]="{key:data.key,name:col.field,data:null,dataText:null}"
+                                                            [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.field]:''"
+                                                            (updateValue)="valueChange($event)"></cn-grid-edit>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="!_isArray(col.editor)">
+                                                        <ng-container [bsnData]="tempValue" [initData]="initData"
+                                                            [rowData]="editCache[data.key]['data']"
+                                                            [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
+                                                            CnGridEditorDirective *ngIf="editCache[data.key].edit"
+                                                            [config]="col.editor.options"
+                                                            [value]="{key:data.key,name:col.editor.field,data:editCache[data.key].data[col.editor.field],dataText:editCache[data.key].data[col.field]?editCache[data.key].data[col.field]:null}"
+                                                            [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.editor.field]:''"
+                                                            (updateValue)="valueChange($event)">
+                                                        </ng-container>
                                                     </ng-container>
                                                 </ng-container>
                                             </ng-container>
@@ -295,25 +299,27 @@
                                                 <div *ngIf="!editCache[data.key]['edit']">
                                                     <span>{{!col.dataType?data[col.field]:data[col.field] | date}}</span>
                                                 </div>
-                                                <ng-container *ngIf="_isArray(col.editor)">
-                                                    <!-- <p>调用新的简析方法,将配置简析</p> -->
-                                                    <cn-grid-edit *ngIf="col.editor" [searchConfigType]="'default'"
-                                                        [bsnData]="tempValue" [initData]="initData"
-                                                        [rowData]="editCache[data.key].data" [dataSet]="null"
-                                                        [config]="col"
-                                                        [value]="{key:data.key,name:col.field,data:null,dataText:null}"
-                                                        [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.field]:''"
-                                                        (updateValue)="valueChange($event)"></cn-grid-edit>
-                                                </ng-container>
-                                                <ng-container *ngIf="!_isArray(col.editor)">
-                                                    <ng-container [bsnData]="tempValue" [initData]="initData"
-                                                        [rowData]="editCache[data.key]['data']"
-                                                        [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
-                                                        CnGridEditorDirective *ngIf="editCache[data.key].edit"
-                                                        [config]="col.editor.options"
-                                                        [value]="{key:data.key,name:col.editor.field,data:editCache[data.key].data[col.editor.field],dataText:editCache[data.key].data[col.field]?editCache[data.key].data[col.field]:null}"
-                                                        [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.editor.field]:''"
-                                                        (updateValue)="valueChange($event)">
+                                                <ng-container *ngIf="editCache[data.key]['edit']">
+                                                    <ng-container *ngIf="_isArray(col.editor)">
+                                                        <!-- <p>调用新的简析方法,将配置简析</p> -->
+                                                        <cn-grid-edit *ngIf="col.editor" [searchConfigType]="'default'"
+                                                            [bsnData]="tempValue" [initData]="initData"
+                                                            [rowData]="editCache[data.key].data" [dataSet]="null"
+                                                            [config]="col"
+                                                            [value]="{key:data.key,name:col.field,data:null,dataText:null}"
+                                                            [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.field]:''"
+                                                            (updateValue)="valueChange($event)"></cn-grid-edit>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="!_isArray(col.editor)">
+                                                        <ng-container [bsnData]="tempValue" [initData]="initData"
+                                                            [rowData]="editCache[data.key]['data']"
+                                                            [dataSet]="col.editor.options.dataSet?dataSet[col.editor.options.dataSet]:null"
+                                                            CnGridEditorDirective *ngIf="editCache[data.key].edit"
+                                                            [config]="col.editor.options"
+                                                            [value]="{key:data.key,name:col.editor.field,data:editCache[data.key].data[col.editor.field],dataText:editCache[data.key].data[col.field]?editCache[data.key].data[col.field]:null}"
+                                                            [changeConfig]="changeConfig_new.hasOwnProperty(data.key) ? changeConfig_new[data.key][col.editor.field]:''"
+                                                            (updateValue)="valueChange($event)">
+                                                        </ng-container>
                                                     </ng-container>
                                                 </ng-container>
                                             </ng-container>

@@ -5,7 +5,7 @@ module.exports = {
     // localResourceUrl: "http://localhost:4200",
     // localResourceUrl: "http://10.130.3.222:8308",
     // localResourceUrl: "http://39.101.168.200:8013",
-    localResourceUrl: "http://10.20.30.22:8308",
+    localResourceUrl: "http://192.168.1.200:8082", // 西电触摸屏
      /** 后台服务 */
      settingSystemServer: 'http://192.168.1.111:8081/api.cfg/',
     /** 后台服务 */
